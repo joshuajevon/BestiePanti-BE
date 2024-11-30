@@ -1,0 +1,16 @@
+{
+  "name": "bestiepanti",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i ./src/main/resources/static/input.css -o ./src/main/resources/static/output.css",
+    "watch": "tailwindcss --watch -i ./src/main/resources/static/input.css -o ./src/main/resources/static/output.css"
+  },
+  "keywords": [],
+  "author": "joshuajevon",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
+  }
+}
