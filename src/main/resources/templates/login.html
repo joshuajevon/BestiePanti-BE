@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="output.css">
+</head>
+<body>
+<body>
+    <form action="/login" method="post">
+        <h1>Login</h1>
+        <div class="">
+            <label th:if="${param.error}" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-center redText"></label>                   
+        </div>
+        <div class="">
+            <input name="username" id="username" type="email" required>
+            <label for="">Email</label>
+        </div>
+        <div class="">
+            <input name="password" type="password" id="password" required>
+            <label for="">Password</label>
+        </div>
+        <button>Log in</button>
+        <div class="">
+            <p>Don't have a account ?<a href="/register"> Register!!</a></p>
+        </div>
+    </form>
+</body>
+  

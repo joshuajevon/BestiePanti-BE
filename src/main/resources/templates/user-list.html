@@ -2,11 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/users',
+                method: 'GET',
+                success: function(users) {
+                    var userTable = $('#userTable tbody');
+                    userTable.empty();
+                    users.forEach(function(user) {
+                        userTable.append('<tr>' +
+                            '<td>' + user.id + '</td>' +
+                            '<td>' + user.name + '</td>' +
+                            '<td>' + user.email + '</td>' +
+                            '<td>' + user.role + '</td>' +
+                            '</tr>');
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>User List</h1>
-    <a href="/create">Create User</a>
-    <table border="1">
+    <a href="/users/create">Create User</a>
+    <table border="1" id="userTable">
         <thead>
             <tr>
                 <th>ID</th>
@@ -16,12 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.name}"></td>
-                <td th:text="${user.email}"></td>
-                <td th:text="${user.role}"></td>
-            </tr>
+            <!-- Rows will be populated by AJAX -->
         </tbody>
     </table>
 </body>
