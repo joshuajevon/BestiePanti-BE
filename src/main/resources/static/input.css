@@ -1,3 +1,90 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
+input#searchbar:-webkit-autofill {
+  -webkit-text-fill-color: white !important;
+  caret-color: white !important;
+  font-size: 16px;
+}
+
+@layer base {
+  table {
+    @apply break-all;
+  }
+
+  [type="url"],
+  [type="datetime-local"],
+  [type="month"],
+  [type="search"],
+  [type="tel"],
+  [type="time"],
+  [type="week"],
+  [multiple] {
+    @apply border-cDarkGrey focus:border-none focus:ring-0;
+  }
+
+  [type="number"],
+  [type="text"],
+  [type="email"],
+  [type="password"],
+  [type="date"],
+  textarea {
+    @apply border-cDarkGrey focus:border-cGold focus:ring-0;
+  }
+
+  select {
+    @apply border-cDarkGrey focus:border-cGold focus:ring-0 focus:ring-offset-0;
+  }
+
+  [type="radio"] {
+    @apply border-cDarkGrey focus:border-cGold focus:ring-0 focus:ring-offset-0;
+  }
+
+  input:-internal-autofill-selected {
+    @apply bg-transparent text-white;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply font-bold text-cGold transition hover:text-cGold/75;
+  }
+
+  .c-container {
+    @apply px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24;
+  }
+
+  .gold-btn {
+    @apply flex items-center justify-center rounded-md bg-cGold px-5 py-2.5 text-cWhite transition hover:bg-[linear-gradient(rgb(0_0_0/10%)_0_0)];
+  }
+
+  .white-btn {
+    @apply flex items-center justify-center rounded-md border border-cGold bg-cWhite px-5 py-2.5 text-cGold transition hover:bg-[linear-gradient(rgb(0_0_0/10%)_0_0)];
+  }
+
+  .table-row {
+    @apply border-b-[1px] border-b-cDarkGrey text-center;
+  }
+
+  .asset-table th {
+    @apply w-1/4 py-2 text-start align-top;
+  }
+
+  .asset-table td {
+    @apply w-3/4 py-2 pl-4 text-start align-top;
+  }
+
+  .error-message {
+    @apply text-sm text-red-500;
+  }
+
+  .announcement-active {
+    @apply underline underline-offset-8 opacity-100;
+  }
+}
