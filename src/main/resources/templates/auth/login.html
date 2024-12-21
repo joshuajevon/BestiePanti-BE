@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="output.css" />
   </head>
   <body>
-    <x-navigation-bar page="login" />
 
     <section
       class="c-container flex flex-col gap-8 pb-8 pt-28 sm:pt-32 md:pt-36 lg:gap-12 lg:pb-16 lg:pt-40 xl:gap-16 xl:pb-32 xl:pt-44 2xl:pt-48"
@@ -24,11 +23,11 @@
       </div>
 
       <form
-        action="{{ route('login') }}"
+        action="/login"
         id="form-login"
         method="POST"
         class="flex flex-col items-start justify-center gap-6 bg-cWhite px-6 py-12 shadow-[0px_4.7451px_41.5196px_rgba(41,82,144,0.25)] sm:px-8 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24 xl:px-14 xl:py-28 2xl:px-16 2xl:py-32"
-        onsubmit="submitLoginForm(event)"
+        onsubmit=""
       >
         <div class="w-full border-b-2 border-b-cGold px-4 pb-5">
           <h1
@@ -37,6 +36,10 @@
             Bergabunglah dengan
             <span class="font-bold text-cGold">BestiePanti</span>
           </h1>
+        </div>
+        
+        <div class="">
+            <label th:if="${param.error}" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-center redText"></label>                   
         </div>
 
         <!-- Email Address -->
@@ -49,14 +52,13 @@
           </label>
 
           <input
-            type="text"
+            type="email"
             autocomplete="false"
             id="email-login"
-            name="email"
+            name="username"
             placeholder="Masukkan alamat email"
             class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-cWhite p-4 text-sm sm:text-base"
           />
-
           <p
             id="email-login-error-message"
             class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
@@ -133,7 +135,7 @@
         </div>
 
         <!-- Remember Me -->
-        <div class="flex items-center justify-start gap-2 px-4">
+        <!-- <div class="flex items-center justify-start gap-2 px-4">
           <input
             id="remember-me-login"
             type="checkbox"
@@ -147,7 +149,7 @@
           >
             Remember me
           </label>
-        </div>
+        </div> -->
 
         <div class="px-4">
           <button
@@ -161,12 +163,7 @@
         <div
           class="flex flex-col items-start justify-center gap-4 px-4 text-base"
         >
-          <a
-            class="text-cGold hover:underline"
-            href="{{ route('password.request') }}"
-          >
-            Lupa password?
-          </a>
+          <!-- <az -->
 
           <span class="" href="/register">
             Belum punya akun?
