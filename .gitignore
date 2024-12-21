@@ -34,4 +34,4 @@ build/
 
 ### Frontend ###
 /node_modules/
-/src/main/resources/static/output.css
+output.css
