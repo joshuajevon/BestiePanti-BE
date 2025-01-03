@@ -20,4 +20,9 @@ public class PageController {
     public String register() {
         return "register";
     }
+
+    @GetMapping("/register2")
+    public String register2() {
+        return "auth/register";
+    }
 }

@@ -23,12 +23,12 @@ export default {
       },
 
       colors: {
-        cBlack: "#000000",
-        cGold: "#C5AF66",
-        cWhite: "#FFFFFF",
-        cLightGrey: "#EFEFEF",
-        cDarkGrey: "#D9D9D9",
-        cDarkerGrey: "#292929",
+        // cBlack: "#000000",
+        // cGold: "#C5AF66",
+        // cWhite: "#FFFFFF",
+        // cLightGrey: "#EFEFEF",
+        // cDarkGrey: "#D9D9D9",
+        // cDarkerGrey: "#292929",
       },
     },
   },

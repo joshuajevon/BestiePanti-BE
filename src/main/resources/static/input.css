@@ -26,7 +26,7 @@ input#searchbar:-webkit-autofill {
   [type="time"],
   [type="week"],
   [multiple] {
-    @apply border-cDarkGrey focus:border-none focus:ring-0;
+    @apply border-gray-800 focus:border-none focus:ring-0;
   }
 
   [type="number"],
@@ -35,15 +35,15 @@ input#searchbar:-webkit-autofill {
   [type="password"],
   [type="date"],
   textarea {
-    @apply border-cDarkGrey focus:border-cGold focus:ring-0;
+    @apply border-gray-800 focus:border-sky-400 focus:ring-0;
   }
 
   select {
-    @apply border-cDarkGrey focus:border-cGold focus:ring-0 focus:ring-offset-0;
+    @apply border-gray-800 focus:border-sky-400 focus:ring-0 focus:ring-offset-0;
   }
 
   [type="radio"] {
-    @apply border-cDarkGrey focus:border-cGold focus:ring-0 focus:ring-offset-0;
+    @apply border-gray-800 focus:border-sky-400 focus:ring-0 focus:ring-offset-0;
   }
 
   input:-internal-autofill-selected {
@@ -53,23 +53,23 @@ input#searchbar:-webkit-autofill {
 
 @layer components {
   .nav-link {
-    @apply font-bold text-cGold transition hover:text-cGold/75;
+    @apply font-bold text-sky-400 transition hover:text-sky-400/75;
   }
 
   .c-container {
     @apply px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24;
   }
 
-  .gold-btn {
-    @apply flex items-center justify-center rounded-md bg-cGold px-5 py-2.5 text-cWhite transition hover:bg-[linear-gradient(rgb(0_0_0/10%)_0_0)];
+  .primary-btn {
+    @apply flex items-center justify-center rounded-md bg-sky-400 px-8 py-3 font-medium text-white transition hover:bg-sky-600;
   }
 
-  .white-btn {
-    @apply flex items-center justify-center rounded-md border border-cGold bg-cWhite px-5 py-2.5 text-cGold transition hover:bg-[linear-gradient(rgb(0_0_0/10%)_0_0)];
+  .secondary-btn {
+    @apply flex items-center justify-center rounded-md border border-sky-400 bg-white px-8 py-3 font-medium text-sky-400 transition hover:bg-sky-50;
   }
 
   .table-row {
-    @apply border-b-[1px] border-b-cDarkGrey text-center;
+    @apply border-b-[1px] border-b-gray-800 text-center;
   }
 
   .asset-table th {
