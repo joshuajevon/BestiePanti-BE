@@ -18,11 +18,6 @@ public class PageController {
 
     @GetMapping("/register")
     public String register() {
-        return "register";
-    }
-
-    @GetMapping("/register2")
-    public String register2() {
         return "auth/register";
     }
 }

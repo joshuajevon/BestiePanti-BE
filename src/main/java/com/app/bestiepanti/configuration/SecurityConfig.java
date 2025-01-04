@@ -1,6 +1,5 @@
 package com.app.bestiepanti.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,7 +21,6 @@ import lombok.AllArgsConstructor;
 @EnableWebSecurity
 public class SecurityConfig {
     
-    @Autowired
     private final UserService userService;
     
     @Bean

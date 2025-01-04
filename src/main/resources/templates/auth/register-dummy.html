@@ -20,10 +20,13 @@
         </h1>
         <div class="h-0.5 flex-1 bg-sky-400"></div>
       </div>
+
       <form
-        action="/register"
-        method="post"
+        action=""
+        id="form-register"
+        method="POST"
         class="flex flex-col items-start justify-center gap-6 bg-white px-6 py-12 shadow-[0px_4.7451px_41.5196px_rgba(41,82,144,0.25)] sm:px-8 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24 xl:px-14 xl:py-28 2xl:px-16 2xl:py-32"
+        onsubmit=""
       >
         <div
           class="flex w-full flex-col items-center justify-center gap-4 border-b-2 border-b-sky-400 px-4 pb-5 sm:gap-6 lg:gap-8"
@@ -40,6 +43,7 @@
             <span class="font-bold">harus atas nama perorangan</span>.
           </p>
         </div>
+
         <div
           class="mt-2 grid w-full grid-cols-1 gap-6 px-4 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-8"
         >
@@ -48,7 +52,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="name"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Nama Lengkap
               </label>
@@ -61,7 +65,7 @@
               id="name"
               name="name"
               placeholder="Masukkan nama lengkap"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-white p-4 text-sm sm:text-base"
             />
 
             <p
@@ -118,13 +122,13 @@
               Error Message
             </p>
           </div>
-          
+
           <!-- Tanggal Lahir -->
           <div class="col-span-1">
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="dob"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Tanggal Lahir
               </label>
@@ -137,7 +141,7 @@
               id="dob"
               name="dob"
               placeholder="Masukkan tanggal lahir"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-white p-4 text-sm sm:text-base"
             />
 
             <p
@@ -153,7 +157,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="phone"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Nomor Whatsapp
               </label>
@@ -166,7 +170,7 @@
               id="phone"
               name="phone"
               placeholder="Masukkan nomor Whatsapp"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-white p-4 text-sm sm:text-base"
             />
 
             <p
@@ -182,7 +186,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="address"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Alamat
               </label>
@@ -195,7 +199,7 @@
               id="address"
               name="address"
               placeholder="Masukkan alamat"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-white p-4 text-sm sm:text-base"
             />
 
             <p
@@ -211,7 +215,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="email"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Email
               </label>
@@ -224,7 +228,7 @@
               id="email"
               name="email"
               placeholder="Masukkan email"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-cDarkGrey bg-white p-4 text-sm sm:text-base"
             />
 
             <p
@@ -240,7 +244,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="password"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Kata Sandi
               </label>
@@ -254,7 +258,7 @@
                 id="password"
                 name="password"
                 placeholder="Masukkan kata sandi"
-                class="border-cDarkGrey w-full rounded-md border bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
+                class="w-full rounded-md border border-cDarkGrey bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
               />
 
               <svg
@@ -310,7 +314,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="passwordcon"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-cBlack sm:text-lg"
               >
                 Konfirmasi Kata Sandi
               </label>
@@ -324,7 +328,7 @@
                 id="passwordcon"
                 name="konfirmasi-kata-sandi"
                 placeholder="Masukkan kata sandi"
-                class="border-cDarkGrey w-full rounded-md border bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
+                class="w-full rounded-md border border-cDarkGrey bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
               />
 
               <svg
@@ -382,8 +386,21 @@
           </p>
         </div>
 
+        <!-- <div class="px-4">
+          <p class="text-sm sm:text-base">
+            Dengan menekan tombol Daftar, anda sudah bersedia dan menyetujui
+            <a
+              href="{{asset('assets/syarat-ketentuan/Syarat dan Ketentuan.pdf')}}"
+              class="font-bold underline"
+              target="_blank"
+              rel="noopener noreferrer"
+              >syarat dan ketentuan</a
+            >
+          </p>
+        </div> -->
+
         <div class="px-4">
-          <button id="submit" type="submit" class="primary-btn">Daftar</button>
+          <button type="submit" class="primary-btn">Daftar</button>
         </div>
 
         <div
@@ -396,39 +413,7 @@
         </div>
       </form>
     </section>
+
+    <script src="js/register.js"></script>
   </body>
 </html>
-<script>
-  const submitButtton = document.getElementById("submit");
-  submitButtton.addEventListener("click", () => {
-    const name = document.getElementById("name").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("passwordcon").value;
-    const email = document.getElementById("email").value;
-    const data = {
-      name,
-      email,
-      password,
-    };
-
-    if (password == confirmPassword) {
-      const jsonData = JSON.stringify(data);
-      fetch("/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    } else {
-      alert("Passwords do not match");
-    }
-  });
-</script>

@@ -1,21 +1,25 @@
 package com.app.bestiepanti.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.app.bestiepanti.dto.request.UserRequest;
+import com.app.bestiepanti.dto.response.UserResponse;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService{
-
-    @Autowired
-    private UserRepository userRepository;
+    
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -31,9 +35,26 @@ public class UserService implements UserDetailsService{
         }
     }
 
-    public UserApp createUser(UserApp user) {
+    public UserResponse createUser(UserRequest userRequest) {
+
+        UserApp user = new UserApp();
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
         user.setRole(UserApp.ROLE_DONATUR);
-        return userRepository.save(user);
+        user.setPassword(userRequest.getPassword());
+        userRepository.save(user);
+
+        UserResponse userResponse = createUserResponse(user);
+        return userResponse;
+    }
+
+    private UserResponse createUserResponse(UserApp userApp){
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(userApp.getId());
+        userResponse.setName(userApp.getName());
+        userResponse.setEmail(userApp.getEmail());
+        userResponse.setRole(userApp.getRole());
+        return userResponse;
     }
 
     
