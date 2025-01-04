@@ -1,7 +1,6 @@
 package com.app.bestiepanti.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,19 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 public class UserController {
     
-    private static final String REGISTER_ENDPOINT = "/register";
+    public static final String REGISTER_ENDPOINT = "/register";
 
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     // ( consumes = "application/json")
     @ResponseBody
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest){
-        // userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         UserResponse userResponse = userService.createUser(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }

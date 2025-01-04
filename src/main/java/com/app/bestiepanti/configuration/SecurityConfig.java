@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.app.bestiepanti.service.UserService;
+import com.app.bestiepanti.service.CustomUserDetailsService;
 
 import lombok.AllArgsConstructor;
 
@@ -20,42 +20,40 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-    
-    private final UserService userService;
-    
+
+    private final CustomUserDetailsService customUserDetailsService;
+
     @Bean
-    public UserDetailsService userDetailsService(){
-        return userService;
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
     }
-    
+
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
-    
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(httpForm ->{
+            .formLogin(httpForm -> {
                 httpForm.loginPage("/login").permitAll();
                 httpForm.defaultSuccessUrl("/");
-                
             })
-            
-            .authorizeHttpRequests(registry ->{
-                registry.requestMatchers("/register","/css/**","/js/**").permitAll();
+            .authorizeHttpRequests(registry -> {
+                registry.requestMatchers("/register", "/css/**", "/js/**").permitAll();
                 registry.anyRequest().authenticated();
             })
             .build();
     }
-    
 }
+
