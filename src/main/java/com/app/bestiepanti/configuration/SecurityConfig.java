@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID") 
             ) 
             .authorizeHttpRequests(registry -> {
-                registry.requestMatchers("/register", "/css/**", "/js/**").permitAll();
+                registry.requestMatchers("/","/register", "/css/**", "/js/**").permitAll();
                 registry.anyRequest().authenticated();
             })
             .addFilterBefore(authenticatedUserFilter, UsernamePasswordAuthenticationFilter.class)
