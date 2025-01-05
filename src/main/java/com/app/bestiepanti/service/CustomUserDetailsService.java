@@ -11,10 +11,10 @@ import com.app.bestiepanti.repository.UserRepository;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.User;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;

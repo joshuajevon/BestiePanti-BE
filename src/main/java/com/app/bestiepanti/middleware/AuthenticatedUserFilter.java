@@ -23,7 +23,7 @@ public class AuthenticatedUserFilter extends OncePerRequestFilter {
 
         if (authentication != null && authentication.isAuthenticated() &&
             (request.getRequestURI().equals("/login") || request.getRequestURI().equals("/register"))) {
-            response.sendRedirect("/404"); // Redirect to 404 error page
+            response.sendRedirect("/404"); 
             return;
         }
 

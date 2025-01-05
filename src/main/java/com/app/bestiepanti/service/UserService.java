@@ -12,10 +12,10 @@ import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;

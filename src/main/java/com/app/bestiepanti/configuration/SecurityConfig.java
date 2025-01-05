@@ -1,6 +1,5 @@
 package com.app.bestiepanti.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,10 +16,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
 import com.app.bestiepanti.service.CustomUserDetailsService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -51,7 +50,8 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(httpForm -> {
                 httpForm.loginPage("/login").permitAll();
-                httpForm.defaultSuccessUrl("/");
+                httpForm.defaultSuccessUrl("/", true);
+                httpForm.failureUrl("/login?error=true");
             })
             .logout(logout -> logout 
                 .logoutUrl("/logout") 
