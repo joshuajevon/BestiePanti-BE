@@ -11,18 +11,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
 import com.app.bestiepanti.service.CustomUserDetailsService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
-
+    private final AuthenticatedUserFilter authenticatedUserFilter;
+    
     @Bean
     public UserDetailsService userDetailsService() {
         return customUserDetailsService;
@@ -47,12 +50,20 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(httpForm -> {
                 httpForm.loginPage("/login").permitAll();
-                httpForm.defaultSuccessUrl("/");
+                httpForm.defaultSuccessUrl("/", true);
+                httpForm.failureUrl("/login?error=true");
             })
+            .logout(logout -> logout 
+                .logoutUrl("/logout") 
+                .logoutSuccessUrl("/login?logout") 
+                .invalidateHttpSession(true) 
+                .deleteCookies("JSESSIONID") 
+            ) 
             .authorizeHttpRequests(registry -> {
-                registry.requestMatchers("/register", "/css/**", "/js/**").permitAll();
+                registry.requestMatchers("/","/register", "/css/**", "/js/**").permitAll();
                 registry.anyRequest().authenticated();
             })
+            .addFilterBefore(authenticatedUserFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 }
