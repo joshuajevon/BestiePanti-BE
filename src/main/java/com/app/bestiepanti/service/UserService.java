@@ -40,6 +40,11 @@ public class UserService {
         return createUserResponse(user, donatur);
     }
 
+    public UserApp findUserByEmail(String email){
+        UserApp user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
+        return user;
+    }
+
     private Donatur saveToDonatur(UserRequest userRequest, UserApp user) {
         Donatur donatur = new Donatur();
         donatur.setUser(user);
