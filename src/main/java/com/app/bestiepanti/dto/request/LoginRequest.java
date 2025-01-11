@@ -1,6 +1,4 @@
-package com.app.bestiepanti.dto.response;
-
-import java.math.BigInteger;
+package com.app.bestiepanti.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -12,26 +10,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class UserResponse {
-    
-    private BigInteger id;
-    
-    private String name;
-
+public class LoginRequest {
     private String email;
-
-    private String role;
-
-    private String phone;
-
-    private String gender;
-
-    private String dob;
-
-    private String address;
-
-    private String token;
+    private String password;
 }
