@@ -9,6 +9,8 @@ import com.app.bestiepanti.dto.response.UserResponse;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.service.UserService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +38,14 @@ public class UserController {
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest userRequest){
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest userRequest){        
         UserResponse userResponse = userService.register(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserResponse> login(@RequestBody LoginRequest userRequest){
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest userRequest){
         UserResponse userResponse = userService.login(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
