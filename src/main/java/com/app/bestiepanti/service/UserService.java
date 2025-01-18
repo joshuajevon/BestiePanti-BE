@@ -2,14 +2,21 @@ package com.app.bestiepanti.service;
 
 import java.time.LocalDate;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.app.bestiepanti.dto.request.UserRequest;
+import com.app.bestiepanti.dto.request.LoginRequest;
+import com.app.bestiepanti.dto.request.RegisterRequest;
 import com.app.bestiepanti.dto.response.UserResponse;
+import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
+import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
+import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,20 +28,45 @@ public class UserService {
     private final UserRepository userRepository;
     private final DonaturRepository donaturRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-    public UserResponse createUser(UserRequest userRequest) {
+    public UserResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
-        user.setName(userRequest.getName());
-        user.setEmail(userRequest.getEmail());
-        user.setRole(UserApp.ROLE_DONATUR);
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+
+        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+        user.setRole(role);
+
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userRepository.save(user);
 
-        Donatur donatur = saveToDonatur(userRequest, user);
-        return createUserResponse(user, donatur);
+        Donatur donatur = saveToDonatur(registerRequest, user);
+
+        String jwtToken = jwtService.generateToken(user);
+        return createUserResponse(user, donatur, jwtToken);
     }
 
-    private Donatur saveToDonatur(UserRequest userRequest, UserApp user) {
+    public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException{
+        UserApp user = findUserByEmail(loginRequest.getEmail());
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        } catch (AuthenticationException e) {
+            throw new UserNotFoundException("Invalid password");
+        }
+        Donatur donatur = donaturRepository.findByUserId(user.getId());
+        String jwtToken = jwtService.generateToken(user);
+        return createUserResponse(user, donatur, jwtToken);
+    }
+
+    public UserApp findUserByEmail(String email) throws UserNotFoundException{
+        UserApp user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Email is not registered"));
+        return user;
+    }
+
+    private Donatur saveToDonatur(RegisterRequest userRequest, UserApp user) {
         Donatur donatur = new Donatur();
         donatur.setUser(user);
         donatur.setAddress(userRequest.getAddress());
@@ -46,17 +78,18 @@ public class UserService {
         return donatur;
     }
 
-    private UserResponse createUserResponse(UserApp userApp, Donatur donatur) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(userApp.getId());
-        userResponse.setName(userApp.getName());
-        userResponse.setEmail(userApp.getEmail());
-        userResponse.setRole(userApp.getRole());
-        userResponse.setPhone(donatur.getPhone());
-        userResponse.setDob(donatur.getPhone());
-        userResponse.setGender(donatur.getGender());
-        userResponse.setAddress(donatur.getAddress());
-        return userResponse;
+    private UserResponse createUserResponse(UserApp userApp, Donatur donatur, String token) {
+        return UserResponse.builder() 
+                .id(userApp.getId()) 
+                .name(userApp.getName()) 
+                .email(userApp.getEmail()) 
+                .role(userApp.getRole().getName()) 
+                .phone(donatur.getPhone()) 
+                .dob(donatur.getDob().toString()) 
+                .gender(donatur.getGender()) 
+                .address(donatur.getAddress()) 
+                .token(token) 
+                .build();
     }
 }
 

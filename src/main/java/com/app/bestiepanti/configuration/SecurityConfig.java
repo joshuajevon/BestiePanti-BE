@@ -7,14 +7,16 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
-import com.app.bestiepanti.service.CustomUserDetailsService;
+import com.app.bestiepanti.filter.JwtAuthencationFilter;
+
+// import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,48 +25,64 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final AuthenticatedUserFilter authenticatedUserFilter;
-    
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return customUserDetailsService;
-    }
+    private final JwtAuthencationFilter jwtAuthencationFilter;
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(customUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
+    private final AuthenticationProvider authenticationProvider;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    // private final AuthenticatedUserFilter authenticatedUserFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(httpForm -> {
-                httpForm.loginPage("/login").permitAll();
-                httpForm.defaultSuccessUrl("/", true);
-                httpForm.failureUrl("/login?error=true");
-            })
-            .logout(logout -> logout 
-                .logoutUrl("/logout") 
-                .logoutSuccessUrl("/login?logout") 
-                .invalidateHttpSession(true) 
-                .deleteCookies("JSESSIONID") 
-            ) 
-            .authorizeHttpRequests(registry -> {
-                registry.requestMatchers("/","/register", "/css/**", "/js/**").permitAll();
-                registry.anyRequest().authenticated();
-            })
-            .addFilterBefore(authenticatedUserFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+        httpSecurity
+                .csrf(csrf -> csrf
+                        .disable())
+                // .formLogin(httpForm -> {
+                //     httpForm.loginPage("/login").permitAll();
+                //     httpForm.defaultSuccessUrl("/", true);
+                //     httpForm.failureUrl("/login?error=true");
+                // })
+                // .logout(logout -> logout 
+                //     .logoutUrl("/logout") 
+                //     .logoutSuccessUrl("/login?logout") 
+                //     .invalidateHttpSession(true) 
+                //     .deleteCookies("JSESSIONID") 
+                // ) 
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers("/","/login","/register", "/css/**", "/js/**").permitAll(); // no auth
+                    registry.requestMatchers("/admin/**").hasRole("ADMIN"); 
+                    registry.requestMatchers("/donatur/**").hasRole("DONATUR"); 
+                    registry.requestMatchers("/panti/**").hasRole("PANTI");
+                    registry.anyRequest().authenticated();
+                })
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
+
+
+        // return httpSecurity
+        //     .csrf(AbstractHttpConfigurer::disable)
+        //     // .formLogin(httpForm -> {
+        //     //     httpForm.loginPage("/login").permitAll();
+        //     //     httpForm.defaultSuccessUrl("/", true);
+        //     //     httpForm.failureUrl("/login?error=true");
+        //     // })
+        //     // .logout(logout -> logout 
+        //     //     .logoutUrl("/logout") 
+        //     //     .logoutSuccessUrl("/login?logout") 
+        //     //     .invalidateHttpSession(true) 
+        //     //     .deleteCookies("JSESSIONID") 
+        //     // ) 
+        //     .authorizeHttpRequests(registry -> {
+        //         registry.requestMatchers("/","/login","/register", "/css/**", "/js/**").permitAll(); // no auth
+        //         registry.requestMatchers("/admin/**").hasRole("ADMIN"); 
+        //         registry.requestMatchers("/donatur/**").hasRole("DONATUR"); 
+        //         registry.requestMatchers("/panti/**").hasRole("PANTI");
+        //         registry.anyRequest().authenticated();
+        //     })
+        //     // .addFilterBefore(authenticatedUserFilter, UsernamePasswordAuthenticationFilter.class)
+        //     .build();
     }
 }
 

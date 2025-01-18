@@ -20,4 +20,10 @@ public class PageController {
     public String register() {
         return "auth/register";
     }
+
+    @GetMapping("/donatur/test")
+    public String getMethodName() {
+        return "user-list";
+    }
+    
 }
