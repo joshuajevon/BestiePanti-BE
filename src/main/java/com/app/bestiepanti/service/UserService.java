@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
 import com.app.bestiepanti.dto.response.UserResponse;
+import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
@@ -47,9 +48,12 @@ public class UserService {
         return createUserResponse(user, donatur, jwtToken);
     }
 
-    public UserResponse login(LoginRequest loginRequest) {
+    public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException{
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        UserApp user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+        UserApp user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        if(user == null){
+            throw new UserNotFoundException("User not found");
+        }
         Donatur donatur = donaturRepository.findByUserId(user.getId());
         String jwtToken = jwtService.generateToken(user);
         return createUserResponse(user, donatur, jwtToken);
