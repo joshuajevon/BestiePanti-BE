@@ -1,6 +1,7 @@
 package com.app.bestiepanti.dto.request;
 
-import com.app.bestiepanti.validation.UniqueEmail;
+import com.app.bestiepanti.validation.register.ConfirmationPassword;
+import com.app.bestiepanti.validation.register.UniqueEmail;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@ConfirmationPassword
 public class RegisterRequest {
     @NotEmpty(message = "Name field cannot be empty")
     @Size(min = 2, message = "Name should have at least 2 characters") 
@@ -31,7 +33,7 @@ public class RegisterRequest {
     @Size(min = 6, message = "Password should have at least 6 characters") 
     private String password;
     
-    private String role;
+    private String confirmationPassword;
     
     @NotEmpty(message = "Phone field cannot be empty") 
     private String phone;

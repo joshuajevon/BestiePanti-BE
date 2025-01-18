@@ -1,4 +1,4 @@
-package com.app.bestiepanti.validation;
+package com.app.bestiepanti.validation.register;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,18 +50,19 @@ public class UserService {
     }
 
     public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException{
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        UserApp user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        if(user == null){
-            throw new UserNotFoundException("User not found");
+        UserApp user = findUserByEmail(loginRequest.getEmail());
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        } catch (AuthenticationException e) {
+            throw new UserNotFoundException("Invalid password");
         }
         Donatur donatur = donaturRepository.findByUserId(user.getId());
         String jwtToken = jwtService.generateToken(user);
         return createUserResponse(user, donatur, jwtToken);
     }
 
-    public UserApp findUserByEmail(String email){
-        UserApp user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not Found"));
+    public UserApp findUserByEmail(String email) throws UserNotFoundException{
+        UserApp user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Email is not registered"));
         return user;
     }
 

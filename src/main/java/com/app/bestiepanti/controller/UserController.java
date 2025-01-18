@@ -48,11 +48,11 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
         UserResponse userResponse = userService.login(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
     
     @RequestMapping(value = PROFILE_ENDPOINT, method=RequestMethod.GET)
-    public UserApp getProfile() {
+    public UserApp getProfile() throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserApp user = userService.findUserByEmail(email);

@@ -1,4 +1,4 @@
-package com.app.bestiepanti.configuration;
+package com.app.bestiepanti.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.app.bestiepanti.exception.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +34,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleBusinessException(UserNotFoundException ex){
         Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ex.getMessage());
+        errorMap.put("error_message", ex.getMessage());
+        logger.error("Validation errors: {}", errorMap);
         return errorMap;
     }
 

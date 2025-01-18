@@ -1,4 +1,4 @@
-package com.app.bestiepanti.validation;
+package com.app.bestiepanti.validation.register;
 
 import org.springframework.stereotype.Component;
 import com.app.bestiepanti.repository.UserRepository;
