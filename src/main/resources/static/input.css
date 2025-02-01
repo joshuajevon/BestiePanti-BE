@@ -76,6 +76,10 @@ input#searchbar:-webkit-autofill {
     @apply mt-2 space-y-1 text-sm text-red-600 sm:text-base;
   }
 
+  .input-container {
+    @apply w-full px-2 lg:px-4;
+  }
+
   .table-row {
     @apply border-b-[1px] border-b-gray-800 text-center;
   }

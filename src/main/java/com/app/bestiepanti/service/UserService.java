@@ -49,20 +49,23 @@ public class UserService {
         return createUserResponse(user, donatur, jwtToken);
     }
 
-    public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException{
+    public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Invalid password");
+            throw new UserNotFoundException("Invalid email or password. Please try again.");
         }
         Donatur donatur = donaturRepository.findByUserId(user.getId());
         String jwtToken = jwtService.generateToken(user);
         return createUserResponse(user, donatur, jwtToken);
     }
 
-    public UserApp findUserByEmail(String email) throws UserNotFoundException{
-        UserApp user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Email is not registered"));
+    public UserApp findUserByEmail(String email) throws UserNotFoundException {
+        UserApp user = userRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new UserNotFoundException("No account found with this email address. Please sign up."));
         return user;
     }
 
@@ -72,24 +75,23 @@ public class UserService {
         donatur.setAddress(userRequest.getAddress());
         donatur.setGender(userRequest.getGender());
         donatur.setPhone(userRequest.getPhone());
-        LocalDate dob = LocalDate.parse(userRequest.getDob()); 
+        LocalDate dob = LocalDate.parse(userRequest.getDob());
         donatur.setDob(dob);
         donaturRepository.save(donatur);
         return donatur;
     }
 
     private UserResponse createUserResponse(UserApp userApp, Donatur donatur, String token) {
-        return UserResponse.builder() 
-                .id(userApp.getId()) 
-                .name(userApp.getName()) 
-                .email(userApp.getEmail()) 
-                .role(userApp.getRole().getName()) 
-                .phone(donatur.getPhone()) 
-                .dob(donatur.getDob().toString()) 
-                .gender(donatur.getGender()) 
-                .address(donatur.getAddress()) 
-                .token(token) 
+        return UserResponse.builder()
+                .id(userApp.getId())
+                .name(userApp.getName())
+                .email(userApp.getEmail())
+                .role(userApp.getRole().getName())
+                .phone(donatur.getPhone())
+                .dob(donatur.getDob().toString())
+                .gender(donatur.getGender())
+                .address(donatur.getAddress())
+                .token(token)
                 .build();
     }
 }
-
