@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.app.bestiepanti.filter.JwtAuthencationFilter;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 // import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtAuthencationFilter jwtAuthencationFilter;
-
     private final AuthenticationProvider authenticationProvider;
 
     // private final AuthenticatedUserFilter authenticatedUserFilter;
@@ -55,9 +56,19 @@ public class SecurityConfig {
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                    .logoutUrl("/logout") 
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.getWriter().write("Logout successful");
+                    })
+                    .invalidateHttpSession(true) 
+                    .deleteCookies("JSESSIONID") 
+            );
+                ;
         return httpSecurity.build();
 
 
