@@ -1,51 +1,75 @@
 function SubmitForm(e) {
   e.preventDefault();
 
-  const name = $("name").value;
-  const email = $("email").value;
-  const password = $("password").value;
-  const confirmPassword = $("confirm-password").value;
-  const phone = $("phone").value;
-  const gender = $("gender").value;
-  const dob = $("dob").value;
-  const address = $("address").value;
+  // Get form values
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmation_password =
+    document.getElementById("confirm-password").value;
+  const phone = document.getElementById("phone").value;
+  const dob = document.getElementById("dob").value;
+  const address = document.getElementById("address").value;
+  const gender = document.querySelector('input[name="gender"]:checked')?.value;
 
+  // Prepare the data object
   const data = {
     name,
     email,
     password,
+    confirmation_password,
     phone,
     gender,
     dob,
     address,
   };
 
-  if (password === confirmPassword) {
-    const jsonData = JSON.stringify(data);
-    fetch("/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonData,
+  // Send the data to the server
+  fetch("/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errors) => {
+          // Handle validation errors
+          displayValidationErrors(errors);
+          throw new Error("Validation failed");
+        });
+      }
+      return response.json();
     })
-      .then((response) => {
-        if (response.status == 201) {
-          console.log("Success:", data);
-          window.location.href = "/";
-        } else {
-          return response.json().then((errorData) => {
-            console.error("Registration failed:", errorData);
-            alert("Registration failed. Please try again.");
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again.");
-      });
-  } else {
-    alert("Passwords do not match");
+    .then((data) => {
+      console.log("Success:", data);
+      alert("Registration successful!");
+      // window.location.href = "/login";
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // General error handling (e.g., network errors)
+      if (error.message !== "Validation failed") {
+        alert("Registration failed: " + error.message);
+      }
+    });
+}
+
+// Function to display validation errors
+function displayValidationErrors(errors) {
+  // Clear previous error messages
+  document.querySelectorAll(".error-message").forEach((el) => {
+    el.textContent = "";
+  });
+
+  // Display new error messages
+  for (const field in errors) {
+    const errorMessage = errors[field];
+    const errorElement = document.getElementById(`${field}-error-message`);
+    if (errorElement) {
+      errorElement.textContent = errorMessage;
+    }
   }
 }
 

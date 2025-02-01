@@ -72,6 +72,10 @@ input#searchbar:-webkit-autofill {
     @apply flex items-center justify-center rounded-full bg-primary-500 px-8 py-3 text-base font-bold text-white lg:px-10 lg:py-3.5 lg:text-lg;
   }
 
+  .error-message {
+    @apply mt-2 space-y-1 text-sm text-red-600 sm:text-base;
+  }
+
   .table-row {
     @apply border-b-[1px] border-b-gray-800 text-center;
   }
