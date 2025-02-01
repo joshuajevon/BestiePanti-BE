@@ -13,14 +13,18 @@ export default {
       fontFamily: {
         sans: ["Roboto", ...defaultTheme.fontFamily.sans],
       },
-
       colors: {
-        // cBlack: "#000000",
-        // cGold: "#C5AF66",
-        // cWhite: "#FFFFFF",
-        // cLightGrey: "#EFEFEF",
-        // cDarkGrey: "#D9D9D9",
-        // cDarkerGrey: "#292929",
+        primary: {
+          50: "#F6F8FE",
+          100: "#E8EFFF",
+          300: "#516FFF",
+          500: "#2547FA",
+          900: "#110843",
+        },
+        secondary: {
+          100: "#E5E9F2",
+          500: "#34364A",
+        },
       },
     },
   },

@@ -35,15 +35,15 @@ input#searchbar:-webkit-autofill {
   [type="password"],
   [type="date"],
   textarea {
-    @apply border-gray-800 focus:border-sky-400 focus:ring-0;
+    @apply border-gray-800 focus:border-primary-500 focus:ring-0;
   }
 
   select {
-    @apply border-gray-800 focus:border-sky-400 focus:ring-0 focus:ring-offset-0;
+    @apply border-gray-800 focus:border-primary-500 focus:ring-0 focus:ring-offset-0;
   }
 
   [type="radio"] {
-    @apply border-gray-800 focus:border-sky-400 focus:ring-0 focus:ring-offset-0;
+    @apply border-gray-800 focus:border-primary-500 focus:ring-0 focus:ring-offset-0;
   }
 
   input:-internal-autofill-selected {
@@ -52,20 +52,24 @@ input#searchbar:-webkit-autofill {
 }
 
 @layer components {
-  .nav-link {
-    @apply font-bold text-sky-400 transition hover:text-sky-400/75;
+  .nav-link-web {
+    @apply text-sm font-bold text-white transition hover:text-white/75 hover:underline lg:text-base;
+  }
+
+  .nav-link-mobile {
+    @apply line-clamp-1 overflow-clip text-sm font-bold text-secondary-500 transition hover:text-secondary-500/75 hover:underline lg:text-base;
   }
 
   .c-container {
     @apply px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24;
   }
 
-  .primary-btn {
-    @apply flex items-center justify-center rounded-md bg-sky-400 px-8 py-3 font-medium text-white transition hover:bg-sky-600;
+  .primary-btn-small {
+    @apply flex items-center justify-center rounded-full bg-primary-500 px-5 py-2.5 text-sm font-bold text-white lg:px-8 lg:py-3 lg:text-base;
   }
 
-  .secondary-btn {
-    @apply flex items-center justify-center rounded-md border border-sky-400 bg-white px-8 py-3 font-medium text-sky-400 transition hover:bg-sky-50;
+  .primary-btn {
+    @apply flex items-center justify-center rounded-full bg-primary-500 px-8 py-3 text-base font-bold text-white lg:px-10 lg:py-3.5 lg:text-lg;
   }
 
   .table-row {

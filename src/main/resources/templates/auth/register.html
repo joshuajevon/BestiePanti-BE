@@ -5,34 +5,266 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BestiePanti</title>
     <link rel="stylesheet" href="/css/output.css" />
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
   </head>
-  <body>
+
+  <body class="bg-primary-50 text-secondary-500">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed z-50 w-full">
+      <!-- Web Links -->
+      <div
+        class="c-container mx-auto flex h-20 w-full items-center justify-between gap-12 bg-primary-900 lg:h-24"
+      >
+        <div class="flex items-center gap-4 lg:gap-8">
+          <button
+            class="rounded p-2.5 text-white transition hover:text-white/75 lg:hidden"
+            onclick="toggleNavbar()"
+          >
+            <span class="sr-only">Toggle menu</span>
+            <div class="relative h-5 w-5">
+              <span
+                id="nav-icon-top"
+                class="absolute inset-x-0 top-0.5 mx-auto h-[0.125rem] w-5 rounded-full bg-white transition"
+              ></span>
+              <span
+                id="nav-icon-mid"
+                class="absolute inset-0 m-auto h-[0.125rem] w-5 rounded-full bg-white transition"
+              ></span>
+              <span
+                id="nav-icon-bottom"
+                class="absolute inset-x-0 bottom-0.5 mx-auto h-[0.125rem] w-5 rounded-full bg-white transition"
+              ></span>
+            </div>
+          </button>
+
+          <a class="w-fit" href="/">
+            <!-- <img
+              class="h-4"
+              src="{{ asset('assets/logo/asetaset-full.png') }}"
+              alt="logo"
+            /> -->
+
+            <svg
+              class="h-7 text-white sm:h-8"
+              viewBox="0 0 28 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0.41 10.3847C1.14777 7.4194 2.85643 4.7861 5.2639 2.90424C7.6714 1.02234 10.6393 0 13.695 0C16.7507 0 19.7186 1.02234 22.1261 2.90424C24.5336 4.7861 26.2422 7.4194 26.98 10.3847H25.78C23.7557 10.3549 21.7729 10.9599 20.11 12.1147C20.014 12.1842 19.9138 12.2477 19.81 12.3047H19.67C19.5662 12.2477 19.466 12.1842 19.37 12.1147C17.6924 10.9866 15.7166 10.3841 13.695 10.3841C11.6734 10.3841 9.6976 10.9866 8.02 12.1147C7.924 12.1842 7.8238 12.2477 7.72 12.3047H7.58C7.4762 12.2477 7.376 12.1842 7.28 12.1147C5.6171 10.9599 3.6343 10.3549 1.61 10.3847H0.41ZM23.62 16.6547C24.236 16.175 24.9995 15.924 25.78 15.9447H27.39V12.7347H25.78C24.4052 12.7181 23.0619 13.146 21.95 13.9547C21.3243 14.416 20.5674 14.6649 19.79 14.6649C19.0126 14.6649 18.2557 14.416 17.63 13.9547C16.4899 13.1611 15.1341 12.7356 13.745 12.7356C12.3559 12.7356 11.0001 13.1611 9.86 13.9547C9.2343 14.416 8.4774 14.6649 7.7 14.6649C6.9226 14.6649 6.1657 14.416 5.54 13.9547C4.4144 13.1356 3.0518 12.7072 1.66 12.7347H0V15.9447H1.61C2.39051 15.924 3.154 16.175 3.77 16.6547C4.908 17.4489 6.2623 17.8747 7.65 17.8747C9.0377 17.8747 10.392 17.4489 11.53 16.6547C12.1468 16.1765 12.9097 15.9257 13.69 15.9447C14.4708 15.9223 15.2348 16.1735 15.85 16.6547C16.9901 17.4484 18.3459 17.8738 19.735 17.8738C21.1241 17.8738 22.4799 17.4484 23.62 16.6547ZM23.62 22.3947C24.236 21.915 24.9995 21.664 25.78 21.6847H27.39V18.4747H25.78C24.4052 18.4581 23.0619 18.886 21.95 19.6947C21.3243 20.156 20.5674 20.4049 19.79 20.4049C19.0126 20.4049 18.2557 20.156 17.63 19.6947C16.4899 18.9011 15.1341 18.4757 13.745 18.4757C12.3559 18.4757 11.0001 18.9011 9.86 19.6947C9.2343 20.156 8.4774 20.4049 7.7 20.4049C6.9226 20.4049 6.1657 20.156 5.54 19.6947C4.4144 18.8757 3.0518 18.4472 1.66 18.4747H0V21.6847H1.61C2.39051 21.664 3.154 21.915 3.77 22.3947C4.908 23.1889 6.2623 23.6147 7.65 23.6147C9.0377 23.6147 10.392 23.1889 11.53 22.3947C12.1468 21.9165 12.9097 21.6657 13.69 21.6847C14.4708 21.6623 15.2348 21.9135 15.85 22.3947C16.9901 23.1884 18.3459 23.6138 19.735 23.6138C21.1241 23.6138 22.4799 23.1884 23.62 22.3947Z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+
+          <div id="web-nav-links" class="hidden lg:flex">
+            <div aria-label="Site Nav">
+              <ul class="flex w-full items-center justify-center gap-6">
+                <li>
+                  <a class="nav-link-web" href="/"> BERANDA </a>
+                </li>
+
+                <li>
+                  <a class="nav-link-web" href="/asset"> PANTI </a>
+                </li>
+
+                <li>
+                  <a class="nav-link-web" href="/tentang-kami">
+                    TENTANG KAMI
+                  </a>
+                </li>
+
+                <li>
+                  <a class="nav-link-web" href="/panduan"> CARA BERDONASI </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 lg:gap-6">
+            <a class="nav-link-web" href="/login"> MASUK </a>
+            <a class="primary-btn-small" href="/register"> DAFTAR </a>
+          </div>
+          <div class="relative hidden text-white xl:block">
+            <div
+              class="flex cursor-pointer items-center justify-center gap-2 overflow-hidden hover:text-white/75"
+              onclick="openProfileWeb()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                fill="currentColor"
+                class="bi bi-person-circle"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                />
+              </svg>
+
+              <span class="max-w-[100px] truncate py-2 text-base font-medium">
+                Username
+              </span>
+
+              <button id="profile-web-arrow" class="h-full transition">
+                <span class="sr-only">Menu</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="20"
+                  width="20"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div
+              id="profile-web-links"
+              class="divide-seconarborder-b-secondary-500 absolute end-0 z-10 mt-2 hidden w-56 divide-y rounded-lg border border-b-secondary-500 bg-white text-base text-primary-300"
+              role="menu"
+            >
+              <div class="p-2">
+                <a
+                  href="/dashboard"
+                  class="flex w-full items-center gap-2 rounded-lg px-4 py-2 hover:bg-primary-50"
+                  role="menuitem"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-6 w-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                    />
+                  </svg>
+
+                  Dashboard
+                </a>
+              </div>
+
+              <div class="p-2">
+                <form method="POST" action="{{ route('logout') }}">
+                  <button
+                    type="submit"
+                    class="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-red-700 hover:bg-red-50"
+                    role="menuitem"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+
+                    Logout
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Links -->
+      <div
+        id="mobile-nav-links-container"
+        class="relative hidden h-screen w-screen"
+      >
+        <div
+          id="mobile-nav-links-background"
+          class="absolute inset-0 m-auto h-screen w-screen bg-black/50"
+        ></div>
+
+        <div id="mobile-nav-links" class="relative h-screen w-0 bg-white">
+          <a
+            href="/"
+            class="c-container block border-b-[1px] border-b-secondary-500 py-3"
+          >
+            <span class="nav-link-mobile"> BERANDA </span>
+          </a>
+
+          <a
+            href="/asset"
+            class="c-container block border-b-[1px] border-b-secondary-500 py-3"
+          >
+            <span class="nav-link-mobile"> PANTI </span>
+          </a>
+
+          <a
+            href="/tentang-kami"
+            class="c-container block border-b-[1px] border-b-secondary-500 py-3"
+          >
+            <span class="nav-link-mobile"> TENTANG KAMI </span>
+          </a>
+
+          <a
+            href="/panduan"
+            class="c-container block border-b-[1px] border-b-secondary-500 py-3"
+          >
+            <span class="nav-link-mobile"> CARA BERDONASI </span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
     <section
-      class="c-container flex flex-col gap-8 pb-8 pt-28 sm:pt-32 md:pt-36 lg:gap-12 lg:pb-16 lg:pt-40 xl:gap-16 xl:pb-32 xl:pt-44 2xl:pt-48"
+      class="c-container flex flex-col gap-8 pb-8 pt-36 lg:gap-12 lg:pb-16 lg:pt-40 xl:gap-16 xl:pb-32 xl:pt-44 2xl:pt-48"
     >
       <div
         class="flex items-center justify-center gap-3 lg:gap-4 xl:gap-6 2xl:gap-8"
       >
         <h1
-          class="text-xl font-bold text-sky-400 lg:text-2xl xl:text-3xl 2xl:text-4xl"
+          class="text-2xl font-bold text-secondary-500 xl:text-3xl 2xl:text-4xl"
         >
           Daftar
         </h1>
-        <div class="h-0.5 flex-1 bg-sky-400"></div>
+        <div class="h-0.5 flex-1 bg-secondary-500"></div>
       </div>
+
       <form
         action="/register"
         method="post"
-        class="flex flex-col items-start justify-center gap-6 bg-white px-6 py-12 shadow-[0px_4.7451px_41.5196px_rgba(41,82,144,0.25)] sm:px-8 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24 xl:px-14 xl:py-28 2xl:px-16 2xl:py-32"
+        class="flex flex-col items-start justify-center gap-6 rounded-md bg-white px-6 py-12 shadow-[0px_4.7451px_41.5196px_rgba(41,82,144,0.25)] sm:rounded-lg sm:px-8 sm:py-16 md:rounded-xl md:px-10 md:py-20 lg:rounded-2xl lg:px-12 lg:py-24 xl:rounded-3xl xl:px-14 xl:py-28 2xl:px-16 2xl:py-32"
+        onsubmit="SubmitForm(event)"
       >
         <div
-          class="flex w-full flex-col items-center justify-center gap-4 border-b-2 border-b-sky-400 px-4 pb-5 sm:gap-6 lg:gap-8"
+          class="flex w-full flex-col items-center justify-center gap-4 border-b-2 border-b-secondary-500 px-4 pb-5 sm:gap-6 lg:gap-8"
         >
           <h1
             class="pb-2 text-center text-[1.75rem] font-medium leading-9 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl"
           >
             Daftar diri Anda di
-            <span class="font-bold text-sky-400">BestiePanti</span>
+            <span class="font-bold text-primary-300">BestiePanti</span>
           </h1>
           <p class="text-base sm:text-lg">
             Silakan lengkapi form pendaftaran berikut. Akun pengguna yang
@@ -48,7 +280,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="name"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Nama Lengkap
               </label>
@@ -61,11 +293,11 @@
               id="name"
               name="name"
               placeholder="Masukkan nama lengkap"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-secondary-500 bg-white p-4 text-sm sm:text-base"
             />
 
             <p
-              id="full-name-register-error-message"
+              id="name-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -76,8 +308,8 @@
           <div class="col-span-1">
             <div class="flex gap-1 text-base sm:text-lg">
               <label
-                for="jenis-kelamin-register"
-                class="text-base font-medium text-cBlack sm:text-lg"
+                for="gender"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Jenis Kelamin
               </label>
@@ -89,7 +321,7 @@
             >
               <div class="flex items-center justify-center gap-2">
                 <input
-                  class="cursor-pointer appearance-none rounded-full text-sky-400 focus:ring-0 focus:ring-offset-0"
+                  class="text-seconarborder-b-secondary-500 cursor-pointer appearance-none rounded-full focus:ring-0 focus:ring-offset-0"
                   type="radio"
                   id="laki-laki"
                   name="gender"
@@ -101,7 +333,7 @@
 
               <div class="flex items-center justify-center gap-2">
                 <input
-                  class="cursor-pointer appearance-none rounded-full text-sky-400 focus:ring-0 focus:ring-offset-0"
+                  class="text-seconarborder-b-secondary-500 cursor-pointer appearance-none rounded-full focus:ring-0 focus:ring-offset-0"
                   type="radio"
                   id="perempuan"
                   name="gender"
@@ -112,19 +344,19 @@
             </div>
 
             <p
-              id="jenis-kelamin-register-error-message"
+              id="gender-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
             </p>
           </div>
-          
+
           <!-- Tanggal Lahir -->
           <div class="col-span-1">
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="dob"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Tanggal Lahir
               </label>
@@ -137,11 +369,11 @@
               id="dob"
               name="dob"
               placeholder="Masukkan tanggal lahir"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-secondary-500 bg-white p-4 text-sm sm:text-base"
             />
 
             <p
-              id="tanggal-lahir-register-error-message"
+              id="dob-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -153,7 +385,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="phone"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Nomor Whatsapp
               </label>
@@ -166,11 +398,11 @@
               id="phone"
               name="phone"
               placeholder="Masukkan nomor Whatsapp"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-secondary-500 bg-white p-4 text-sm sm:text-base"
             />
 
             <p
-              id="nomor-whatsapp-register-error-message"
+              id="phone-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -182,7 +414,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="address"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Alamat
               </label>
@@ -195,11 +427,11 @@
               id="address"
               name="address"
               placeholder="Masukkan alamat"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-secondary-500 bg-white p-4 text-sm sm:text-base"
             />
 
             <p
-              id="alamat-register-error-message"
+              id="address-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -211,7 +443,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="email"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Email
               </label>
@@ -224,11 +456,11 @@
               id="email"
               name="email"
               placeholder="Masukkan email"
-              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' border-cDarkGrey mt-1 w-full rounded-md border bg-white p-4 text-sm sm:text-base"
+              class="autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)]' mt-1 w-full rounded-md border border-secondary-500 bg-white p-4 text-sm sm:text-base"
             />
 
             <p
-              id="email-register-error-message"
+              id="email-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -240,7 +472,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="password"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Kata Sandi
               </label>
@@ -254,7 +486,7 @@
                 id="password"
                 name="password"
                 placeholder="Masukkan kata sandi"
-                class="border-cDarkGrey w-full rounded-md border bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
+                class="w-full rounded-md border border-secondary-500 bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
               />
 
               <svg
@@ -298,7 +530,7 @@
             </div>
 
             <p
-              id="kata-sandi-register-error-message"
+              id="password-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -310,7 +542,7 @@
             <div class="flex gap-1 text-base sm:text-lg">
               <label
                 for="passwordcon"
-                class="text-cBlack text-base font-medium sm:text-lg"
+                class="text-base font-medium text-secondary-500 sm:text-lg"
               >
                 Konfirmasi Kata Sandi
               </label>
@@ -321,10 +553,10 @@
               <input
                 type="password"
                 autocomplete="false"
-                id="passwordcon"
+                id="confirm-password"
                 name="konfirmasi-kata-sandi"
                 placeholder="Masukkan kata sandi"
-                class="border-cDarkGrey w-full rounded-md border bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
+                class="w-full rounded-md border border-secondary-500 bg-white p-4 pr-12 text-sm autofill:shadow-[inset_0_0_0px_1000px_rgb(255,255,255)] sm:text-base lg:pr-14"
               />
 
               <svg
@@ -368,7 +600,7 @@
             </div>
 
             <p
-              id="konfirmasi-kata-sandi-register-error-message"
+              id="confirm-password-error-message"
               class="mt-2 space-y-1 text-sm text-red-600 sm:text-base"
             >
               Error Message
@@ -396,49 +628,8 @@
         </div>
       </form>
     </section>
+
+    <script src="js/navigation-bar.js"></script>
+    <script src="js/register.js"></script>
   </body>
 </html>
-<script>
-  const submitButtton = document.getElementById("submit");
-  submitButtton.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("passwordcon").value;
-    const email = document.getElementById("email").value;
-    const data = {
-      name,
-      email,
-      password,
-    };
-
-    if (password === confirmPassword) {
-      const jsonData = JSON.stringify(data);
-      fetch("/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonData,
-      })
-      .then(response => {
-        if (response.status == 201) {
-          console.log('Success:', data);
-          window.location.href = '/'; 
-        } else {
-          return response.json().then(errorData => {
-            console.error('Registration failed:', errorData);
-            alert('Registration failed. Please try again.');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-      });
-    } else {
-      alert("Passwords do not match");
-    }
-  });
-</script>
