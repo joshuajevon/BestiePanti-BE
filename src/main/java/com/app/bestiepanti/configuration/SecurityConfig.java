@@ -38,62 +38,62 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .disable())
                 // .formLogin(httpForm -> {
-                //     httpForm.loginPage("/login").permitAll();
-                //     httpForm.defaultSuccessUrl("/", true);
-                //     httpForm.failureUrl("/login?error=true");
+                // httpForm.loginPage("/login").permitAll();
+                // httpForm.defaultSuccessUrl("/", true);
+                // httpForm.failureUrl("/login?error=true");
                 // })
-                // .logout(logout -> logout 
-                //     .logoutUrl("/logout") 
-                //     .logoutSuccessUrl("/login?logout") 
-                //     .invalidateHttpSession(true) 
-                //     .deleteCookies("JSESSIONID") 
-                // ) 
+                // .logout(logout -> logout
+                // .logoutUrl("/logout")
+                // .logoutSuccessUrl("/login?logout")
+                // .invalidateHttpSession(true)
+                // .deleteCookies("JSESSIONID")
+                // )
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/","/login","/register", "/css/**", "/js/**").permitAll(); // no auth
-                    registry.requestMatchers("/admin/**").hasRole("ADMIN"); 
-                    registry.requestMatchers("/donatur/**").hasRole("DONATUR"); 
+                    registry.requestMatchers("/", "/login", "/register", "/tentang-kami", "/css/**", "/js/**",
+                            "/assets/**").permitAll(); // no auth
+                    registry.requestMatchers("/admin/**").hasRole("ADMIN");
+                    registry.requestMatchers("/donatur/**").hasRole("DONATUR");
                     registry.requestMatchers("/panti/**").hasRole("PANTI");
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(management -> management
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
-                    .logoutUrl("/logout") 
-                    .logoutSuccessHandler((request, response, authentication) -> {
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().write("Logout successful");
-                    })
-                    .invalidateHttpSession(true) 
-                    .deleteCookies("JSESSIONID") 
-            );
-                ;
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getWriter().write("Logout successful");
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"));
+        ;
         return httpSecurity.build();
 
-
         // return httpSecurity
-        //     .csrf(AbstractHttpConfigurer::disable)
-        //     // .formLogin(httpForm -> {
-        //     //     httpForm.loginPage("/login").permitAll();
-        //     //     httpForm.defaultSuccessUrl("/", true);
-        //     //     httpForm.failureUrl("/login?error=true");
-        //     // })
-        //     // .logout(logout -> logout 
-        //     //     .logoutUrl("/logout") 
-        //     //     .logoutSuccessUrl("/login?logout") 
-        //     //     .invalidateHttpSession(true) 
-        //     //     .deleteCookies("JSESSIONID") 
-        //     // ) 
-        //     .authorizeHttpRequests(registry -> {
-        //         registry.requestMatchers("/","/login","/register", "/css/**", "/js/**").permitAll(); // no auth
-        //         registry.requestMatchers("/admin/**").hasRole("ADMIN"); 
-        //         registry.requestMatchers("/donatur/**").hasRole("DONATUR"); 
-        //         registry.requestMatchers("/panti/**").hasRole("PANTI");
-        //         registry.anyRequest().authenticated();
-        //     })
-        //     // .addFilterBefore(authenticatedUserFilter, UsernamePasswordAuthenticationFilter.class)
-        //     .build();
+        // .csrf(AbstractHttpConfigurer::disable)
+        // // .formLogin(httpForm -> {
+        // // httpForm.loginPage("/login").permitAll();
+        // // httpForm.defaultSuccessUrl("/", true);
+        // // httpForm.failureUrl("/login?error=true");
+        // // })
+        // // .logout(logout -> logout
+        // // .logoutUrl("/logout")
+        // // .logoutSuccessUrl("/login?logout")
+        // // .invalidateHttpSession(true)
+        // // .deleteCookies("JSESSIONID")
+        // // )
+        // .authorizeHttpRequests(registry -> {
+        // registry.requestMatchers("/","/login","/register", "/css/**",
+        // "/js/**").permitAll(); // no auth
+        // registry.requestMatchers("/admin/**").hasRole("ADMIN");
+        // registry.requestMatchers("/donatur/**").hasRole("DONATUR");
+        // registry.requestMatchers("/panti/**").hasRole("PANTI");
+        // registry.anyRequest().authenticated();
+        // })
+        // // .addFilterBefore(authenticatedUserFilter,
+        // UsernamePasswordAuthenticationFilter.class)
+        // .build();
     }
 }
-

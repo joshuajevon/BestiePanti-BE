@@ -21,9 +21,14 @@ public class PageController {
         return "auth/register";
     }
 
+    @GetMapping("/tentang-kami")
+    public String tentangKami() {
+        return "tentang-kami";
+    }
+
     @GetMapping("/donatur/test")
     public String getMethodName() {
         return "user-list";
     }
-    
+
 }

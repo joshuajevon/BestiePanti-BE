@@ -16,18 +16,20 @@ package com.app.bestiepanti.filter;
 // @Component
 // public class AuthenticatedUserFilter extends OncePerRequestFilter {
 
-//     @Override
-//     protected void doFilterInternal(HttpServletRequest request,
-//                                     HttpServletResponse response,
-//                                     FilterChain filterChain) throws ServletException, IOException {
-//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+// @Override
+// protected void doFilterInternal(HttpServletRequest request,
+// HttpServletResponse response,
+// FilterChain filterChain) throws ServletException, IOException {
+// Authentication authentication =
+// SecurityContextHolder.getContext().getAuthentication();
 
-//         if (authentication != null && authentication.isAuthenticated() &&
-//             (request.getRequestURI().equals("/login") || request.getRequestURI().equals("/register"))) {
-//             response.sendRedirect("/404"); 
-//             return;
-//         }
+// if (authentication != null && authentication.isAuthenticated() &&
+// (request.getRequestURI().equals("/login") ||
+// request.getRequestURI().equals("/register"))) {
+// response.sendRedirect("/404");
+// return;
+// }
 
-//         filterChain.doFilter(request, response);
-//     }
+// filterChain.doFilter(request, response);
+// }
 // }
