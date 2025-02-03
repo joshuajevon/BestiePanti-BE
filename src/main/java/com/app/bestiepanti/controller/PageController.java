@@ -8,7 +8,7 @@ public class PageController {
 
     @GetMapping("/")
     public String welcome() {
-        return "welcome";
+        return "beranda";
     }
 
     @GetMapping("/login")

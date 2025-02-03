@@ -13,6 +13,17 @@ input#searchbar:-webkit-autofill {
   font-size: 16px;
 }
 
+span.swiper-pagination-bullet {
+  background-color: white;
+  opacity: 100;
+  width: 32px;
+  border-radius: 9999px;
+}
+
+span.swiper-pagination-bullet-active {
+  background-color: #2547fa;
+}
+
 @layer base {
   table {
     @apply break-all;
