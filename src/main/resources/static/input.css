@@ -53,11 +53,11 @@ input#searchbar:-webkit-autofill {
 
 @layer components {
   .nav-link-web {
-    @apply text-sm font-bold text-white transition hover:text-white/75 hover:underline lg:text-base;
+    @apply text-sm font-bold text-white transition hover:text-primary-300 lg:text-base;
   }
 
   .nav-link-mobile {
-    @apply line-clamp-1 overflow-clip text-sm font-bold text-secondary-500 transition hover:text-secondary-500/75 hover:underline lg:text-base;
+    @apply line-clamp-1 overflow-clip text-sm font-bold text-secondary-500 transition hover:text-primary-300 hover:underline lg:text-base;
   }
 
   .c-container {
