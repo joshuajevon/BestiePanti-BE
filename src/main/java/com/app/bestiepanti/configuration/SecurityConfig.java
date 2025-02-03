@@ -49,7 +49,8 @@ public class SecurityConfig {
                 // .deleteCookies("JSESSIONID")
                 // )
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/login", "/register", "/tentang-kami", "/css/**", "/js/**",
+                    registry.requestMatchers("/", "/login", "/register", "/tentang-kami", "/cara-donasi", "/css/**",
+                            "/js/**",
                             "/assets/**").permitAll(); // no auth
                     registry.requestMatchers("/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/donatur/**").hasRole("DONATUR");

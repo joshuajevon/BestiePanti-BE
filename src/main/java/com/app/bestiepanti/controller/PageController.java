@@ -21,6 +21,11 @@ public class PageController {
         return "auth/register";
     }
 
+    @GetMapping("/cara-donasi")
+    public String caraDonasi() {
+        return "cara-donasi";
+    }
+
     @GetMapping("/tentang-kami")
     public String tentangKami() {
         return "tentang-kami";
