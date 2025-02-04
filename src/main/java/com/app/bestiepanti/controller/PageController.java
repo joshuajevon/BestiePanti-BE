@@ -26,6 +26,11 @@ public class PageController {
         return "panti";
     }
 
+    @GetMapping("/panti-detail")
+    public String pantiDetail() {
+        return "panti-detail";
+    }
+
     @GetMapping("/cara-donasi")
     public String caraDonasi() {
         return "cara-donasi";
