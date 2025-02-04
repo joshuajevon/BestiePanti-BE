@@ -75,16 +75,40 @@ span.swiper-pagination-bullet-active {
     @apply px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24;
   }
 
-  .primary-btn-small {
-    @apply flex items-center justify-center rounded-full bg-primary-500 px-5 py-2.5 text-sm font-bold text-white lg:px-8 lg:py-3 lg:text-base;
+  .btn-primary-sm {
+    @apply flex items-center justify-center rounded-full bg-primary-500 px-5 py-2.5 text-center text-sm font-bold text-white outline outline-4 -outline-offset-4 outline-transparent transition-all hover:outline-offset-0 hover:outline-primary-500/50 lg:px-8 lg:py-3 lg:text-base;
   }
 
-  .primary-btn {
-    @apply flex items-center justify-center rounded-full bg-primary-500 px-8 py-3 text-base font-bold text-white lg:px-10 lg:py-3.5 lg:text-lg;
+  .btn-primary {
+    @apply flex items-center justify-center rounded-full bg-primary-500 px-8 py-3 text-center text-base font-bold text-white outline outline-4 -outline-offset-4 outline-transparent transition-all hover:outline-offset-0 hover:outline-primary-500/50 lg:px-10 lg:py-3.5 lg:text-lg;
+  }
+
+  .btn-secondary {
+    @apply flex items-center justify-center rounded-full bg-secondary-100 px-8 py-3 text-center text-base font-bold text-secondary-500 outline outline-4 -outline-offset-4 outline-transparent transition-all hover:outline-offset-0 hover:outline-secondary-100/50 lg:px-10 lg:py-3.5 lg:text-lg;
   }
 
   .error-message {
     @apply mt-2 space-y-1 text-sm text-red-600 sm:text-base;
+  }
+
+  .panti-card {
+    @apply flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6;
+  }
+
+  .panti-card img {
+    @apply rounded-xl object-cover;
+  }
+
+  .panti-card h2 {
+    @apply line-clamp-1 text-2xl font-bold;
+  }
+
+  .panti-card p {
+    @apply text-secondary-300 line-clamp-2;
+  }
+
+  .panti-card a button {
+    @apply btn-primary-sm w-full;
   }
 
   .input-container {
@@ -101,13 +125,5 @@ span.swiper-pagination-bullet-active {
 
   .asset-table td {
     @apply w-3/4 py-2 pl-4 text-start align-top;
-  }
-
-  .error-message {
-    @apply text-sm text-red-500;
-  }
-
-  .announcement-active {
-    @apply underline underline-offset-8 opacity-100;
   }
 }
