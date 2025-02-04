@@ -92,7 +92,7 @@ span.swiper-pagination-bullet-active {
   }
 
   .panti-card {
-    @apply flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6;
+    @apply flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 transition hover:bg-primary-500;
   }
 
   .panti-card img {
@@ -104,7 +104,7 @@ span.swiper-pagination-bullet-active {
   }
 
   .panti-card p {
-    @apply text-secondary-300 line-clamp-2;
+    @apply line-clamp-2;
   }
 
   .panti-card a button {
