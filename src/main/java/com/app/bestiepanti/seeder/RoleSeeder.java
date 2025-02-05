@@ -17,7 +17,7 @@ public class RoleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String[] roleNames = {"DONATUR", "PANTI", "ADMIN"};
+        String[] roleNames = {"ROLE_DONATUR", "ROLE_PANTI", "ROLE_ADMIN"};
         
         Arrays.stream(roleNames).forEach(roleName -> {
             if (roleRepository.findByName(roleName) == null) {

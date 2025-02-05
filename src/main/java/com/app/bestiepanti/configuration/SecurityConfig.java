@@ -49,14 +49,13 @@ public class SecurityConfig {
                 // .deleteCookies("JSESSIONID")
                 // )
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/login", "/register", "/panti", "/panti-detail", "/tentang-kami",
-                            "/cara-donasi",
+                    registry.requestMatchers("/", "/api/v1/login", "/api/v1/register",
                             "/css/**",
                             "/js/**",
                             "/assets/**").permitAll(); // no auth
-                    registry.requestMatchers("/admin/**").hasRole("ADMIN");
-                    registry.requestMatchers("/donatur/**").hasRole("DONATUR");
-                    registry.requestMatchers("/panti/**").hasRole("PANTI");
+                    registry.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
+                    registry.requestMatchers("/api/v1/donatur/**").hasRole("DONATUR");
+                    registry.requestMatchers("/api/v1/panti/**").hasRole("PANTI");
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(management -> management
@@ -64,7 +63,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/api/v1/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
                             response.getWriter().write("Logout successful");

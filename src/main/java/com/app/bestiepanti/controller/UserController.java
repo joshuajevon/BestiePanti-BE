@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class UserController {
     
     public static final String REGISTER_ENDPOINT = "/register";
@@ -58,5 +60,11 @@ public class UserController {
         UserApp user = userService.findUserByEmail(email);
         return user;
     }
+
+    @RequestMapping(value = "/panti/test", method=RequestMethod.GET)
+    public String requestMethodName() {
+        return "test";
+    }
+    
     
 }
