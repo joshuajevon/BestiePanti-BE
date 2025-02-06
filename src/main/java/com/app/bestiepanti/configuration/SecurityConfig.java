@@ -29,12 +29,14 @@ public class SecurityConfig {
 
     private final JwtAuthencationFilter jwtAuthencationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final CorsConfig corsConfig;
 
     // private final AuthenticatedUserFilter authenticatedUserFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) 
                 .csrf(csrf -> csrf
                         .disable())
                 // .formLogin(httpForm -> {
