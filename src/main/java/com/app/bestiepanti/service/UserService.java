@@ -69,7 +69,7 @@ public class UserService {
         return user;
     }
 
-    private Donatur saveToDonatur(RegisterRequest userRequest, UserApp user) {
+    public Donatur saveToDonatur(RegisterRequest userRequest, UserApp user) {
         Donatur donatur = new Donatur();
         donatur.setUser(user);
         donatur.setAddress(userRequest.getAddress());
@@ -81,7 +81,7 @@ public class UserService {
         return donatur;
     }
 
-    private UserResponse createUserResponse(UserApp userApp, Donatur donatur, String token) {
+    public UserResponse createUserResponse(UserApp userApp, Donatur donatur, String token) {
         return UserResponse.builder()
                 .id(userApp.getId())
                 .name(userApp.getName())

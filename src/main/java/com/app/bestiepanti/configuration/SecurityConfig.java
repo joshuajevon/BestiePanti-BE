@@ -51,13 +51,14 @@ public class SecurityConfig {
                 // .deleteCookies("JSESSIONID")
                 // )
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/api/v1/login", "/api/v1/register",
-                            "/css/**",
-                            "/js/**",
-                            "/assets/**").permitAll(); // no auth
+                    registry.requestMatchers("/", 
+                                            "/api/v1/login", 
+                                            "/api/v1/register",
+                                            "/api/v1/panti/create"
+                            ).permitAll(); // no auth
                     registry.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/api/v1/donatur/**").hasRole("DONATUR");
-                    registry.requestMatchers("/api/v1/panti/**").hasRole("PANTI");
+                    // registry.requestMatchers("/api/v1/panti/**").hasRole("PANTI");
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(management -> management

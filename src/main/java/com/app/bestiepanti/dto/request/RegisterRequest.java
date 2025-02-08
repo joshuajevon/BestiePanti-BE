@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @ConfirmationPassword
 public class RegisterRequest {
     @NotEmpty(message = "Name field cannot be empty")
-    @Size(min = 2, message = "Name should have at least 2 characters") 
     private String name;
     
     @NotEmpty(message = "Email field cannot be empty")
