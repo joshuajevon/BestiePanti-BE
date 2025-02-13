@@ -9,5 +9,5 @@ import com.app.bestiepanti.model.Panti;
 
 @Repository
 public interface PantiRepository extends JpaRepository<Panti, BigInteger>{
-   
+   Panti findByUserId(BigInteger userId);
 }

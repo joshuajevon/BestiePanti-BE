@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
-import com.app.bestiepanti.dto.response.UserResponse;
+import com.app.bestiepanti.dto.response.DonaturResponse;
+// import com.app.bestiepanti.dto.response.UserResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.service.UserService;
@@ -41,15 +42,15 @@ public class UserController {
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest userRequest){        
-        UserResponse userResponse = userService.register(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
+    public ResponseEntity<DonaturResponse> register(@Valid @RequestBody RegisterRequest userRequest){        
+        DonaturResponse DonaturResponse = userService.register(userRequest);
+        return new ResponseEntity<>(DonaturResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
-        UserResponse userResponse = userService.login(userRequest);
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
+        Object userResponse = userService.login(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
     

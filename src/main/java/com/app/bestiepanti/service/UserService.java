@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
-import com.app.bestiepanti.dto.response.UserResponse;
+import com.app.bestiepanti.dto.response.AdminResponse;
+import com.app.bestiepanti.dto.response.DonaturResponse;
+import com.app.bestiepanti.dto.response.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
+import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
+import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
@@ -31,8 +35,9 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final PantiRepository pantiRepository;
 
-    public UserResponse register(RegisterRequest registerRequest) {
+    public DonaturResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
@@ -46,10 +51,10 @@ public class UserService {
         Donatur donatur = saveToDonatur(registerRequest, user);
 
         String jwtToken = jwtService.generateToken(user);
-        return createUserResponse(user, donatur, jwtToken);
+        return createDonaturResponse(user, donatur, jwtToken);
     }
 
-    public UserResponse login(LoginRequest loginRequest) throws UserNotFoundException {
+    public Object login(LoginRequest loginRequest) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
         try {
             authenticationManager.authenticate(
@@ -57,9 +62,18 @@ public class UserService {
         } catch (AuthenticationException e) {
             throw new UserNotFoundException("Invalid email or password. Please try again.");
         }
-        Donatur donatur = donaturRepository.findByUserId(user.getId());
         String jwtToken = jwtService.generateToken(user);
-        return createUserResponse(user, donatur, jwtToken);
+        
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+            Donatur donatur = donaturRepository.findByUserId(user.getId());
+            return createDonaturResponse(user, donatur, jwtToken);
+        } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+            Panti panti = pantiRepository.findByUserId(user.getId());
+            return createPantiResponse(user, panti, jwtToken);
+        } else if(user.getRole().getName().equals(UserApp.ROLE_ADMIN)){
+            return createAdminResponse(user, jwtToken);
+        }
+        throw new UserNotFoundException("Role not found for the user. Please contact support.");
     }
 
     public UserApp findUserByEmail(String email) throws UserNotFoundException {
@@ -81,8 +95,18 @@ public class UserService {
         return donatur;
     }
 
-    public UserResponse createUserResponse(UserApp userApp, Donatur donatur, String token) {
-        return UserResponse.builder()
+    public AdminResponse createAdminResponse(UserApp userApp, String token) {
+        return AdminResponse.builder()
+                .id(userApp.getId())
+                .name(userApp.getName())
+                .email(userApp.getEmail())
+                .role(userApp.getRole().getName())
+                .token(token)
+                .build();
+    }
+
+    public DonaturResponse createDonaturResponse(UserApp userApp, Donatur donatur, String token) {
+        return DonaturResponse.builder()
                 .id(userApp.getId())
                 .name(userApp.getName())
                 .email(userApp.getEmail())
@@ -92,6 +116,22 @@ public class UserService {
                 .gender(donatur.getGender())
                 .address(donatur.getAddress())
                 .token(token)
+                .build();
+    }
+
+    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {
+        return PantiResponse.builder()
+                .id(userApp.getId())
+                .name(userApp.getName())
+                .email(userApp.getEmail())
+                .role(userApp.getRole().getName())
+                .image(panti.getImage())
+                .phone(panti.getPhone())
+                .donationTypes(panti.getDonationTypes())
+                .isUrgent(panti.getIsUrgent())
+                .address(panti.getAddress())
+                .qris(panti.getQris())
+                .token(jwtToken)
                 .build();
     }
 }

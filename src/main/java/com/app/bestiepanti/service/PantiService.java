@@ -22,6 +22,7 @@ public class PantiService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final PantiRepository pantiRepository;
+    private final JwtService jwtService;
 
     public PantiResponse createPanti(PantiRequest request){
         UserApp user = new UserApp();
@@ -35,7 +36,8 @@ public class PantiService {
         userRepository.save(user);
  
         Panti panti = saveToPanti(request, user);
-        return createPantiResponse(user, panti);
+        String jwtToken = jwtService.generateToken(user);
+        return createPantiResponse(user, panti, jwtToken);
     }
  
     public Panti saveToPanti(PantiRequest request, UserApp user){
@@ -52,18 +54,20 @@ public class PantiService {
         return panti;
     }
 
-    public PantiResponse createPantiResponse(UserApp userApp, Panti panti) {
+    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {
         return PantiResponse.builder()
                 .id(userApp.getId())
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
                 .image(panti.getImage())
+                .description(panti.getDescription())
                 .phone(panti.getPhone())
                 .donationTypes(panti.getDonationTypes())
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
                 .qris(panti.getQris())
+                .token(jwtToken)
                 .build();
     }
    

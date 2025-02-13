@@ -1,7 +1,6 @@
 package com.app.bestiepanti.dto.response;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class PantiResponse{
+public class DonaturResponse{
 
     private BigInteger id;
     
@@ -28,17 +27,11 @@ public class PantiResponse{
 
     private String token;
 
-    private List<String> image;
-    
-    private String description;
- 
     private String phone;
- 
-    private List<String> donationTypes;
- 
-    private Integer isUrgent;
- 
+
+    private String gender;
+
+    private String dob;
+
     private String address;
- 
-    private String qris;
 }

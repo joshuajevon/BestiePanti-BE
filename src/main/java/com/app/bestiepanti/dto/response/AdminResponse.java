@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class UserResponse {
+public class AdminResponse {
     
     private BigInteger id;
     
@@ -24,14 +24,6 @@ public class UserResponse {
     private String email;
 
     private String role;
-
-    private String phone;
-
-    private String gender;
-
-    private String dob;
-
-    private String address;
 
     private String token;
 }

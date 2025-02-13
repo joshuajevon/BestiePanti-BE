@@ -25,9 +25,9 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "users")
 public class UserApp implements UserDetails{
 
-    public static final String ROLE_DONATUR = "DONATUR";
-    public static final String ROLE_PANTI = "PANTI";
-    public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_DONATUR = "ROLE_DONATUR";
+    public static final String ROLE_PANTI = "ROLE_PANTI";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
