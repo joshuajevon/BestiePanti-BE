@@ -1,12 +1,16 @@
 package com.app.bestiepanti.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.bestiepanti.dto.request.PantiRequest;
 import com.app.bestiepanti.dto.response.PantiResponse;
@@ -25,12 +29,10 @@ public class PantiController {
     public static final String CREATE_PANTI_ENDPOINT = "/create";
  
     private final PantiService pantiService;
- 
-    @RequestMapping(value = CREATE_PANTI_ENDPOINT, method=RequestMethod.POST, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<PantiResponse> createPanti(@Valid @RequestBody PantiRequest request){
+
+    @RequestMapping(value = CREATE_PANTI_ENDPOINT,method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PantiResponse> createPanti(@Valid @ModelAttribute PantiRequest request, @RequestPart("image") List<MultipartFile> image){
         PantiResponse pantiResponse = pantiService.createPanti(request);
         return new ResponseEntity<>(pantiResponse, HttpStatus.CREATED);
     }
- 
 }

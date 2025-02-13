@@ -1,7 +1,7 @@
 package com.app.bestiepanti.dto.request;
 
-import com.app.bestiepanti.validation.register.ConfirmationPassword;
-import com.app.bestiepanti.validation.register.UniqueEmail;
+import com.app.bestiepanti.validation.general.ConfirmationPassword;
+import com.app.bestiepanti.validation.general.UniqueEmail;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 

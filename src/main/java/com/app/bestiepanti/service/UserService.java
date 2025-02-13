@@ -125,6 +125,7 @@ public class UserService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
+                .description(panti.getDescription())
                 .image(panti.getImage())
                 .phone(panti.getPhone())
                 .donationTypes(panti.getDonationTypes())

@@ -1,8 +1,16 @@
 package com.app.bestiepanti.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.PantiRequest;
 import com.app.bestiepanti.dto.response.PantiResponse;
 import com.app.bestiepanti.model.Panti;
@@ -23,6 +31,7 @@ public class PantiService {
     private final RoleRepository roleRepository;
     private final PantiRepository pantiRepository;
     private final JwtService jwtService;
+    private final ApplicationConfig applicationConfig;
 
     public PantiResponse createPanti(PantiRequest request){
         UserApp user = new UserApp();
@@ -42,16 +51,36 @@ public class PantiService {
  
     public Panti saveToPanti(PantiRequest request, UserApp user){
         Panti panti = new Panti();
-        panti.setImage(request.getImage());
+        storeImage(request, panti);
         panti.setDescription(request.getDescription());
         panti.setPhone(request.getPhone());
         panti.setDonationTypes(request.getDonationTypes());
-        panti.setIsUrgent(request.getIsUrgent());
+        panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         panti.setAddress(request.getAddress());
         panti.setQris(request.getQris());
         panti.setUser(user);
         pantiRepository.save(panti);
         return panti;
+    }
+
+    private void storeImage(PantiRequest request, Panti panti) {
+        try {
+            if (request.getImage() != null && !request.getImage().isEmpty()) {
+                List<String> imagePaths = request.getImage().stream().map(image -> {
+                    String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                    Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
+                    try {
+                        Files.write(filePath, image.getBytes());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to save image", e);
+                    }
+                    return fileName;
+                }).collect(Collectors.toList());
+                panti.setImage(imagePaths);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save images", e);
+        }
     }
 
     public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {

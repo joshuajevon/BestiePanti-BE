@@ -2,13 +2,14 @@ package com.app.bestiepanti.dto.request;
 
 import java.util.List;
 
-import com.app.bestiepanti.validation.register.UniqueEmail;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.app.bestiepanti.validation.general.ConfirmationPassword;
+import com.app.bestiepanti.validation.general.UniqueEmail;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import jakarta.persistence.Lob;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@ConfirmationPassword
 public class PantiRequest {
     
     @NotEmpty(message = "Name field cannot be empty")
@@ -38,10 +40,9 @@ public class PantiRequest {
    
     private String confirmationPassword;
  
-    @NotEmpty(message = "Panti field cannot be empty")
-    private List<String> image;
+    @NotEmpty(message = "Image field cannot be empty")
+    private List<MultipartFile> image;
 
-    @Lob
     @NotEmpty(message = "Description field cannot be empty")
     private String description;
  
@@ -52,7 +53,7 @@ public class PantiRequest {
     private List<String> donationTypes;
    
     @NotNull(message = "isUrgent field cannot be empty")
-    private Integer isUrgent;
+    private String isUrgent;
    
     @NotEmpty(message = "Address field cannot be empty")
     private String address;
