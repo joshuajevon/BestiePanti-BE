@@ -13,9 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
+@Data
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
@@ -24,9 +27,8 @@ public class ApplicationConfig {
     @Value("${panti.image.upload-dir}")
     private String imageUploadDir;
 
-    public String getImageUploadDir() {
-        return imageUploadDir;
-    }
+    @Value("${panti.qris.upload-dir}")
+    private String qrisUploadDir;
 
     @Bean
     public UserDetailsService userDetailsService(){

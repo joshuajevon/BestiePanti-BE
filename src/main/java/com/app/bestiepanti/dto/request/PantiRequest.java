@@ -58,5 +58,5 @@ public class PantiRequest {
     @NotEmpty(message = "Address field cannot be empty")
     private String address;
    
-    private String qris;
+    private MultipartFile qris;
 }

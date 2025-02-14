@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.PantiRequest;
@@ -52,22 +53,39 @@ public class PantiService {
     public Panti saveToPanti(PantiRequest request, UserApp user){
         Panti panti = new Panti();
         storeImage(request, panti);
+        storeQris(request, panti);
         panti.setDescription(request.getDescription());
         panti.setPhone(request.getPhone());
         panti.setDonationTypes(request.getDonationTypes());
         panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         panti.setAddress(request.getAddress());
-        panti.setQris(request.getQris());
         panti.setUser(user);
         pantiRepository.save(panti);
         return panti;
+    }
+
+    private void storeQris(PantiRequest request, Panti panti) {
+        try {
+            if (request.getQris() != null && !request.getQris().isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + request.getName() + "_" + request.getQris().getOriginalFilename();
+                Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileName);
+                try {
+                    Files.write(filePath, request.getQris().getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save image", e);
+                }
+                panti.setQris(fileName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save image", e);
+        }
     }
 
     private void storeImage(PantiRequest request, Panti panti) {
         try {
             if (request.getImage() != null && !request.getImage().isEmpty()) {
                 List<String> imagePaths = request.getImage().stream().map(image -> {
-                    String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                    String fileName = System.currentTimeMillis() + "_" + request.getName() + "_" + image.getOriginalFilename();
                     Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
                     try {
                         Files.write(filePath, image.getBytes());
