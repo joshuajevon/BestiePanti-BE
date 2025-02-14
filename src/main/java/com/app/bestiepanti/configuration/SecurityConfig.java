@@ -40,7 +40,8 @@ public class SecurityConfig {
                                             "/api/v1/register"
                             ).permitAll(); // no auth
                     registry.requestMatchers("/api/v1/admin/**",
-                                             "/api/v1/panti/create").hasRole("ADMIN");
+                                             "/api/v1/panti/create",
+                                             "/api/v1/panti/update/**").hasRole("ADMIN");
                     registry.requestMatchers("/api/v1/donatur/**").hasRole("DONATUR");
                     registry.requestMatchers("/api/v1/panti/").hasRole("PANTI");
                     registry.anyRequest().authenticated();

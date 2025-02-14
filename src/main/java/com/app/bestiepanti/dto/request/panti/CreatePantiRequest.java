@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.request;
+package com.app.bestiepanti.dto.request.panti;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @ConfirmationPassword
-public class PantiRequest {
+public class CreatePantiRequest implements ImageRequest{
     
     @NotEmpty(message = "Name field cannot be empty")
     private String name;
