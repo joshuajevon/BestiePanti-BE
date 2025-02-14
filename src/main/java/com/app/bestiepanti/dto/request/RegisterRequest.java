@@ -20,30 +20,30 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @ConfirmationPassword
 public class RegisterRequest {
-    @NotEmpty(message = "Name field cannot be empty")
+    @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;
-    
-    @NotEmpty(message = "Email field cannot be empty")
-    @Email(message = "Email should be valid")
-    @UniqueEmail(message = "Email already exists")
+
+    @NotEmpty(message = "Email tidak boleh kosong")
+    @Email(message = "Email harus valid")
+    @UniqueEmail(message = "Email sudah terdaftar")
     private String email;
-    
-    @NotEmpty(message = "Password field cannot be empty") 
-    @Size(min = 6, message = "Password should have at least 6 characters") 
+
+    @NotEmpty(message = "Kata Sandi tidak boleh kosong")
+    @Size(min = 6, message = "Kata Sandi harus memiliki minimal 6 karakter")
     private String password;
-    
+
     private String confirmationPassword;
-    
-    @NotEmpty(message = "Phone field cannot be empty") 
+
+    @NotEmpty(message = "Nomor Telepon tidak boleh kosong")
     private String phone;
-    
-    @NotEmpty(message = "Gender field cannot be empty") 
+
+    @NotEmpty(message = "Jenis Kelamin tidak boleh kosong")
     private String gender;
-    
-    @NotEmpty(message = "Date of Birth field cannot be empty") 
+
+    @NotEmpty(message = "Tanggal Lahir tidak boleh kosong")
     private String dob;
-    
-    @NotEmpty(message = "Address field cannot be empty") 
+
+    @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address;
     
 }

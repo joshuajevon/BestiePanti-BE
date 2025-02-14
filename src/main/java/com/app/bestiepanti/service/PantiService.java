@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
@@ -67,6 +68,33 @@ public class PantiService {
         return panti;
     }
 
+    public PantiResponse updatePanti(BigInteger id, UpdatePantiRequest request) {
+        UserApp user = userRepository.findById(id).get();
+        if(user != null){
+            user.setName(request.getName());
+            user.setEmail(request.getEmail());
+        }
+
+        Panti panti = pantiRepository.findByUserId(id);
+        if(panti != null){
+            processImage(request, panti);
+            processQris(request, panti);
+            panti.setDescription(request.getDescription());
+            panti.setPhone(request.getPhone());
+            panti.setDonationTypes(request.getDonationTypes());
+            panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
+            panti.setAddress(request.getAddress());
+            pantiRepository.save(panti);
+        }
+        return createPantiResponse(user, panti, null);
+    }
+    
+    @Transactional
+    public void    deletePanti(BigInteger id) {
+        pantiRepository.deleteByUserId(id);
+        userRepository.deleteById(id);
+    }
+
     private void processQris(ImageRequest request, Panti panti) {
         try {
             if (request.getQris() != null && !request.getQris().isEmpty()) {
@@ -122,26 +150,6 @@ public class PantiService {
         }
     }
 
-    public PantiResponse updatePanti(BigInteger id, UpdatePantiRequest request) {
-        UserApp user = userRepository.findById(id).get();
-        if(user != null){
-            user.setName(request.getName());
-            user.setEmail(request.getEmail());
-        }
-
-        Panti panti = pantiRepository.findByUserId(id);
-        if(panti != null){
-            processImage(request, panti);
-            processQris(request, panti);
-            panti.setDescription(request.getDescription());
-            panti.setPhone(request.getPhone());
-            panti.setDonationTypes(request.getDonationTypes());
-            panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
-            panti.setAddress(request.getAddress());
-            pantiRepository.save(panti);
-        }
-        return createPantiResponse(user, panti, null);
-    }
 
     public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {
         return PantiResponse.builder()
@@ -159,4 +167,5 @@ public class PantiService {
                 .token(jwtToken)
                 .build();
     }
+
 }

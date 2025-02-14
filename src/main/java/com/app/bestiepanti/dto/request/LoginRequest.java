@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LoginRequest {
 
-    @NotEmpty(message = "Email field cannot be empty")
-    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email tidak boleh kosong")
+    @Email(message = "Email harus valid")
     private String email;
 
-    @NotEmpty(message = "Password field cannot be empty")
+    @NotEmpty(message = "Kata Sandi tidak boleh kosong")
     private String password;
 }

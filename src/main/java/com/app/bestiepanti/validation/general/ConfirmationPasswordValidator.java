@@ -20,7 +20,7 @@ public class ConfirmationPasswordValidator implements ConstraintValidator<Confir
             boolean isValid = password != null && password.equals(confirmationPassword);
             if (!isValid) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("Confirmation password do not match")
+                context.buildConstraintViolationWithTemplate("Konfirmasi Password Tidak Sama")
                        .addPropertyNode("confirmationPassword").addConstraintViolation();
             }
             return isValid;

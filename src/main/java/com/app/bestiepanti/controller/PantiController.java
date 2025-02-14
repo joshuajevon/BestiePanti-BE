@@ -29,6 +29,7 @@ public class PantiController {
    
     public static final String CREATE_PANTI_ENDPOINT = "/create";
     public static final String UPDATE_PANTI_ENDPOINT = "/update/{id}";
+    public static final String DELETE_PANTI_ENDPOINT = "/delete/{id}";
  
     private final PantiService pantiService;
 
@@ -42,6 +43,12 @@ public class PantiController {
     public ResponseEntity<PantiResponse> updatePanti(@PathVariable BigInteger id, @Valid @ModelAttribute UpdatePantiRequest request) {
         PantiResponse pantiResponse= pantiService.updatePanti(id, request);
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = DELETE_PANTI_ENDPOINT, method=RequestMethod.DELETE)
+    public ResponseEntity<String> deletePanti(@PathVariable BigInteger id) {
+        pantiService.deletePanti(id);
+        return new ResponseEntity<>("Panti with ID " + id + " has been successfully deleted",HttpStatus.OK);
     }
     
 }
