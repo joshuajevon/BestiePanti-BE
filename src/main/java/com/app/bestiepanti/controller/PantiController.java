@@ -1,5 +1,6 @@
 package com.app.bestiepanti.controller;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class PantiController {
     }
 
     @RequestMapping(value = DELETE_PANTI_ENDPOINT, method=RequestMethod.DELETE)
-    public ResponseEntity<String> deletePanti(@PathVariable BigInteger id) {
+    public ResponseEntity<String> deletePanti(@PathVariable BigInteger id) throws IOException {
         pantiService.deletePanti(id);
         return new ResponseEntity<>("Panti with ID " + id + " has been successfully deleted",HttpStatus.OK);
     }

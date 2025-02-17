@@ -90,7 +90,25 @@ public class PantiService {
     }
     
     @Transactional
-    public void    deletePanti(BigInteger id) {
+    public void deletePanti(BigInteger id) throws IOException {
+        Panti panti = pantiRepository.findByUserId(id);
+        if(panti != null){
+            List<String> fileNames = panti.getImage();
+            for (String fileName : fileNames) {
+                Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                }
+            }
+
+            if(panti.getQris() != null){
+                String fileQris = panti.getQris();
+                Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileQris);
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                }
+            }
+        }
         pantiRepository.deleteByUserId(id);
         userRepository.deleteById(id);
     }

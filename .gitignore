@@ -34,3 +34,4 @@ build/
 
 ### Frontend ###
 .codegpt
+storage/
