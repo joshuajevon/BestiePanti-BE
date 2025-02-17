@@ -18,6 +18,7 @@ import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
 import com.app.bestiepanti.dto.request.panti.ImageRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.PantiResponse;
+import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
@@ -68,12 +69,11 @@ public class PantiService {
         return panti;
     }
 
-    public PantiResponse updatePanti(BigInteger id, UpdatePantiRequest request) {
-        UserApp user = userRepository.findById(id).get();
-        if(user != null){
-            user.setName(request.getName());
-            user.setEmail(request.getEmail());
-        }
+    public PantiResponse updatePanti(BigInteger id, UpdatePantiRequest request) throws UserNotFoundException {
+        UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
+    
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
 
         Panti panti = pantiRepository.findByUserId(id);
         if(panti != null){
@@ -90,28 +90,37 @@ public class PantiService {
     }
     
     @Transactional
-    public void deletePanti(BigInteger id) throws IOException {
-        Panti panti = pantiRepository.findByUserId(id);
-        if(panti != null){
-            List<String> fileNames = panti.getImage();
-            for (String fileName : fileNames) {
-                Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
-                if (Files.exists(filePath)) {
-                    Files.delete(filePath);
-                }
-            }
-
-            if(panti.getQris() != null){
-                String fileQris = panti.getQris();
-                Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileQris);
-                if (Files.exists(filePath)) {
-                    Files.delete(filePath);
-                }
-            }
+    public void deletePanti(BigInteger id) throws IOException, UserNotFoundException {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with id " + id + " Not Found");
         }
-        pantiRepository.deleteByUserId(id);
-        userRepository.deleteById(id);
+
+        try {
+            Panti panti = pantiRepository.findByUserId(id);
+            if (panti != null) {
+                List<String> fileNames = panti.getImage();
+                for (String fileName : fileNames) {
+                    Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                }
+
+                if (panti.getQris() != null) {
+                    String fileQris = panti.getQris();
+                    Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileQris);
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                }
+            }
+            pantiRepository.deleteByUserId(id);
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete Panti with id " + id, e);
+        }
     }
+
 
     private void processQris(ImageRequest request, Panti panti) {
         try {

@@ -29,14 +29,7 @@ public class UpdatePantiRequest implements ImageRequest{
 
     @NotEmpty(message = "Email tidak boleh kosong")
     @Email(message = "Email harus valid")
-    @UniqueEmail(message = "Email sudah terdaftar")
     private String email;
-
-    @NotEmpty(message = "Kata Sandi tidak boleh kosong")
-    @Size(min = 6, message = "Kata Sandi harus memiliki minimal 6 karakter")
-    private String password;
-
-    private String confirmationPassword;
 
     @NotEmpty(message = "Gambar tidak boleh kosong")
     private List<MultipartFile> image;
