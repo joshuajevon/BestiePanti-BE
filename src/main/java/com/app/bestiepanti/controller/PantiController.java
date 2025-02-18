@@ -36,6 +36,7 @@ public class PantiController {
     public static final String UPDATE_PANTI_ENDPOINT = "/update/{id}";
     public static final String DELETE_PANTI_ENDPOINT = "/delete/{id}";
     public static final String VIEW_ALL_PANTI_ENDPOINT = "/view";
+    public static final String VIEW_PANTI_BY_ID_ENDPOINT = "/view/{id}";
  
     private final PantiService pantiService;
 
@@ -64,6 +65,13 @@ public class PantiController {
         pantiReponses.setPantiResponses(pantiResponseList);
         return new ResponseEntity<>(pantiReponses, HttpStatus.OK);
     }
+
+    @RequestMapping(value = VIEW_PANTI_BY_ID_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<PantiResponse> viewPantiById(@PathVariable BigInteger id) throws UserNotFoundException {
+        PantiResponse pantiResponse = pantiService.viewPantiById(id);
+        return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
+    }
+    
     
     
 }

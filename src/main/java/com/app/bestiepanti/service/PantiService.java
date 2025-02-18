@@ -205,4 +205,15 @@ public class PantiService {
         return pantiResponseList;
     }
 
+    public PantiResponse viewPantiById(BigInteger id) throws UserNotFoundException {
+        PantiResponse pantiResponse = new PantiResponse();
+        Panti panti = pantiRepository.findByUserId(id);
+        if (panti == null) {
+            throw new UserNotFoundException("User with id " + id + " Not Found");
+        } else {
+            pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+        }
+        return pantiResponse;
+    }
+
 }
