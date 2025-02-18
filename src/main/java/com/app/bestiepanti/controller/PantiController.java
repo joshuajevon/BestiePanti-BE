@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
+import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.panti.PantiReponses;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -53,9 +54,10 @@ public class PantiController {
     }
 
     @RequestMapping(value = DELETE_PANTI_ENDPOINT, method=RequestMethod.DELETE)
-    public ResponseEntity<String> deletePanti(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
+    public ResponseEntity<GeneralResponse> deletePanti(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         pantiService.deletePanti(id);
-        return new ResponseEntity<>("Panti with ID " + id + " has been successfully deleted",HttpStatus.OK);
+        GeneralResponse generalResponse = new GeneralResponse("Panti with ID " + id + " has been successfully deleted");
+        return new ResponseEntity<>(generalResponse,HttpStatus.OK);
     }
 
     @RequestMapping(value = VIEW_ALL_PANTI_ENDPOINT, method=RequestMethod.GET)

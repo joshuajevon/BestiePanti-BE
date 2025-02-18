@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
+import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponses;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -46,9 +47,10 @@ public class DonaturController {
     }
 
     @RequestMapping(value = DELETE_DONATUR_ENDPOINT, method=RequestMethod.DELETE)
-    public ResponseEntity<String> deleteDonatur(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
+    public ResponseEntity<GeneralResponse> deleteDonatur(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         donaturService.deleteDonatur(id);
-        return new ResponseEntity<>("Donatur with ID " + id + " has been successfully deleted",HttpStatus.OK);
+        GeneralResponse generalResponse = new GeneralResponse("Donatur with ID " + id + " has been successfully deleted");
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = VIEW_ALL_DONATUR_ENDPOINT, method=RequestMethod.GET)
