@@ -1,0 +1,56 @@
+package com.app.bestiepanti.seeder;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import com.app.bestiepanti.model.Panti;
+import com.app.bestiepanti.model.Role;
+import com.app.bestiepanti.model.UserApp;
+import com.app.bestiepanti.repository.PantiRepository;
+import com.app.bestiepanti.repository.RoleRepository;
+import com.app.bestiepanti.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class PantiSeeder implements CommandLineRunner {
+
+    private final UserRepository userRepository;
+    private final PantiRepository pantiRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public void run(String... args) throws Exception {
+        Role role = roleRepository.findByName("ROLE_PANTI");
+
+        for (int i = 1; i <= 5; i++) {
+            if (userRepository.findByEmail("panti" + i + "@gmail.com").isEmpty()) {
+                UserApp user = new UserApp();
+                user.setName("Panti" + i);
+                user.setEmail("panti" + i + "@gmail.com");
+                user.setPassword(passwordEncoder.encode("123123"));
+                user.setRole(role);
+                userRepository.save(user);
+
+                Panti panti = new Panti();
+                panti.setAddress("Jl. Apel " + i);
+                panti.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tristique neque vitae porttitor dignissim. Nullam rhoncus faucibus neque quis vehicula. Donec velit mauris, suscipit ut pharetra quis, mattis a lectus. Proin ut lectus eros. Integer mauris odio, pharetra sed rutrum quis, dignissim et sem. Aliquam fringilla, tellus sed fringilla facilisis, justo nunc volutpat velit, vel ultricies justo purus faucibus ligula. Sed blandit laoreet scelerisque. Nulla eu convallis tortor. Nulla ac venenatis tortor. In sit amet erat tortor. Pellentesque varius egestas euismod. Duis laoreet ornare turpis nec convallis. Proin semper lorem eu turpis pretium, non consequat metus tristique. Morbi fermentum dignissim enim rutrum ornare. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.");
+                List<String> donationTypes = Arrays.asList("Dana" + i);
+                panti.setDonationTypes(donationTypes);
+                List<String> images = Arrays.asList("test" + i + ".png");
+                panti.setImage(images);
+                panti.setIsUrgent(1);
+                panti.setPhone("08123123123" + i);
+                panti.setQris("test" + i + ".png");
+                panti.setUser(user);
+                pantiRepository.save(panti);
+            }
+        }
+    }
+}

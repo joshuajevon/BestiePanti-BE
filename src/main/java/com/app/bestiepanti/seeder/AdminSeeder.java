@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class UserSeeder implements CommandLineRunner{
+public class AdminSeeder implements CommandLineRunner{
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
