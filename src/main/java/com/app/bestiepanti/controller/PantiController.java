@@ -2,6 +2,7 @@ package com.app.bestiepanti.controller;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
-import com.app.bestiepanti.dto.response.PantiResponse;
+import com.app.bestiepanti.dto.response.panti.PantiReponses;
+import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.service.PantiService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 
 
 @RestController
@@ -32,6 +35,7 @@ public class PantiController {
     public static final String CREATE_PANTI_ENDPOINT = "/create";
     public static final String UPDATE_PANTI_ENDPOINT = "/update/{id}";
     public static final String DELETE_PANTI_ENDPOINT = "/delete/{id}";
+    public static final String VIEW_ALL_PANTI_ENDPOINT = "/view";
  
     private final PantiService pantiService;
 
@@ -52,5 +56,14 @@ public class PantiController {
         pantiService.deletePanti(id);
         return new ResponseEntity<>("Panti with ID " + id + " has been successfully deleted",HttpStatus.OK);
     }
+
+    @RequestMapping(value = VIEW_ALL_PANTI_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<PantiReponses> viewAllPanti() {
+        PantiReponses pantiReponses = new PantiReponses();
+        List<PantiResponse> pantiResponseList = pantiService.viewAllPanti();
+        pantiReponses.setPantiResponses(pantiResponseList);
+        return new ResponseEntity<>(pantiReponses, HttpStatus.OK);
+    }
+    
     
 }

@@ -17,7 +17,7 @@ import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
 import com.app.bestiepanti.dto.request.panti.ImageRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
-import com.app.bestiepanti.dto.response.PantiResponse;
+import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Role;
@@ -193,6 +193,16 @@ public class PantiService {
                 .qris(panti.getQris())
                 .token(jwtToken)
                 .build();
+    }
+
+    public List<PantiResponse> viewAllPanti() {
+        List<Panti> pantiList = pantiRepository.findAll();
+        List<PantiResponse> pantiResponseList = new ArrayList<>();
+        for (Panti panti : pantiList) {
+            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+            pantiResponseList.add(pantiResponse);
+        }
+        return pantiResponseList;
     }
 
 }

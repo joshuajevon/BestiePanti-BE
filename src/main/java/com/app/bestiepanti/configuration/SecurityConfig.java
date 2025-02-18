@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", 
                                             "/api/v1/login", 
-                                            "/api/v1/register"
+                                            "/api/v1/register",
+                                            "/api/v1/panti/view"
                             ).permitAll(); // no auth
                     registry.requestMatchers("/api/v1/admin/**",
                                              "/api/v1/panti/create",

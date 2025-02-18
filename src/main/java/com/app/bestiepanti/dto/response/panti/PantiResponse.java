@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.response;
+package com.app.bestiepanti.dto.response.panti;
 
 import java.math.BigInteger;
 import java.util.List;

@@ -12,7 +12,7 @@ import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.DonaturResponse;
-import com.app.bestiepanti.dto.response.PantiResponse;
+import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
 import com.app.bestiepanti.model.Panti;
