@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.response;
+package com.app.bestiepanti.dto.response.donatur;
 
 import java.math.BigInteger;
 

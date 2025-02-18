@@ -39,12 +39,15 @@ public class SecurityConfig {
                                             "/api/v1/login", 
                                             "/api/v1/register",
                                             "/api/v1/panti/view",
+                                            "/api/v1/donatur/view",
                                             "/api/v1/panti/view/**"
                             ).permitAll(); // no auth
                     registry.requestMatchers("/api/v1/admin/**",
                                              "/api/v1/panti/create",
                                              "/api/v1/panti/update/**",
-                                             "/api/v1/panti/delete/**").hasRole("ADMIN");
+                                             "/api/v1/panti/delete/**",
+                                             "/api/v1/donatur/update/**",
+                                             "/api/v1/donatur/delete/**").hasRole("ADMIN");
                     registry.requestMatchers("/api/v1/donatur/**").hasRole("DONATUR");
                     registry.requestMatchers("/api/v1/panti/").hasRole("PANTI");
                     registry.anyRequest().authenticated();
