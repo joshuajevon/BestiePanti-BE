@@ -9,11 +9,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.app.bestiepanti.exception.CustomAccessDeniedHandler;
 import com.app.bestiepanti.filter.JwtAuthencationFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
-
-// import com.app.bestiepanti.middleware.AuthenticatedUserFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,8 +24,7 @@ public class SecurityConfig {
     private final JwtAuthencationFilter jwtAuthencationFilter;
     private final AuthenticationProvider authenticationProvider;
     private final CorsConfig corsConfig;
-
-    // private final AuthenticatedUserFilter authenticatedUserFilter;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -39,19 +37,23 @@ public class SecurityConfig {
                                             "/api/v1/login", 
                                             "/api/v1/register",
                                             "/api/v1/panti/view",
-                                            "/api/v1/donatur/view",
                                             "/api/v1/panti/view/**"
-                            ).permitAll(); // no auth
+                                            ).permitAll(); // no auth
                     registry.requestMatchers("/api/v1/admin/**",
-                                             "/api/v1/panti/create",
-                                             "/api/v1/panti/update/**",
-                                             "/api/v1/panti/delete/**",
-                                             "/api/v1/donatur/update/**",
-                                             "/api/v1/donatur/delete/**").hasRole("ADMIN");
-                    registry.requestMatchers("/api/v1/donatur/**").hasRole("DONATUR");
-                    registry.requestMatchers("/api/v1/panti/").hasRole("PANTI");
+                                            "/api/v1/panti/create",
+                                            "/api/v1/panti/update/**",
+                                            "/api/v1/panti/delete/**",
+                                            "/api/v1/donatur/update/**",
+                                            "/api/v1/donatur/view",
+                                            "/api/v1/donatur/delete/**").hasRole("ADMIN");
+                    registry.requestMatchers("/api/v1/donatur/",
+                                            "/api/v1/donatur/update/**" ).hasRole("DONATUR");
+                    registry.requestMatchers("/api/v1/panti/",
+                                            "/api/v1/panti/update/**").hasRole("PANTI");
                     registry.anyRequest().authenticated();
                 })
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(management -> management
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
