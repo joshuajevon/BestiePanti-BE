@@ -36,6 +36,7 @@ public class DonaturController {
     public static final String UPDATE_DONATUR_ENDPOINT = "/update/{id}";
     public static final String DELETE_DONATUR_ENDPOINT = "/delete/{id}";
     public static final String VIEW_ALL_DONATUR_ENDPOINT = "/view";
+    public static final String VIEW_DONATUR_BY_ID_ENDPOINT = "/view/{id}";
 
     @Autowired
     private DonaturService donaturService;
@@ -60,5 +61,12 @@ public class DonaturController {
         donaturResponses.setDonaturResponses(donaturResponseList);
         return new ResponseEntity<>(donaturResponses, HttpStatus.OK);
     }
+
+    @RequestMapping(value = VIEW_DONATUR_BY_ID_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<DonaturResponse> viewDonaturById(@PathVariable BigInteger id) throws UserNotFoundException {
+        DonaturResponse donaturResponse = donaturService.viewDonaturById(id);
+        return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
+    }
+    
     
 }

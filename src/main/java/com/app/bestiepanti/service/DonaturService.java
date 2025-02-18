@@ -79,4 +79,15 @@ public class DonaturService {
         return donaturResponseList;
     }
 
+    public DonaturResponse viewDonaturById(BigInteger id) throws UserNotFoundException {
+        Donatur donatur = donaturRepository.findByUserId(id);
+        DonaturResponse donaturResponse = null;
+        if(donatur == null){
+            throw new UserNotFoundException("Donatur with id " + id + " Not Found");
+        } else {
+            donaturResponse = createDonaturResponse(donatur.getUser(), donatur);
+        }
+        return donaturResponse;
+    }
+
 }
