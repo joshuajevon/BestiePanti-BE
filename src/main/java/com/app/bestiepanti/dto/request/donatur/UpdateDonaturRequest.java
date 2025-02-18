@@ -33,7 +33,7 @@ public class UpdateDonaturRequest{
     private String gender;
 
     @NotEmpty(message = "Tanggal Lahir tidak boleh kosong")
-    private LocalDate dob;
+    private String dob;
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address; 

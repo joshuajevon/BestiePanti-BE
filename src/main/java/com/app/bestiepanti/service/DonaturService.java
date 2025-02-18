@@ -1,6 +1,8 @@
 package com.app.bestiepanti.service;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class DonaturService {
  
     private final UserRepository userRepository;
     private final DonaturRepository donaturRepository;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
 
     public DonaturResponse updateDonatur(BigInteger id, UpdateDonaturRequest request) throws UserNotFoundException {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
@@ -32,7 +35,8 @@ public class DonaturService {
 
         Donatur donatur = donaturRepository.findByUserId(id);
         if(donatur != null){
-            donatur.setDob(request.getDob());
+            LocalDate dob = LocalDate.parse(request.getDob(), formatter);
+            donatur.setDob(dob);
             donatur.setGender(request.getGender());
             donatur.setPhone(request.getPhone());
             donatur.setAddress(request.getAddress());
