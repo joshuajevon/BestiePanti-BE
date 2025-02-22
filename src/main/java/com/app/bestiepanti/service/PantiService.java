@@ -216,4 +216,15 @@ public class PantiService {
         return pantiResponse;
     }
 
+    public List<PantiResponse> viewUrgentPanti() {
+        List<Panti> pantiList = pantiRepository.findAllByIsUrgent(1);
+        List<PantiResponse> pantiResponseList = new ArrayList<>();
+
+        for (Panti panti : pantiList) {
+            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+            pantiResponseList.add(pantiResponse);
+        }
+        return pantiResponseList;
+    }
+
 }

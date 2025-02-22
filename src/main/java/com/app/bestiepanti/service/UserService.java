@@ -60,7 +60,7 @@ public class UserService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Invalid email or password. Please try again.");
+            throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
         }
         String jwtToken = jwtService.generateToken(user);
         
@@ -73,13 +73,13 @@ public class UserService {
         } else if(user.getRole().getName().equals(UserApp.ROLE_ADMIN)){
             return createAdminResponse(user, jwtToken);
         }
-        throw new UserNotFoundException("Role not found for the user. Please contact support.");
+        throw new UserNotFoundException("Role tidak ditemukan untuk pengguna. Silakan hubungi dukungan.");
     }
 
     public UserApp findUserByEmail(String email) throws UserNotFoundException {
         UserApp user = userRepository.findByEmail(email)
                 .orElseThrow(
-                        () -> new UserNotFoundException("No account found with this email address. Please sign up."));
+                        () -> new UserNotFoundException("Tidak ditemukan akun dengan alamat email ini. Silakan mendaftar."));
         return user;
     }
 

@@ -38,7 +38,8 @@ public class SecurityConfig {
                                             "/api/v1/register",
                                             "/api/v1/profile",
                                             "/api/v1/panti/view",
-                                            "/api/v1/panti/view/**"
+                                            "/api/v1/panti/view/**",
+                                            "/api/v1/panti/urgent"
                                             ).permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",
