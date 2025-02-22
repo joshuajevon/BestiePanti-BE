@@ -1,0 +1,31 @@
+package com.app.bestiepanti.dto.response;
+
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+public class MessageResponse {
+    private BigInteger id;
+
+    private BigInteger donaturId;
+
+    private BigInteger pantiId;
+
+    private String message;
+
+    private LocalDateTime timestamp;
+
+    private Integer isShown;
+}

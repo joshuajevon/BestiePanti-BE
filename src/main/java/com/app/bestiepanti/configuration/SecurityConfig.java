@@ -53,7 +53,8 @@ public class SecurityConfig {
 
                     registry.requestMatchers("/api/v1/donatur/",
                                             "/api/v1/donatur/update/**",
-                                            "/api/v1/donatur/view/**"
+                                            "/api/v1/donatur/view/**",
+                                            "/api/v1/message/create/**"
                                             ).hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",

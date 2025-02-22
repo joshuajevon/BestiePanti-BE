@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
-// import com.app.bestiepanti.dto.response.UserResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.service.UserService;

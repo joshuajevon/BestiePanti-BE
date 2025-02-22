@@ -38,7 +38,7 @@ public class PantiController {
     public static final String DELETE_PANTI_ENDPOINT = "/delete/{id}";
     public static final String VIEW_ALL_PANTI_ENDPOINT = "/view";
     public static final String VIEW_PANTI_BY_ID_ENDPOINT = "/view/{id}";
-    public static final String VIEW_URGENT_PANTI = "/view/urgent";
+    public static final String VIEW_URGENT_PANTI_ENDPOINT = "/view/urgent";
  
     private final PantiService pantiService;
 
@@ -75,7 +75,7 @@ public class PantiController {
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
     }
     
-    @RequestMapping(value = VIEW_URGENT_PANTI, method=RequestMethod.GET)
+    @RequestMapping(value = VIEW_URGENT_PANTI_ENDPOINT, method=RequestMethod.GET)
     public ResponseEntity<PantiResponses> viewUrgentPanti() {
         PantiResponses pantiReponses = new PantiResponses();
         List<PantiResponse> pantiResponseList = pantiService.viewUrgentPanti();

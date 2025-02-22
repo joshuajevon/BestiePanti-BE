@@ -31,6 +31,7 @@ public class Message {
     @JoinColumn(name = "panti_id", referencedColumnName = "id")
     private UserApp pantiId;
 
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     private LocalDateTime timestamp;

@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Entity
 @RequiredArgsConstructor
-@Table(name = "messages")
+@Table(name = "donations")
 public class Donation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
