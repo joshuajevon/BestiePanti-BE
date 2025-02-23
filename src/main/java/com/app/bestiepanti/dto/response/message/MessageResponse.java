@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.response;
+package com.app.bestiepanti.dto.response.message;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

@@ -1,6 +1,7 @@
 package com.app.bestiepanti.controller;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.MessageRequest;
-import com.app.bestiepanti.dto.response.MessageResponse;
+import com.app.bestiepanti.dto.response.message.MessageResponse;
+import com.app.bestiepanti.dto.response.message.MessageResponses;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.service.MessageService;
 
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/v1/message")
 public class MessageController {
     public static final String CREATE_MESSAGE_ENDPOINT = "/create/{pantiId}";
+    public static final String VIEW_MESSAGE_BY_USER_ID = "/view/{id}";
+    public static final String VIEW_ALL_MESSAGES = "/view";
 
     private final MessageService messageService;
 
@@ -37,5 +41,14 @@ public class MessageController {
         MessageResponse messageResponse = messageService.createMessage(request, pantiId);
         return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = VIEW_ALL_MESSAGES, method=RequestMethod.GET)
+    public ResponseEntity<MessageResponses> viewAllMessages() {
+        MessageResponses messageResponses = new MessageResponses();
+        List<MessageResponse> messageResponseList = messageService.viewAllMessages();
+        messageResponses.setMessageResponses(messageResponseList);
+        return new ResponseEntity<>(messageResponses, HttpStatus.OK);
+    }
+    
     
 }

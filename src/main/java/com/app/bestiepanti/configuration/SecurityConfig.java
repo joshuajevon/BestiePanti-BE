@@ -39,7 +39,8 @@ public class SecurityConfig {
                                             "/api/v1/user",
                                             "/api/v1/panti/view",
                                             "/api/v1/panti/view/**",
-                                            "/api/v1/panti/urgent"
+                                            "/api/v1/panti/urgent",
+                                            "/api/v1/message/view"
                                             ).permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",

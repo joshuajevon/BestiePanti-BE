@@ -2,14 +2,15 @@ package com.app.bestiepanti.service;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.dto.request.MessageRequest;
-import com.app.bestiepanti.dto.response.MessageResponse;
+import com.app.bestiepanti.dto.response.message.MessageResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Message;
 import com.app.bestiepanti.model.UserApp;
@@ -44,6 +45,18 @@ public class MessageService {
         return createMessageResponse(message);
     }
 
+    public List<MessageResponse> viewAllMessages() {
+        List<Message> messages = messageRepository.findAll();
+        List<MessageResponse> messageResponseList = new ArrayList<>();
+        if(!messages.isEmpty()){
+            for (Message message : messages) {
+                MessageResponse messageResponse = createMessageResponse(message);
+                messageResponseList.add(messageResponse);
+            }
+        }
+        return messageResponseList;
+    }
+
     public MessageResponse createMessageResponse(Message message){
         return MessageResponse.builder()
                 .id(message.getId())
@@ -54,6 +67,5 @@ public class MessageService {
                 .isShown(message.getIsShown())
                 .build();
     }
-
 
 }
