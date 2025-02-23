@@ -57,6 +57,26 @@ public class MessageService {
         return messageResponseList;
     }
 
+    public List<MessageResponse> viewMessageByUserId(BigInteger userId) throws UserNotFoundException {
+        UserApp user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id " + userId + " Not Found"));
+        List<MessageResponse> messageResponses = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+            messages = messageRepository.findAllByDonaturId(userId);
+        } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+            messages = messageRepository.findAllByPantiId(userId);
+        }
+
+        if(!messages.isEmpty()){
+            for (Message message : messages) {
+                MessageResponse response = createMessageResponse(message);
+                messageResponses.add(response);
+            }
+        }
+        return messageResponses;
+    }
+
     public MessageResponse createMessageResponse(Message message){
         return MessageResponse.builder()
                 .id(message.getId())

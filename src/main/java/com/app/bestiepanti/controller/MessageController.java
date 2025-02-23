@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/v1/message")
 public class MessageController {
     public static final String CREATE_MESSAGE_ENDPOINT = "/create/{pantiId}";
-    public static final String VIEW_MESSAGE_BY_USER_ID = "/view/{id}";
+    public static final String VIEW_MESSAGE_BY_USER_ID = "/view/{userId}";
     public static final String VIEW_ALL_MESSAGES = "/view";
 
     private final MessageService messageService;
@@ -49,6 +49,15 @@ public class MessageController {
         messageResponses.setMessageResponses(messageResponseList);
         return new ResponseEntity<>(messageResponses, HttpStatus.OK);
     }
+
+    @RequestMapping(value = VIEW_MESSAGE_BY_USER_ID, method=RequestMethod.GET)
+    public ResponseEntity<MessageResponses> viewMessageByUserId(@PathVariable BigInteger userId) throws UserNotFoundException {
+        MessageResponses messageResponses = new MessageResponses();
+        List<MessageResponse> messageResponseList = messageService.viewMessageByUserId(userId);
+        messageResponses.setMessageResponses(messageResponseList);
+        return new ResponseEntity<>(messageResponses, HttpStatus.OK);
+    }
+    
     
     
 }
