@@ -1,10 +1,10 @@
 CREATE TABLE roles (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     name VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255),
     password VARCHAR(255),
@@ -15,7 +15,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE pantis (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     user_id BIGINT,
     image VARCHAR(255), 
     description TEXT,
@@ -30,7 +30,7 @@ CREATE TABLE pantis (
 );
 
 CREATE TABLE donaturs (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     user_id BIGINT,
     phone VARCHAR(255),
     gender VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE TABLE donaturs (
 );
 
 CREATE TABLE donations (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     donatur_id BIGINT,
     panti_id BIGINT,
     donation_date DATE,
@@ -59,7 +59,7 @@ CREATE TABLE donations (
 );
 
 CREATE TABLE messages (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT  PRIMARY KEY,
     donatur_id BIGINT,
     panti_id BIGINT,
     message TEXT,
