@@ -17,10 +17,10 @@ CREATE TABLE users (
 CREATE TABLE pantis (
     id BIGINT  PRIMARY KEY,
     user_id BIGINT,
-    image VARCHAR(255), 
+    image VARCHAR(255)[], 
     description TEXT,
     phone VARCHAR(255),
-    donation_types VARCHAR(255),  
+    donation_types VARCHAR(255)[],  
     is_urgent INTEGER,
     address VARCHAR(255),
     qris VARCHAR(255),
@@ -47,8 +47,8 @@ CREATE TABLE donations (
     panti_id BIGINT,
     donation_date DATE,
     is_onsite INTEGER,
-    donation_type VARCHAR(255),
-    image VARCHAR(255),
+    donation_type VARCHAR(255)[],
+    image VARCHAR(255)[],
     status VARCHAR(255),
     CONSTRAINT fk_donatur
         FOREIGN KEY(donatur_id)

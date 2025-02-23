@@ -39,7 +39,7 @@ public class Donation {
     private Integer isOnsite;
 
     @Column(name = "donation_type")
-    private String donationType;
+    private List<String> donationType;
 
     private List<String> image;
 

@@ -17,15 +17,15 @@ public class RoleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // String[] roleNames = {"ROLE_DONATUR", "ROLE_PANTI", "ROLE_ADMIN"};
+        String[] roleNames = {"ROLE_DONATUR", "ROLE_PANTI", "ROLE_ADMIN"};
         
-        // Arrays.stream(roleNames).forEach(roleName -> {
-        //     if (roleRepository.findByName(roleName) == null) {
-        //         Role role = new Role();
-        //         role.setName(roleName);
-        //         roleRepository.save(role);
-        //     }
-        // });
+        Arrays.stream(roleNames).forEach(roleName -> {
+            if (roleRepository.findByName(roleName) == null) {
+                Role role = new Role();
+                role.setName(roleName);
+                roleRepository.save(role);
+            }
+        });
     }
 }
 
