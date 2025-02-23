@@ -36,7 +36,7 @@ public class MessageService {
         if(userPanti != null && userDonatur != null){
             message.setDonaturId(userDonatur);
             message.setPantiId(userPanti);
-            message.setIsShown(1);
+            message.setIsShown(0);
             message.setTimestamp(LocalDateTime.now());
             message.setMessage(request.getMessage());
             messageRepository.save(message);

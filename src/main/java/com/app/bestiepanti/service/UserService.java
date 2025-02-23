@@ -4,7 +4,9 @@ import java.time.LocalDate;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +95,21 @@ public class UserService {
         donatur.setDob(dob);
         donaturRepository.save(donatur);
         return donatur;
+    }
+
+    public Object getUser() throws UserNotFoundException{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserApp user = findUserByEmail(email);
+
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+            Donatur donatur = donaturRepository.findByUserId(user.getId());
+            return createDonaturResponse(user, donatur, null);
+        } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+            Panti panti = pantiRepository.findByUserId(user.getId());
+            return createPantiResponse(user, panti, null);
+        }
+        return createAdminResponse(user, null);
     }
 
     public AdminResponse createAdminResponse(UserApp userApp, String token) {

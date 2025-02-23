@@ -35,7 +35,7 @@ public class UserController {
     
     public static final String REGISTER_ENDPOINT = "/register";
     public static final String LOGIN_ENDPOINT = "/login";
-    public static final String PROFILE_ENDPOINT = "/profile";
+    public static final String USER_ENDPOINT = "/user";
 
     private final UserService userService;
     
@@ -52,13 +52,12 @@ public class UserController {
         Object userResponse = userService.login(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
+
+    @RequestMapping(value = USER_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<Object> getUser() throws UserNotFoundException {
+        Object userResponse = userService.getUser();
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
     
-    @RequestMapping(value = PROFILE_ENDPOINT, method=RequestMethod.GET)
-    public UserApp getProfile() throws UserNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        UserApp user = userService.findUserByEmail(email);
-        return user;
-    }    
     
 }

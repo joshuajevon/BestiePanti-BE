@@ -36,7 +36,7 @@ public class SecurityConfig {
                     registry.requestMatchers("/", 
                                             "/api/v1/login", 
                                             "/api/v1/register",
-                                            "/api/v1/profile",
+                                            "/api/v1/user",
                                             "/api/v1/panti/view",
                                             "/api/v1/panti/view/**",
                                             "/api/v1/panti/urgent"
