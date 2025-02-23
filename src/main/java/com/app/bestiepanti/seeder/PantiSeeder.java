@@ -1,7 +1,11 @@
 package com.app.bestiepanti.seeder;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +33,7 @@ public class PantiSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Role role = roleRepository.findByName("ROLE_PANTI");
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 20; i++) {
             if (userRepository.findByEmail("panti" + i + "@gmail.com").isEmpty()) {
                 UserApp user = new UserApp();
                 user.setName("Panti" + i);
@@ -41,8 +45,9 @@ public class PantiSeeder implements CommandLineRunner {
                 Panti panti = new Panti();
                 panti.setAddress("Jl. Apel " + i);
                 panti.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tristique neque vitae porttitor dignissim. Nullam rhoncus faucibus neque quis vehicula. Donec velit mauris, suscipit ut pharetra quis, mattis a lectus. Proin ut lectus eros. Integer mauris odio, pharetra sed rutrum quis, dignissim et sem. Aliquam fringilla, tellus sed fringilla facilisis, justo nunc volutpat velit, vel ultricies justo purus faucibus ligula. Sed blandit laoreet scelerisque. Nulla eu convallis tortor. Nulla ac venenatis tortor. In sit amet erat tortor. Pellentesque varius egestas euismod. Duis laoreet ornare turpis nec convallis. Proin semper lorem eu turpis pretium, non consequat metus tristique. Morbi fermentum dignissim enim rutrum ornare. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.");
-                List<String> donationTypes = Arrays.asList("Dana" + i);
-                panti.setDonationTypes(donationTypes);
+                List<String> donationTypes = Arrays.asList("Dana","Pangan","Barang","Tenaga");
+                List<String> pickedDonationTypes = pickRandomDonationTypes(donationTypes);
+                panti.setDonationTypes(pickedDonationTypes);
                 List<String> images = Arrays.asList("test" + i + ".png");
                 panti.setImage(images);
                 panti.setIsUrgent(1);
@@ -52,5 +57,19 @@ public class PantiSeeder implements CommandLineRunner {
                 pantiRepository.save(panti);
             }
         }
+    }
+    
+    public static List<String> pickRandomDonationTypes(List<String> donationTypes) {
+        Random random = new Random();
+        int numberOfItemsToPick = random.nextInt(donationTypes.size()) + 1; 
+        
+        List<Integer> randomIndices = IntStream.range(0, donationTypes.size())
+                                                .boxed()
+                                                .collect(Collectors.toList());
+        Collections.shuffle(randomIndices, random);
+        return randomIndices.stream()
+                            .limit(numberOfItemsToPick)
+                            .map(donationTypes::get)
+                            .collect(Collectors.toList());
     }
 }
