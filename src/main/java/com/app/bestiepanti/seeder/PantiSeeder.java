@@ -31,32 +31,32 @@ public class PantiSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Role role = roleRepository.findByName("ROLE_PANTI");
+        // Role role = roleRepository.findByName("ROLE_PANTI");
 
-        for (int i = 1; i <= 20; i++) {
-            if (userRepository.findByEmail("panti" + i + "@gmail.com").isEmpty()) {
-                UserApp user = new UserApp();
-                user.setName("Panti" + i);
-                user.setEmail("panti" + i + "@gmail.com");
-                user.setPassword(passwordEncoder.encode("123123"));
-                user.setRole(role);
-                userRepository.save(user);
+        // for (int i = 1; i <= 20; i++) {
+        //     if (userRepository.findByEmail("panti" + i + "@gmail.com").isEmpty()) {
+        //         UserApp user = new UserApp();
+        //         user.setName("Panti" + i);
+        //         user.setEmail("panti" + i + "@gmail.com");
+        //         user.setPassword(passwordEncoder.encode("123123"));
+        //         user.setRole(role);
+        //         userRepository.save(user);
 
-                Panti panti = new Panti();
-                panti.setAddress("Jl. Apel " + i);
-                panti.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tristique neque vitae porttitor dignissim. Nullam rhoncus faucibus neque quis vehicula. Donec velit mauris, suscipit ut pharetra quis, mattis a lectus. Proin ut lectus eros. Integer mauris odio, pharetra sed rutrum quis, dignissim et sem. Aliquam fringilla, tellus sed fringilla facilisis, justo nunc volutpat velit, vel ultricies justo purus faucibus ligula. Sed blandit laoreet scelerisque. Nulla eu convallis tortor. Nulla ac venenatis tortor. In sit amet erat tortor. Pellentesque varius egestas euismod. Duis laoreet ornare turpis nec convallis. Proin semper lorem eu turpis pretium, non consequat metus tristique. Morbi fermentum dignissim enim rutrum ornare. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.");
-                List<String> donationTypes = Arrays.asList("Dana","Pangan","Barang","Tenaga");
-                List<String> pickedDonationTypes = pickRandomDonationTypes(donationTypes);
-                panti.setDonationTypes(pickedDonationTypes);
-                List<String> images = Arrays.asList("test" + i + ".png");
-                panti.setImage(images);
-                panti.setIsUrgent(1);
-                panti.setPhone("08123123123" + i);
-                panti.setQris("test" + i + ".png");
-                panti.setUser(user);
-                pantiRepository.save(panti);
-            }
-        }
+        //         Panti panti = new Panti();
+        //         panti.setAddress("Jl. Apel " + i);
+        //         panti.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tristique neque vitae porttitor dignissim. Nullam rhoncus faucibus neque quis vehicula. Donec velit mauris, suscipit ut pharetra quis, mattis a lectus. Proin ut lectus eros. Integer mauris odio, pharetra sed rutrum quis, dignissim et sem. Aliquam fringilla, tellus sed fringilla facilisis, justo nunc volutpat velit, vel ultricies justo purus faucibus ligula. Sed blandit laoreet scelerisque. Nulla eu convallis tortor. Nulla ac venenatis tortor. In sit amet erat tortor. Pellentesque varius egestas euismod. Duis laoreet ornare turpis nec convallis. Proin semper lorem eu turpis pretium, non consequat metus tristique. Morbi fermentum dignissim enim rutrum ornare. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.");
+        //         List<String> donationTypes = Arrays.asList("Dana","Pangan","Barang","Tenaga");
+        //         List<String> pickedDonationTypes = pickRandomDonationTypes(donationTypes);
+        //         panti.setDonationTypes(pickedDonationTypes);
+        //         List<String> images = Arrays.asList("test" + i + ".png");
+        //         panti.setImage(images);
+        //         panti.setIsUrgent(1);
+        //         panti.setPhone("08123123123" + i);
+        //         panti.setQris("test" + i + ".png");
+        //         panti.setUser(user);
+        //         pantiRepository.save(panti);
+        //     }
+        // }
     }
     
     public static List<String> pickRandomDonationTypes(List<String> donationTypes) {

@@ -21,16 +21,16 @@ public class AdminSeeder implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
-        UserApp user = new UserApp();
-        Role role = roleRepository.findByName("ROLE_ADMIN");
+        // UserApp user = new UserApp();
+        // Role role = roleRepository.findByName("ROLE_ADMIN");
 
-        if(userRepository.findByEmail("admin@gmail.com").isEmpty()){
-            user.setName("Admin");
-            user.setEmail("admin@gmail.com");
-            user.setPassword(passwordEncoder.encode("admin123"));
-            user.setRole(role);
-            userRepository.save(user);
-        }
+        // if(userRepository.findByEmail("admin@gmail.com").isEmpty()){
+        //     user.setName("Admin");
+        //     user.setEmail("admin@gmail.com");
+        //     user.setPassword(passwordEncoder.encode("admin123"));
+        //     user.setRole(role);
+        //     userRepository.save(user);
+        // }
     }
     
 }

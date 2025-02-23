@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class Donatur {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     @OneToOne
