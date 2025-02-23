@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "pantis")
 public class Panti {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
  
     @OneToOne

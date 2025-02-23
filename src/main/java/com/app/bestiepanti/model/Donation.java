@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "donations")
 public class Donation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     @ManyToOne
@@ -39,7 +39,7 @@ public class Donation {
     private Integer isOnsite;
 
     @Column(name = "donation_type")
-    private String donationType;
+    private List<String> donationType;
 
     private List<String> image;
 

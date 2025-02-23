@@ -30,7 +30,7 @@ public class UserApp implements UserDetails{
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     private String name;

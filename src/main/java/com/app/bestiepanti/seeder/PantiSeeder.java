@@ -33,7 +33,7 @@ public class PantiSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Role role = roleRepository.findByName("ROLE_PANTI");
 
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 10; i++) {
             if (userRepository.findByEmail("panti" + i + "@gmail.com").isEmpty()) {
                 UserApp user = new UserApp();
                 user.setName("Panti" + i);
@@ -50,13 +50,20 @@ public class PantiSeeder implements CommandLineRunner {
                 panti.setDonationTypes(pickedDonationTypes);
                 List<String> images = Arrays.asList("test" + i + ".png");
                 panti.setImage(images);
-                panti.setIsUrgent(1);
+                List<Integer> isUrgentTypes = Arrays.asList(1,0);
+                Integer pickedIsUrgent = pickIsUrgent(isUrgentTypes);
+                panti.setIsUrgent(pickedIsUrgent);
                 panti.setPhone("08123123123" + i);
                 panti.setQris("test" + i + ".png");
                 panti.setUser(user);
                 pantiRepository.save(panti);
             }
         }
+    }
+
+    public static Integer pickIsUrgent(List<Integer> list) {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
     }
     
     public static List<String> pickRandomDonationTypes(List<String> donationTypes) {

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "messages")
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     @ManyToOne
