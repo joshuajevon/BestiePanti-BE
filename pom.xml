@@ -140,6 +140,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>bestiepanti-images</finalName>
 	</build>
 
 </project>
