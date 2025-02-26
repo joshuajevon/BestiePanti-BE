@@ -1,10 +1,10 @@
-name: BestiePanti-dev cicd build and deploy
+name: BestiePanti-prod cicd build and deploy
 
 on:
   push:
-    branches: ["DEV1"]
+    branches: ["master"]
   pull_request:
-    branches: ["DEV1"]
+    branches: ["master"]
 
 jobs:
   build:
@@ -25,7 +25,7 @@ jobs:
     - name: Build & push Docker image
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
-        image: joshuajevon/bestiepanti-images-dev
+        image: joshuajevon/bestiepanti-images-prod
         tags: latest
         registry: docker.io
         dockerfile: Dockerfile
