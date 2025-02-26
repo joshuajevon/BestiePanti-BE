@@ -34,7 +34,6 @@ jobs:
 
     - name: Log in to Koyeb Container Registry
       run: echo ${{ secrets.KOYEB_API_KEY }} | docker login --username=_ --password-stdin registry.koyeb.com
-
     - name: Tag Docker image for Koyeb DEV
       run: docker tag joshuajevon/bestiepanti-images-dev:latest registry.koyeb.com/${{ secrets.KOYEB_APP_NAME_DEV }}/web
 
