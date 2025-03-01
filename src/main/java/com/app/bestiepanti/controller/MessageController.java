@@ -40,7 +40,7 @@ public class MessageController {
     public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody MessageRequest request, @PathVariable BigInteger pantiId) throws UserNotFoundException {
         log.info("Request Body: " + request);
         MessageResponse messageResponse = messageService.createMessage(request, pantiId);
-        log.info("Response Body: " + messageResponse);
+        log.info("Donatur " + messageResponse.getDonaturId() + " create message for panti " + pantiId);
         return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
 

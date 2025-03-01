@@ -27,8 +27,10 @@ import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -73,11 +75,14 @@ public class UserService {
         
         if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
             Donatur donatur = donaturRepository.findByUserId(user.getId());
+            log.info("Donatur " + user.getId() + " is logged in!");
             return createDonaturResponse(user, donatur, jwtToken);
         } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
             Panti panti = pantiRepository.findByUserId(user.getId());
+            log.info("Panti " + user.getId() + " is logged in!");
             return createPantiResponse(user, panti, jwtToken);
         } else if(user.getRole().getName().equals(UserApp.ROLE_ADMIN)){
+            log.info("Admin " + user.getId() + " is logged in!");
             return createAdminResponse(user, jwtToken);
         }
         throw new UserNotFoundException("Role tidak ditemukan untuk pengguna. Silakan hubungi dukungan.");

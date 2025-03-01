@@ -44,9 +44,8 @@ public class PantiController {
 
     @RequestMapping(value = CREATE_PANTI_ENDPOINT,method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PantiResponse> createPanti(@Valid @ModelAttribute CreatePantiRequest request){
-        log.info("Request Body: " +request.toString());
         PantiResponse pantiResponse = pantiService.createPanti(request);
-        log.info("Response Body: " + pantiResponse);
+        log.info("Panti " + pantiResponse.getId() + " is created!");
         return new ResponseEntity<>(pantiResponse, HttpStatus.CREATED);
     }
 
@@ -54,7 +53,7 @@ public class PantiController {
     public ResponseEntity<PantiResponse> updatePanti(@PathVariable BigInteger id, @Valid @ModelAttribute UpdatePantiRequest request) throws UserNotFoundException {
         log.info("Request Body: " + request.toString());
         PantiResponse pantiResponse= pantiService.updatePanti(id, request);
-        log.info("Response Body: " + pantiResponse);
+        log.info("Panti " + id + " is updated!");
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
     }
 
@@ -62,7 +61,7 @@ public class PantiController {
     public ResponseEntity<GeneralResponse> deletePanti(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         pantiService.deletePanti(id);
         GeneralResponse generalResponse = new GeneralResponse("Panti with ID " + id + " has been successfully deleted");
-        log.info("Panti Response: " + generalResponse);
+        log.info("Panti " + id + " is deleted!");
         return new ResponseEntity<>(generalResponse,HttpStatus.OK);
     }
 

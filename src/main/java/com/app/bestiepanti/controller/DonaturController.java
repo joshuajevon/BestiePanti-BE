@@ -43,7 +43,7 @@ public class DonaturController {
     public ResponseEntity<DonaturResponse> updateDonatur(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonaturRequest request) throws UserNotFoundException {
         log.info("Request Body: " + request);
         DonaturResponse donaturResponse= donaturService.updateDonatur(id, request);
-        log.info("Response Body: " + donaturResponse);
+        log.info("Donatur " + id + " is updated!");
         return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class DonaturController {
     public ResponseEntity<GeneralResponse> deleteDonatur(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         donaturService.deleteDonatur(id);
         GeneralResponse generalResponse = new GeneralResponse("Donatur with ID " + id + " has been successfully deleted");
-        log.info("Response Body: " + generalResponse);
+        log.info("Donatur " + id + " is deleted!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
