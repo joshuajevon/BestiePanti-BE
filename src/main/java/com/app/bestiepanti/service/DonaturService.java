@@ -80,8 +80,8 @@ public class DonaturService {
     }
 
     public DonaturResponse viewDonaturById(BigInteger id) throws UserNotFoundException {
+        DonaturResponse donaturResponse = new DonaturResponse();
         Donatur donatur = donaturRepository.findByUserId(id);
-        DonaturResponse donaturResponse = null;
         if(donatur == null){
             throw new UserNotFoundException("Donatur with id " + id + " Not Found");
         } else {

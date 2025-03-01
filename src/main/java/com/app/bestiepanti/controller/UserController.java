@@ -38,21 +38,26 @@ public class UserController {
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<DonaturResponse> register(@Valid @RequestBody RegisterRequest userRequest){        
-        DonaturResponse DonaturResponse = userService.register(userRequest);
-        return new ResponseEntity<>(DonaturResponse, HttpStatus.CREATED);
+    public ResponseEntity<DonaturResponse> register(@Valid @RequestBody RegisterRequest userRequest){
+        log.info("Request Body: " + userRequest);        
+        DonaturResponse donaturResponse = userService.register(userRequest);
+        log.info("Response Body: "+ donaturResponse);
+        return new ResponseEntity<>(donaturResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
+        log.info("Request Body: " + userRequest);
         Object userResponse = userService.login(userRequest);
+        log.info("Response Body: " + userResponse);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = USER_ENDPOINT, method=RequestMethod.GET)
     public ResponseEntity<Object> getUser() throws UserNotFoundException {
         Object userResponse = userService.getUser();
+        log.info("Response Body: " + userResponse);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
     

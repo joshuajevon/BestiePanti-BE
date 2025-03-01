@@ -44,13 +44,17 @@ public class PantiController {
 
     @RequestMapping(value = CREATE_PANTI_ENDPOINT,method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PantiResponse> createPanti(@Valid @ModelAttribute CreatePantiRequest request){
+        log.info("Request Body: " +request.toString());
         PantiResponse pantiResponse = pantiService.createPanti(request);
+        log.info("Response Body: " + pantiResponse);
         return new ResponseEntity<>(pantiResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = UPDATE_PANTI_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PantiResponse> updatePanti(@PathVariable BigInteger id, @Valid @ModelAttribute UpdatePantiRequest request) throws UserNotFoundException {
+        log.info("Request Body: " + request.toString());
         PantiResponse pantiResponse= pantiService.updatePanti(id, request);
+        log.info("Response Body: " + pantiResponse);
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
     }
 
@@ -58,6 +62,7 @@ public class PantiController {
     public ResponseEntity<GeneralResponse> deletePanti(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         pantiService.deletePanti(id);
         GeneralResponse generalResponse = new GeneralResponse("Panti with ID " + id + " has been successfully deleted");
+        log.info("Panti Response: " + generalResponse);
         return new ResponseEntity<>(generalResponse,HttpStatus.OK);
     }
 
@@ -66,12 +71,14 @@ public class PantiController {
         PantiResponses pantiReponses = new PantiResponses();
         List<PantiResponse> pantiResponseList = pantiService.viewAllPanti();
         pantiReponses.setPantiResponses(pantiResponseList);
+        log.info("Response Body: " + pantiReponses);
         return new ResponseEntity<>(pantiReponses, HttpStatus.OK);
     }
 
     @RequestMapping(value = VIEW_PANTI_BY_ID_ENDPOINT, method=RequestMethod.GET)
     public ResponseEntity<PantiResponse> viewPantiById(@PathVariable BigInteger id) throws UserNotFoundException {
         PantiResponse pantiResponse = pantiService.viewPantiById(id);
+        log.info("Response Body: " + pantiResponse);
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
     }
     
@@ -80,6 +87,7 @@ public class PantiController {
         PantiResponses pantiReponses = new PantiResponses();
         List<PantiResponse> pantiResponseList = pantiService.viewUrgentPanti();
         pantiReponses.setPantiResponses(pantiResponseList);
+        log.info("Response Body: " + pantiReponses);
         return new ResponseEntity<>(pantiReponses, HttpStatus.OK);
     }
     

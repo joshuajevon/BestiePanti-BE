@@ -38,7 +38,9 @@ public class MessageController {
     @RequestMapping(value = CREATE_MESSAGE_ENDPOINT, method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody MessageRequest request, @PathVariable BigInteger pantiId) throws UserNotFoundException {
+        log.info("Request Body: " + request);
         MessageResponse messageResponse = messageService.createMessage(request, pantiId);
+        log.info("Response Body: " + messageResponse);
         return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
 
@@ -47,6 +49,7 @@ public class MessageController {
         MessageResponses messageResponses = new MessageResponses();
         List<MessageResponse> messageResponseList = messageService.viewAllMessages();
         messageResponses.setMessageResponses(messageResponseList);
+        log.info("Response Body: " + messageResponses);
         return new ResponseEntity<>(messageResponses, HttpStatus.OK);
     }
 
@@ -55,6 +58,7 @@ public class MessageController {
         MessageResponses messageResponses = new MessageResponses();
         List<MessageResponse> messageResponseList = messageService.viewMessageByUserId(userId);
         messageResponses.setMessageResponses(messageResponseList);
+        log.info("Response Body: " + messageResponses);
         return new ResponseEntity<>(messageResponses, HttpStatus.OK);
     }
     

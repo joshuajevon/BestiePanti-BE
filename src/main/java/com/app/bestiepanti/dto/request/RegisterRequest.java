@@ -2,7 +2,7 @@ package com.app.bestiepanti.dto.request;
 
 import com.app.bestiepanti.validation.general.ConfirmationPassword;
 import com.app.bestiepanti.validation.general.UniqueEmail;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.Email;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @ConfirmationPassword
 public class RegisterRequest {
     @NotEmpty(message = "Nama tidak boleh kosong")

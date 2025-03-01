@@ -38,12 +38,13 @@ public class DonaturController {
     public static final String VIEW_ALL_DONATUR_ENDPOINT = "/view";
     public static final String VIEW_DONATUR_BY_ID_ENDPOINT = "/view/{id}";
 
-    @Autowired
-    private DonaturService donaturService;
+    private final DonaturService donaturService;
 
     @RequestMapping(value = UPDATE_DONATUR_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DonaturResponse> updateDonatur(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonaturRequest request) throws UserNotFoundException {
+        log.info("Request Body: " + request);
         DonaturResponse donaturResponse= donaturService.updateDonatur(id, request);
+        log.info("Response Body: " + donaturResponse);
         return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
     }
 
@@ -51,6 +52,7 @@ public class DonaturController {
     public ResponseEntity<GeneralResponse> deleteDonatur(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         donaturService.deleteDonatur(id);
         GeneralResponse generalResponse = new GeneralResponse("Donatur with ID " + id + " has been successfully deleted");
+        log.info("Response Body: " + generalResponse);
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
@@ -59,12 +61,14 @@ public class DonaturController {
         DonaturResponses donaturResponses = new DonaturResponses();
         List<DonaturResponse> donaturResponseList = donaturService.viewAllDonatur();
         donaturResponses.setDonaturResponses(donaturResponseList);
+        log.info("Response Body: " + donaturResponses);
         return new ResponseEntity<>(donaturResponses, HttpStatus.OK);
     }
 
     @RequestMapping(value = VIEW_DONATUR_BY_ID_ENDPOINT, method=RequestMethod.GET)
     public ResponseEntity<DonaturResponse> viewDonaturById(@PathVariable BigInteger id) throws UserNotFoundException {
         DonaturResponse donaturResponse = donaturService.viewDonaturById(id);
+        log.info("Response Body: " + donaturResponse);
         return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
     }
     
