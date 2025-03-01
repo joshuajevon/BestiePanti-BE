@@ -55,7 +55,6 @@ public class UserService {
         Donatur donatur = saveToDonatur(registerRequest, user);
 
         String jwtToken = jwtService.generateToken(user);
-        jwtConfig.storeActiveToken(registerRequest.getEmail(), jwtToken);
         return createDonaturResponse(user, donatur, jwtToken);
     }
 
