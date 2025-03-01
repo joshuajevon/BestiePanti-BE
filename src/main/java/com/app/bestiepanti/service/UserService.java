@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
+import com.app.bestiepanti.configuration.GoogleTokenConfig;
 import com.app.bestiepanti.configuration.JwtConfig;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
@@ -68,31 +71,63 @@ public class UserService {
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final ApplicationConfig applicationConfig;
+    private final GoogleTokenConfig googleTokenVerifier;
 
-    public DonaturResponse register(RegisterRequest registerRequest) {
+    public Object register(RegisterRequest registerRequest, String googleToken) throws UserNotFoundException {
         UserApp user = new UserApp();
-        user.setName(registerRequest.getName());
-        user.setEmail(registerRequest.getEmail());
+        Donatur donatur = new Donatur();
+        if (googleToken != null && !googleToken.isEmpty()) {
+            // Google Registration
+            Map<String, Object> payload = googleTokenVerifier.verify(googleToken);
+            if (payload == null) throw new IllegalArgumentException("Invalid Google token");
 
-        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-        user.setRole(role);
+            String name = (String) payload.get("name"); 
+            String email = (String) payload.get("email");
+            
+            Optional<UserApp> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent()) {
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.setEmail(email);
+                loginRequest.setPassword(UUID.randomUUID().toString());
+                return login(loginRequest, true);
+            }
+            user.setName(name);
+            user.setEmail(email);
+            log.info("Logged in to Google Account Id: " + (String) payload.get("sub")); 
+            
+            Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+            user.setRole(role);
 
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        userRepository.save(user);
-
-        Donatur donatur = saveToDonatur(registerRequest, user);
+            user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+            userRepository.save(user);
+            donatur = saveToDonaturWithGoogle(user);
+        } else {
+            // Normal Regitration
+            user.setName(registerRequest.getName());
+            user.setEmail(registerRequest.getEmail());
+    
+            Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+            user.setRole(role);
+    
+            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            userRepository.save(user);
+            donatur = saveToDonatur(registerRequest, user);
+            log.info("Donatur " + user.getId() + " is registered!");
+        }
 
         String jwtToken = jwtService.generateToken(user);
         return createDonaturResponse(user, donatur, jwtToken);
     }
 
-    public Object login(LoginRequest loginRequest) throws UserNotFoundException {
+    public Object login(LoginRequest loginRequest, Boolean isGoogle) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Email atau Kata Sandi tidak valid. Silakan coba lagi.");
+        if (!isGoogle) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            } catch (AuthenticationException e) {
+                throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
+            }
         }
         String jwtToken = jwtService.generateToken(user);
         String existingToken = jwtConfig.getActiveToken(loginRequest.getEmail());
@@ -268,6 +303,17 @@ public class UserService {
         return createAdminResponse(user, null);
     }
 
+    public Donatur saveToDonaturWithGoogle(UserApp user) {
+        Donatur donatur = new Donatur();
+        donatur.setUser(user);
+        donatur.setAddress(null);
+        donatur.setGender(null);
+        donatur.setPhone(null);
+        donatur.setDob(null);
+        donaturRepository.save(donatur);
+        return donatur;
+    }
+
     public UserApp getAuthenticate() throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -292,7 +338,7 @@ public class UserService {
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
                 .phone(donatur.getPhone())
-                .dob(donatur.getDob().toString())
+                .dob(Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null))
                 .gender(donatur.getGender())
                 .address(donatur.getAddress())
                 .profile(donatur.getProfile())

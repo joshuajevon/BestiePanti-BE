@@ -127,6 +127,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
 		</dependency>
+		<!-- OAuth -->
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency> -->
+
+		 <!-- Google OAuth2 -->
+		<!-- <dependency>
+    <groupId>com.google.api-client</groupId>
+		<artifactId>google-api-client</artifactId>
+		<version>2.0.0</version> 
+	</dependency>
+	<dependency>
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client-gson</artifactId>
+		<version>1.43.3</version> 
+	</dependency> -->
+
 	</dependencies>
 
 	<build>

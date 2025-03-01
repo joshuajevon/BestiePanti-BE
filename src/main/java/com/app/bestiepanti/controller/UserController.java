@@ -25,6 +25,7 @@ import com.app.bestiepanti.service.UserService;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class UserController {
     
     public static final String REGISTER_ENDPOINT = "/register";
     public static final String LOGIN_ENDPOINT = "/login";
+    public static final String LOGIN_GOOGLE_ENDPOINT = LOGIN_ENDPOINT + "/google";
     public static final String USER_ENDPOINT = "/user";
     public static final String UPDATE_DONATUR_ENDPOINT = "/donatur/profile/update";
     public static final String UPDATE_PANTI_ENDPOINT = "/panti/profile/update";
@@ -64,16 +66,15 @@ public class UserController {
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<DonaturResponse> register(@Valid @RequestBody RegisterRequest userRequest){     
-        DonaturResponse donaturResponse = userService.register(userRequest);
-        log.info("Donatur " + donaturResponse.getId() + " is registered!");
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterRequest userRequest) throws UserNotFoundException{     
+        Object donaturResponse = userService.register(userRequest, null);
         return new ResponseEntity<>(donaturResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
-        Object userResponse = userService.login(userRequest);
+        Object userResponse = userService.login(userRequest, false);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
@@ -90,6 +91,24 @@ public class UserController {
         DonaturResponse donaturResponse = donaturService.updateDonatur(user.getId(), request);
         log.info("Response Body: " + donaturResponse);
         return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.POST)
+    public ResponseEntity<?> authenticateWithGoogle(@RequestBody Map<String, String> request) throws UserNotFoundException {
+        String idToken = request.get("token");
+
+        if (idToken == null || idToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID token is missing or empty.");
+        }
+
+        try {
+            RegisterRequest registerRequest = new RegisterRequest();
+            Object response = userService.register(registerRequest, idToken);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(generalResponse);
+        }
     }
     
     @RequestMapping(value = UPDATE_PANTI_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

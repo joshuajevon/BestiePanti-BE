@@ -51,10 +51,10 @@ public class SecurityConfig {
                             "/storage/profile/**",
                             "/storage/donation/**",
                             "/api/v1/forgot-password/**",
-                            "/api/v1/check-email/**"
-                            ).permitAll(); // no auth
-                            
-                            registry.requestMatchers("/api/v1/admin/**",
+                            "/api/v1/check-email/**",
+                            "/api/v1/login/google").permitAll(); // no auth
+
+                    registry.requestMatchers("/api/v1/admin/**",
                             "/api/v1/panti/create",
                             "/api/v1/panti/update/**",
                             "/api/v1/panti/delete/**",
