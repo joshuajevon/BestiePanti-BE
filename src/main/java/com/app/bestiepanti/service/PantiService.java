@@ -64,6 +64,7 @@ public class PantiService {
         panti.setDonationTypes(request.getDonationTypes());
         panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         panti.setAddress(request.getAddress());
+        panti.setRegion(request.getRegion());
         panti.setUser(user);
         pantiRepository.save(panti);
         return panti;
@@ -84,6 +85,7 @@ public class PantiService {
             panti.setDonationTypes(request.getDonationTypes());
             panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
             panti.setAddress(request.getAddress());
+            panti.setRegion(request.getRegion());
             pantiRepository.save(panti);
         }
         return createPantiResponse(user, panti, null);
@@ -190,6 +192,7 @@ public class PantiService {
                 .donationTypes(panti.getDonationTypes())
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
+                .region(panti.getRegion())
                 .qris(panti.getQris())
                 .token(jwtToken)
                 .build();

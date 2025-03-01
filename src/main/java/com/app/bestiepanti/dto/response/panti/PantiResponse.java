@@ -39,6 +39,8 @@ public class PantiResponse{
     private Integer isUrgent;
  
     private String address;
+
+    private String region;
  
     private String qris;
 }

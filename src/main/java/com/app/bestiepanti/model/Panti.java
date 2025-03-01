@@ -41,6 +41,8 @@ public class Panti {
     private Integer isUrgent;
    
     private String address;
+
+    private String region;
  
     private String qris;
    

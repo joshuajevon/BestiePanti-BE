@@ -55,6 +55,9 @@ public class PantiSeeder implements CommandLineRunner {
                 panti.setIsUrgent(pickedIsUrgent);
                 panti.setPhone("08123123123" + i);
                 panti.setQris("test" + i + ".png");
+                List<String> regions = Arrays.asList("Jakarta","Bogor","Depok","Tanggerang","Bekasi");
+                String pickedRegion = pickRandomRegion(regions);
+                panti.setRegion(pickedRegion);
                 panti.setUser(user);
                 pantiRepository.save(panti);
             }
@@ -64,6 +67,12 @@ public class PantiSeeder implements CommandLineRunner {
     public static Integer pickIsUrgent(List<Integer> list) {
         Random rand = new Random();
         return list.get(rand.nextInt(list.size()));
+    }
+
+    public static String pickRandomRegion(List<String> regions) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(regions.size()); // Generate a random index
+        return regions.get(randomIndex); // Return the randomly picked region
     }
     
     public static List<String> pickRandomDonationTypes(List<String> donationTypes) {

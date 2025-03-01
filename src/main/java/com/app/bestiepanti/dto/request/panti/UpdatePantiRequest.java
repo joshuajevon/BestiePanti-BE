@@ -47,7 +47,10 @@ public class UpdatePantiRequest implements ImageRequest{
     private String isUrgent;
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
-    private String address; 
+    private String address;
+
+    @NotEmpty(message = "Wilayah tidak boleh kosong")
+    private String region;
    
     private MultipartFile qris;
 }

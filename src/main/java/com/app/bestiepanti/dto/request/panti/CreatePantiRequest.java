@@ -57,6 +57,9 @@ public class CreatePantiRequest implements ImageRequest{
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address;
+
+    @NotEmpty(message = "Wilayah tidak boleh kosong")
+    private String region;
    
     private MultipartFile qris;
 }
