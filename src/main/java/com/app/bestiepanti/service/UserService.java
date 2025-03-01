@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.bestiepanti.configuration.JwtConfig;
 import com.app.bestiepanti.dto.request.LoginRequest;
 import com.app.bestiepanti.dto.request.RegisterRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
@@ -38,6 +39,7 @@ public class UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PantiRepository pantiRepository;
+    private final JwtConfig jwtConfig;
 
     public DonaturResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
@@ -53,6 +55,7 @@ public class UserService {
         Donatur donatur = saveToDonatur(registerRequest, user);
 
         String jwtToken = jwtService.generateToken(user);
+        jwtConfig.storeActiveToken(registerRequest.getEmail(), jwtToken);
         return createDonaturResponse(user, donatur, jwtToken);
     }
 
@@ -65,6 +68,9 @@ public class UserService {
             throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
         }
         String jwtToken = jwtService.generateToken(user);
+        String existingToken = jwtConfig.getActiveToken(loginRequest.getEmail());
+        if(existingToken != null) jwtConfig.blacklistToken(existingToken);
+        jwtConfig.storeActiveToken(loginRequest.getEmail(), jwtToken);
         
         if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
             Donatur donatur = donaturRepository.findByUserId(user.getId());
