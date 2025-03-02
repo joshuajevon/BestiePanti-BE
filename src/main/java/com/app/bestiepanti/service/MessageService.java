@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,6 +76,29 @@ public class MessageService {
             }
         }
         return messageResponses;
+    }
+
+    public void acceptMessage(BigInteger id){
+        try {
+            Message message = messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Message with id " + id + " Not Found"));
+            if(message != null){
+                message.setIsShown(1);
+                messageRepository.save(message);
+            }
+        } catch (NoSuchElementException e) {
+            throw e;
+        }
+    }
+
+    public void deleteMessage(BigInteger id){
+        try {
+            Message message = messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Message with id " + id + " Not Found"));
+            if(message != null){
+                messageRepository.delete(message);
+            }
+        } catch (NoSuchElementException e) {
+            throw e;
+        }
     }
 
     public MessageResponse createMessageResponse(Message message){

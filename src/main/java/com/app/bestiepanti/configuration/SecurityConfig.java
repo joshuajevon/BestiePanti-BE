@@ -65,7 +65,9 @@ public class SecurityConfig {
 
                     registry.requestMatchers("/api/v1/panti/",
                                             "/api/v1/panti/update/**",
-                                            "/api/v1/donation/verify/**"
+                                            "/api/v1/donation/verify/**",
+                                            "/api/v1/message/accept/**",
+                                            "/api/v1/message/delete/**"
                                             ).hasRole("PANTI");
                                             
                     registry.anyRequest().authenticated();

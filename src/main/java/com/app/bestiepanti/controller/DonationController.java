@@ -78,10 +78,16 @@ public class DonationController {
     }
     
     @RequestMapping(value = VERIFY_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<DonationResponse> verifyDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonationRequest request) {
-        log.info("Request Body: " + request.toString());
-        DonationResponse donationResponse = donationService.verifyDonation(id, request);
-        return new ResponseEntity<>(donationResponse, HttpStatus.OK);
+    public ResponseEntity<Object> verifyDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonationRequest request) {
+        try {
+            log.info("Request Body: " + request.toString());
+            DonationResponse donationResponse = donationService.verifyDonation(id, request);
+            log.info("Donation with id " + id + " has been verified!");
+            return new ResponseEntity<>(donationResponse, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+        }
     }
     
 }

@@ -111,22 +111,28 @@ public class DonationService {
         return donationResponses;
     }
 
-    public DonationResponse verifyDonation(BigInteger id, UpdateDonationRequest request) throws NoSuchElementException{
-        Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
+    public DonationResponse verifyDonation(BigInteger id, UpdateDonationRequest request){
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
 
-        if(donation != null){
-            processImage(request, donation);
-            LocalDate donationDate = LocalDate.parse(request.getDonationDate());
-            donation.setDonationDate(donationDate);
-            donation.setDonationTypes(request.getDonationTypes());
-            donation.setIsOnsite(Integer.parseInt(request.getIsOnsite()));
-            donation.setNotes(request.getNotes());
-            donation.setStatus(request.getStatus());
-            donation.setNumber(request.getNumber());
-            donation.setVerifiedTimestamp(LocalDateTime.now());
-            donationRepository.save(donation);
+            if(donation != null){
+                processImage(request, donation);
+                LocalDate donationDate = LocalDate.parse(request.getDonationDate());
+                donation.setDonationDate(donationDate);
+                donation.setDonationTypes(request.getDonationTypes());
+                donation.setIsOnsite(Integer.parseInt(request.getIsOnsite()));
+                donation.setNotes(request.getNotes());
+                donation.setStatus(request.getStatus());
+                donation.setNumber(request.getNumber());
+                donation.setVerifiedTimestamp(LocalDateTime.now());
+                donationRepository.save(donation);
+            }
+            return createDonationResponse(donation);
+        } catch (NumberFormatException e) {
+            throw e;
+        } catch (NoSuchElementException e) {
+            throw e;
         }
-        return createDonationResponse(donation);
     }
 
         
