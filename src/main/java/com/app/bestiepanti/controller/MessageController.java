@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -76,7 +75,7 @@ public class MessageController {
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponse);
         }
     }
 
@@ -88,7 +87,7 @@ public class MessageController {
             return new ResponseEntity<>(generalResponse, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponse);
         }
     }
     

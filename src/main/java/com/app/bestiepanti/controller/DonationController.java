@@ -64,7 +64,7 @@ public class DonationController {
             return new ResponseEntity<>(generalResponse,HttpStatus.OK);
         } catch (NoSuchElementException e) {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponse);
         } 
     }
 
@@ -86,7 +86,7 @@ public class DonationController {
             return new ResponseEntity<>(donationResponse, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponse);
         }
     }
     
