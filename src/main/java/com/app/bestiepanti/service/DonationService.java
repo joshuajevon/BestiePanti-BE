@@ -70,7 +70,7 @@ public class DonationService {
     public void deleteDonation(BigInteger id){
 
         try {
-            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User with id " + id + " Not Found"));
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
             if(donation != null){
                 List<String> fileNames = donation.getImage();
                 for (String fileName : fileNames) {
@@ -81,8 +81,10 @@ public class DonationService {
                 }
             }
             donationRepository.delete(donation);
+        } catch (NoSuchElementException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Failes to delete Donation with id " + id, e);
+            throw new RuntimeException("Failed to delete Donation with id " + id, e);
         }
     }
 

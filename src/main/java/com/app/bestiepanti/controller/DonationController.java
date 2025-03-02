@@ -2,6 +2,7 @@ package com.app.bestiepanti.controller;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,10 +59,15 @@ public class DonationController {
 
     @RequestMapping(value = DELETE_DONATION_ENDPOINT, method=RequestMethod.DELETE)
     public ResponseEntity<GeneralResponse> deleteDonation(@PathVariable BigInteger id) {
-        donationService.deleteDonation(id);
-        GeneralResponse generalResponse = new GeneralResponse("Donation with ID " + id + " has been successfully deleted");
-        log.info("Donation " + id + " is deleted!");
-        return new ResponseEntity<>(generalResponse,HttpStatus.OK);
+        try {
+            donationService.deleteDonation(id);
+            GeneralResponse generalResponse = new GeneralResponse("Donation with ID " + id + " has been successfully deleted");
+            log.info("Donation " + id + " is deleted!");
+            return new ResponseEntity<>(generalResponse,HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponse);
+        } 
     }
 
     @RequestMapping(value = VIEW_DONATION_BY_USER_ID_ENDPOINT, method=RequestMethod.GET)
