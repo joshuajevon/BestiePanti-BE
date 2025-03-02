@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UpdatePantiRequest implements ImageRequest{
+public class UpdatePantiRequest implements ImagePantiRequest{
     
     @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;

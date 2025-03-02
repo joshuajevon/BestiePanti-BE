@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
-import com.app.bestiepanti.dto.request.panti.ImageRequest;
+import com.app.bestiepanti.dto.request.panti.ImagePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -124,7 +124,7 @@ public class PantiService {
     }
 
 
-    private void processQris(ImageRequest request, Panti panti) {
+    private void processQris(ImagePantiRequest request, Panti panti) {
         try {
             if (request.getQris() != null && !request.getQris().isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + request.getName() + "_" + request.getQris().getOriginalFilename();
@@ -148,7 +148,7 @@ public class PantiService {
         }
     }
 
-    private void processImage(ImageRequest request, Panti panti) {
+    private void processImage(ImagePantiRequest request, Panti panti) {
         try {
             if (request.getImage() != null && !request.getImage().isEmpty()) {
                 List<String> imagePaths = new ArrayList<>();

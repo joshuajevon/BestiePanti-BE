@@ -3,8 +3,8 @@ package com.app.bestiepanti.controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.bestiepanti.dto.request.LoginRequest;
-import com.app.bestiepanti.dto.request.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.LoginRequest;
+import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.service.UserService;

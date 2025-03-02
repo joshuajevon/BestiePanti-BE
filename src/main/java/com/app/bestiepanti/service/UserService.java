@@ -11,8 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.JwtConfig;
-import com.app.bestiepanti.dto.request.LoginRequest;
-import com.app.bestiepanti.dto.request.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.LoginRequest;
+import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;

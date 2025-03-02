@@ -43,7 +43,7 @@ public class SecurityConfig {
                                             "/api/v1/message/view",
                                             "/api/v1/message/view/**"
                                             ).permitAll(); // no auth
-
+                                            
                     registry.requestMatchers("/api/v1/admin/**",
                                             "/api/v1/panti/create",
                                             "/api/v1/panti/update/**",
@@ -56,7 +56,8 @@ public class SecurityConfig {
                     registry.requestMatchers("/api/v1/donatur/",
                                             "/api/v1/donatur/update/**",
                                             "/api/v1/donatur/view/**",
-                                            "/api/v1/message/create/**"
+                                            "/api/v1/message/create/**",
+                                            "/api/v1/donation/create/**"
                                             ).hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",

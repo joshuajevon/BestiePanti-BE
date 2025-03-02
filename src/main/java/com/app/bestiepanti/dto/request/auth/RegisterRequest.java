@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.request;
+package com.app.bestiepanti.dto.request.auth;
 
 import com.app.bestiepanti.validation.general.ConfirmationPassword;
 import com.app.bestiepanti.validation.general.UniqueEmail;

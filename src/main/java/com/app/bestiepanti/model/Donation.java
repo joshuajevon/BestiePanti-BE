@@ -20,6 +20,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Table(name = "donations")
 public class Donation {
+
+    public static final String STATUS_ACCEPTED = "ACCEPTED";
+    public static final String STATUS_PENDING = "PENDING";
+    public static final String STATUS_CANCELLED = "CANCELLED";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
@@ -38,10 +43,13 @@ public class Donation {
     @Column(name = "is_onsite")
     private Integer isOnsite;
 
-    @Column(name = "donation_type")
-    private List<String> donationType;
+    @Column(name = "donation_types")
+    private List<String> donationTypes;
 
     private List<String> image;
+    
+    private String notes;
 
     private String status;
+
 }

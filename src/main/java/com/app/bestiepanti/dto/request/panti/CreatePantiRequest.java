@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @ConfirmationPassword
-public class CreatePantiRequest implements ImageRequest{
+public class CreatePantiRequest implements ImagePantiRequest{
     
     @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;

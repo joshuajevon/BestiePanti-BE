@@ -34,6 +34,9 @@ public class ApplicationConfig {
     @Value("${panti.qris.upload-dir}")
     private String qrisUploadDir;
 
+    @Value("${donation.image.upload-dir}")
+    private String imageDonationUploadDir;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -61,6 +64,7 @@ public class ApplicationConfig {
     public void init() {
         createDirectory(imageUploadDir);
         createDirectory(qrisUploadDir);
+        createDirectory(imageDonationUploadDir);
     }
 
     private void createDirectory(String path) {

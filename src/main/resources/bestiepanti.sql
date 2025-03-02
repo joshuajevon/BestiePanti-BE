@@ -51,6 +51,7 @@ CREATE TABLE donations (
     donation_type VARCHAR(255)[],
     image VARCHAR(255)[],
     status VARCHAR(255),
+    notes TEXT,
     CONSTRAINT fk_donatur
         FOREIGN KEY(donatur_id)
         REFERENCES users(id),
