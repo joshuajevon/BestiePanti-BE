@@ -86,6 +86,25 @@ public class DonationService {
         }
     }
 
+    public List<DonationResponse> viewDonationByUserId(BigInteger userId) throws UserNotFoundException{
+        UserApp user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id " + userId + " Not Found"));
+        List<DonationResponse> donationResponses = new ArrayList<>();
+        List<Donation> donations = new ArrayList<>();
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+            donations = donationRepository.findAllByDonaturId(userId);
+        } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+            donations = donationRepository.findAllByPantiId(userId);
+        }
+
+        if(!donations.isEmpty()){
+            for (Donation donation : donations) {
+                DonationResponse response = createDonationResponse(donation);
+                donationResponses.add(response);
+            }
+        }
+        return donationResponses;
+    }
+
         
     public DonationResponse createDonationResponse(Donation donation) {
         return DonationResponse.builder()

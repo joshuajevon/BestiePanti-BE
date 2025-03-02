@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -62,6 +63,16 @@ public class DonationController {
         log.info("Donation " + id + " is deleted!");
         return new ResponseEntity<>(generalResponse,HttpStatus.OK);
     }
+
+    @RequestMapping(value = VIEW_DONATION_BY_USER_ID_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<DonationResponses> viewDonationByUserId(@PathVariable BigInteger userId) throws UserNotFoundException {
+        DonationResponses donationResponses = new DonationResponses();
+        List<DonationResponse> donationResponsesList = donationService.viewDonationByUserId(userId);
+        donationResponses.setDonationResponses(donationResponsesList);
+        log.info("Response Body: " + donationResponses);
+        return new ResponseEntity<>(donationResponses, HttpStatus.OK);
+    }
+    
     
     
     
