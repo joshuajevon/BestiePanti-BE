@@ -51,7 +51,8 @@ public class SecurityConfig {
                                             "/api/v1/panti/delete/**",
                                             "/api/v1/donatur/update/**",
                                             "/api/v1/donatur/view",
-                                            "/api/v1/donatur/delete/**"
+                                            "/api/v1/donatur/delete/**",
+                                            "/api/v1/donation/delete/**"
                                             ).hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.donation.CreateDonationRequest;
+import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donation.DonationResponse;
 import com.app.bestiepanti.dto.response.donation.DonationResponses;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -21,7 +22,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -54,6 +54,15 @@ public class DonationController {
         log.info("Response Body: " + donationResponses);
         return new ResponseEntity<>(donationResponses, HttpStatus.OK);
     }
+
+    @RequestMapping(value = DELETE_DONATION_ENDPOINT, method=RequestMethod.DELETE)
+    public ResponseEntity<GeneralResponse> deleteDonation(@PathVariable BigInteger id) {
+        donationService.deleteDonation(id);
+        GeneralResponse generalResponse = new GeneralResponse("Donation with ID " + id + " has been successfully deleted");
+        log.info("Donation " + id + " is deleted!");
+        return new ResponseEntity<>(generalResponse,HttpStatus.OK);
+    }
+    
     
     
 }

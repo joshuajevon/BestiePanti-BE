@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,6 +65,25 @@ public class DonationService {
             donationResponseList.add(donationResponse);
         }
         return donationResponseList;
+    }
+
+    public void deleteDonation(BigInteger id){
+
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User with id " + id + " Not Found"));
+            if(donation != null){
+                List<String> fileNames = donation.getImage();
+                for (String fileName : fileNames) {
+                    Path filePath = Paths.get(applicationConfig.getImageDonationUploadDir(), fileName);
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                }
+            }
+            donationRepository.delete(donation);
+        } catch (Exception e) {
+            throw new RuntimeException("Failes to delete Donation with id " + id, e);
+        }
     }
 
         
