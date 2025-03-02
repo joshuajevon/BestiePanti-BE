@@ -17,11 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.donation.CreateDonationRequest;
 import com.app.bestiepanti.dto.request.donation.ImageDonationRequest;
-import com.app.bestiepanti.dto.request.panti.ImagePantiRequest;
 import com.app.bestiepanti.dto.response.donation.DonationResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
-import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonationRepository;
 import com.app.bestiepanti.repository.UserRepository;
@@ -57,6 +55,17 @@ public class DonationService {
         
         return createDonationResponse(donation);
     }
+
+    public List<DonationResponse> viewAllPanti() {
+        List<Donation> donationList = donationRepository.findAll();
+        List<DonationResponse> donationResponseList = new ArrayList<>();
+        for (Donation donation : donationList) {
+            DonationResponse donationResponse = createDonationResponse(donation);
+            donationResponseList.add(donationResponse);
+        }
+        return donationResponseList;
+    }
+
         
     public DonationResponse createDonationResponse(Donation donation) {
         return DonationResponse.builder()
