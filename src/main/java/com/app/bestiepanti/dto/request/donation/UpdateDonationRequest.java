@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CreateDonationRequest implements ImageDonationRequest{
-
+public class UpdateDonationRequest implements ImageDonationRequest{
+    
     @NotEmpty(message = "Tanggal donasi tidak boleh kosong")
     private String donationDate;
 
@@ -35,4 +35,6 @@ public class CreateDonationRequest implements ImageDonationRequest{
     private String number;
 
     private String notes;
+
+    private String status;
 }

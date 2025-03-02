@@ -64,7 +64,8 @@ public class SecurityConfig {
                                             ).hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
-                                            "/api/v1/panti/update/**"
+                                            "/api/v1/panti/update/**",
+                                            "/api/v1/donation/verify/**"
                                             ).hasRole("PANTI");
                                             
                     registry.anyRequest().authenticated();

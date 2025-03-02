@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.donation.CreateDonationRequest;
+import com.app.bestiepanti.dto.request.donation.UpdateDonationRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donation.DonationResponse;
 import com.app.bestiepanti.dto.response.donation.DonationResponses;
@@ -23,9 +24,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-
-
 
 @RestController
 @Slf4j
@@ -79,7 +77,11 @@ public class DonationController {
         return new ResponseEntity<>(donationResponses, HttpStatus.OK);
     }
     
-    
-    
+    @RequestMapping(value = VERIFY_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<DonationResponse> verifyDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonationRequest request) {
+        log.info("Request Body: " + request.toString());
+        DonationResponse donationResponse = donationService.verifyDonation(id, request);
+        return new ResponseEntity<>(donationResponse, HttpStatus.OK);
+    }
     
 }

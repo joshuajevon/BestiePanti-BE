@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.donation.CreateDonationRequest;
 import com.app.bestiepanti.dto.request.donation.ImageDonationRequest;
+import com.app.bestiepanti.dto.request.donation.UpdateDonationRequest;
 import com.app.bestiepanti.dto.response.donation.DonationResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
@@ -51,6 +53,8 @@ public class DonationService {
         donation.setIsOnsite(Integer.parseInt(request.getIsOnsite()));
         donation.setNotes(request.getNotes());
         donation.setStatus(Donation.STATUS_PENDING);
+        donation.setNumber(request.getNumber());
+        donation.setInsertedTimestamp(LocalDateTime.now());
         processImage(request, donation);
         donationRepository.save(donation);
         
@@ -71,7 +75,7 @@ public class DonationService {
 
         try {
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
-            if(donation != null){
+            if(donation != null && donation.getImage() != null){
                 List<String> fileNames = donation.getImage();
                 for (String fileName : fileNames) {
                     Path filePath = Paths.get(applicationConfig.getImageDonationUploadDir(), fileName);
@@ -107,6 +111,24 @@ public class DonationService {
         return donationResponses;
     }
 
+    public DonationResponse verifyDonation(BigInteger id, UpdateDonationRequest request) throws NoSuchElementException{
+        Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
+
+        if(donation != null){
+            processImage(request, donation);
+            LocalDate donationDate = LocalDate.parse(request.getDonationDate());
+            donation.setDonationDate(donationDate);
+            donation.setDonationTypes(request.getDonationTypes());
+            donation.setIsOnsite(Integer.parseInt(request.getIsOnsite()));
+            donation.setNotes(request.getNotes());
+            donation.setStatus(request.getStatus());
+            donation.setNumber(request.getNumber());
+            donation.setVerifiedTimestamp(LocalDateTime.now());
+            donationRepository.save(donation);
+        }
+        return createDonationResponse(donation);
+    }
+
         
     public DonationResponse createDonationResponse(Donation donation) {
         return DonationResponse.builder()
@@ -118,7 +140,10 @@ public class DonationService {
                 .donationTypes(donation.getDonationTypes())
                 .images(donation.getImage())
                 .notes(donation.getNotes())
+                .number(donation.getNumber())
                 .status(donation.getStatus())
+                .insertedTimestamp(donation.getInsertedTimestamp())
+                .verifiedTimestamp(donation.getVerifiedTimestamp())
                 .build();
     }
     

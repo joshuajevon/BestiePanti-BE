@@ -1,6 +1,7 @@
 package com.app.bestiepanti.dto.response.donation;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,5 +36,11 @@ public class DonationResponse {
 
     private String notes;
 
+    private String number;
+
     private String status;
+
+    private LocalDateTime insertedTimestamp;
+
+    private LocalDateTime verifiedTimestamp;
 }

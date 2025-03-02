@@ -2,6 +2,7 @@ package com.app.bestiepanti.model;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -50,6 +51,14 @@ public class Donation {
     
     private String notes;
 
+    private String number;
+
     private String status;
+
+    @Column(name = "inserted_timestamp")
+    private LocalDateTime insertedTimestamp;
+
+    @Column(name = "verified_timestamp")
+    private LocalDateTime verifiedTimestamp;
 
 }
