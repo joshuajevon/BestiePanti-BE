@@ -41,6 +41,12 @@ public class PantiResponse{
     private String address;
 
     private String region;
+
+    private String bankName;
+
+    private String bankAccountNumber;
+
+    private String bankAccountName;
  
     private String qris;
 }

@@ -12,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.app.bestiepanti.model.Panti;
+import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.PantiRepository;
+import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
@@ -28,6 +30,7 @@ public class PantiSeeder implements CommandLineRunner {
     private final PantiRepository pantiRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PaymentRespository paymentRespository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -54,12 +57,19 @@ public class PantiSeeder implements CommandLineRunner {
                 Integer pickedIsUrgent = pickIsUrgent(isUrgentTypes);
                 panti.setIsUrgent(pickedIsUrgent);
                 panti.setPhone("08123123123" + i);
-                panti.setQris("test1.png");
                 List<String> regions = Arrays.asList("Jakarta","Bogor","Depok","Tanggerang","Bekasi");
                 String pickedRegion = pickRandomRegion(regions);
                 panti.setRegion(pickedRegion);
                 panti.setUser(user);
                 pantiRepository.save(panti);
+
+                Payment payment = new Payment();
+                payment.setBankAccountName("Rifian n Tia");
+                payment.setBankAccountNumber("123456789");
+                payment.setBankName("BCA");
+                payment.setQris("test1.png");
+                payment.setPantiId(panti);
+                paymentRespository.save(payment);
             }
         }
     }

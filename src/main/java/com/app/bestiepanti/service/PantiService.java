@@ -20,9 +20,11 @@ import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Panti;
+import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.PantiRepository;
+import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
@@ -38,6 +40,7 @@ public class PantiService {
     private final PantiRepository pantiRepository;
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
+    private final PaymentRespository paymentRespository;
 
     public PantiResponse createPanti(CreatePantiRequest request){
         UserApp user = new UserApp();
@@ -51,14 +54,25 @@ public class PantiService {
         userRepository.save(user);
  
         Panti panti = saveToPanti(request, user);
+        Payment payment = saveToPayment(request, panti);
         String jwtToken = jwtService.generateToken(user);
-        return createPantiResponse(user, panti, jwtToken);
+        return createPantiResponse(user, panti, payment, jwtToken);
     }
- 
+         
+    private Payment saveToPayment(CreatePantiRequest request, Panti panti) {
+        Payment payment = new Payment();
+        payment.setPantiId(panti);
+        processQris(request, payment);
+        payment.setBankAccountName(request.getBankAccountName());
+        payment.setBankAccountNumber(request.getBankAccountNumber());
+        payment.setBankName(request.getBankName());
+        paymentRespository.save(payment);
+        return payment;
+    }
+        
     public Panti saveToPanti(CreatePantiRequest request, UserApp user){
         Panti panti = new Panti();
         processImage(request, panti);
-        processQris(request, panti);
         panti.setDescription(request.getDescription());
         panti.setPhone(request.getPhone());
         panti.setDonationTypes(request.getDonationTypes());
@@ -79,7 +93,6 @@ public class PantiService {
         Panti panti = pantiRepository.findByUserId(id);
         if(panti != null){
             processImage(request, panti);
-            processQris(request, panti);
             panti.setDescription(request.getDescription());
             panti.setPhone(request.getPhone());
             panti.setDonationTypes(request.getDonationTypes());
@@ -88,7 +101,16 @@ public class PantiService {
             panti.setRegion(request.getRegion());
             pantiRepository.save(panti);
         }
-        return createPantiResponse(user, panti, null);
+
+        Payment payment = paymentRespository.findByPantiId(panti.getId());
+        if(payment != null){
+            processQris(request, payment);
+            payment.setBankAccountName(request.getBankAccountName());
+            payment.setBankAccountNumber(request.getBankAccountNumber());
+            payment.setBankName(request.getBankName());
+            paymentRespository.save(payment);
+        }
+        return createPantiResponse(user, panti, payment, null);
     }
     
     @Transactional
@@ -108,14 +130,19 @@ public class PantiService {
                     }
                 }
 
-                if (panti.getQris() != null) {
-                    String fileQris = panti.getQris();
+            }
+
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            if(payment != null){
+                if (payment.getQris() != null) {
+                    String fileQris = payment.getQris();
                     Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileQris);
                     if (Files.exists(filePath)) {
                         Files.delete(filePath);
                     }
                 }
             }
+            paymentRespository.deleteByPantiId(panti.getId());
             pantiRepository.deleteByUserId(id);
             userRepository.deleteById(id);
         } catch (Exception e) {
@@ -124,14 +151,14 @@ public class PantiService {
     }
 
 
-    private void processQris(ImagePantiRequest request, Panti panti) {
+    private void processQris(ImagePantiRequest request, Payment payment) {
         try {
             if (request.getQris() != null && !request.getQris().isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + request.getName() + "_" + request.getQris().getOriginalFilename();
                 Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), fileName);
                 try {
-                    if(panti.getQris() != null){
-                        String prevFileName = panti.getQris();
+                    if(payment.getQris() != null){
+                        String prevFileName = payment.getQris();
                         Path prevFilePath = Paths.get(applicationConfig.getQrisUploadDir(), prevFileName);
                         if (Files.exists(prevFilePath)) {
                             Files.delete(prevFilePath);
@@ -141,7 +168,7 @@ public class PantiService {
                 } catch (IOException e) {
                     throw new RuntimeException("Failed to save image", e);
                 }
-                panti.setQris(fileName);
+                payment.setQris(fileName);
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to save image", e);
@@ -180,7 +207,7 @@ public class PantiService {
     }
 
 
-    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {
+    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, Payment payment, String jwtToken) {
         return PantiResponse.builder()
                 .id(userApp.getId())
                 .name(userApp.getName())
@@ -193,7 +220,10 @@ public class PantiService {
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
                 .region(panti.getRegion())
-                .qris(panti.getQris())
+                .bankAccountName(payment.getBankAccountName())
+                .bankAccountNumber(payment.getBankAccountNumber())
+                .bankName(payment.getBankName())
+                .qris(payment.getQris())
                 .token(jwtToken)
                 .build();
     }
@@ -202,7 +232,8 @@ public class PantiService {
         List<Panti> pantiList = pantiRepository.findAll();
         List<PantiResponse> pantiResponseList = new ArrayList<>();
         for (Panti panti : pantiList) {
-            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, payment, null);
             pantiResponseList.add(pantiResponse);
         }
         return pantiResponseList;
@@ -214,7 +245,8 @@ public class PantiService {
         if (panti == null) {
             throw new UserNotFoundException("User with id " + id + " Not Found");
         } else {
-            pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            pantiResponse = createPantiResponse(panti.getUser(), panti, payment, null);
         }
         return pantiResponse;
     }
@@ -224,7 +256,8 @@ public class PantiService {
         List<PantiResponse> pantiResponseList = new ArrayList<>();
 
         for (Panti panti : pantiList) {
-            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, null);
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            PantiResponse pantiResponse = createPantiResponse(panti.getUser(), panti, payment, null);
             pantiResponseList.add(pantiResponse);
         }
         return pantiResponseList;

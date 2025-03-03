@@ -60,6 +60,15 @@ public class CreatePantiRequest implements ImagePantiRequest{
 
     @NotEmpty(message = "Wilayah tidak boleh kosong")
     private String region;
+
+    @NotEmpty(message = "Nama bank tidak boleh kosong")
+    private String bankName;
+
+    @NotEmpty(message = "Nomor rekening tidak boleh kosong")
+    private String bankAccountNumber;
+    
+    @NotEmpty(message = "Nama pemilik rekening tidak boleh kosong")
+    private String bankAccountName;
    
     private MultipartFile qris;
 }

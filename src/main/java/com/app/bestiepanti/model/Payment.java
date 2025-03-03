@@ -1,7 +1,6 @@
 package com.app.bestiepanti.model;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,31 +16,24 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Entity
 @RequiredArgsConstructor
-@Table(name = "pantis")
-public class Panti {
+@Table(name = "payments")
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
- 
+
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserApp user;
- 
-    private List<String> image;
+    @JoinColumn(name = "panti_id", referencedColumnName = "id")
+    private Panti pantiId;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
- 
-    private String phone;
- 
-    @Column(name = "donation_types")
-    private List<String> donationTypes;
- 
-    @Column(name = "is_urgent")
-    private Integer isUrgent;
-   
-    private String address;
+    @Column(name = "bank_name")
+    private String bankName;
 
-    private String region;
-   
+    @Column(name = "bank_account_number")
+    private String bankAccountNumber;
+
+    @Column(name = "bank_account_name")
+    private String bankAccountName;
+
+    private String qris;
 }

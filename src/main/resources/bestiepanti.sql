@@ -23,7 +23,6 @@ CREATE TABLE pantis (
     donation_types VARCHAR(255)[],  
     is_urgent INTEGER,
     address VARCHAR(255),
-    qris VARCHAR(255),
     region VARCHAR(255),
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
@@ -37,6 +36,7 @@ CREATE TABLE donaturs (
     gender VARCHAR(255),
     dob DATE,
     address VARCHAR(255),
+    profile VARCHAR(255),
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
@@ -77,4 +77,16 @@ CREATE TABLE messages (
         FOREIGN KEY(panti_id)
         REFERENCES users(id)
 );
+
+CREATE TABLE payments (
+    ID BIGINT PRIMARY KEY,
+    panti_id BIGINT,
+    bank_name VARCHAR(255),
+    bank_account_number VARCHAR(255),
+    bank_account_name VARCHAR(255),
+    qris VARCHAR(255),
+    CONSTRAINT fk_panti
+        FOREIGN KEY(panti_id)
+        REFERENCES pantis(id)
+)
 

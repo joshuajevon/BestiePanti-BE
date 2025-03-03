@@ -19,10 +19,12 @@ import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
 import com.app.bestiepanti.model.Panti;
+import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
 import com.app.bestiepanti.repository.PantiRepository;
+import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
@@ -42,6 +44,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final PantiRepository pantiRepository;
     private final JwtConfig jwtConfig;
+    private final PaymentRespository paymentRespository;
 
     public DonaturResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
@@ -79,8 +82,9 @@ public class UserService {
             return createDonaturResponse(user, donatur, jwtToken);
         } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
             Panti panti = pantiRepository.findByUserId(user.getId());
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
             log.info("Panti " + user.getId() + " is logged in!");
-            return createPantiResponse(user, panti, jwtToken);
+            return createPantiResponse(user, panti, payment, jwtToken);
         } else if(user.getRole().getName().equals(UserApp.ROLE_ADMIN)){
             log.info("Admin " + user.getId() + " is logged in!");
             return createAdminResponse(user, jwtToken);
@@ -117,7 +121,8 @@ public class UserService {
             return createDonaturResponse(user, donatur, null);
         } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
             Panti panti = pantiRepository.findByUserId(user.getId());
-            return createPantiResponse(user, panti, null);
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            return createPantiResponse(user, panti, payment, null);
         }
         return createAdminResponse(user, null);
     }
@@ -146,19 +151,23 @@ public class UserService {
                 .build();
     }
 
-    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, String jwtToken) {
+    public PantiResponse createPantiResponse(UserApp userApp, Panti panti, Payment payment, String jwtToken) {
         return PantiResponse.builder()
                 .id(userApp.getId())
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
-                .description(panti.getDescription())
                 .image(panti.getImage())
+                .description(panti.getDescription())
                 .phone(panti.getPhone())
                 .donationTypes(panti.getDonationTypes())
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
-                .qris(panti.getQris())
+                .region(panti.getRegion())
+                .bankAccountName(payment.getBankAccountName())
+                .bankAccountNumber(payment.getBankAccountNumber())
+                .bankName(payment.getBankName())
+                .qris(payment.getQris())
                 .token(jwtToken)
                 .build();
     }
