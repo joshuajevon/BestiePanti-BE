@@ -44,7 +44,7 @@ public class SecurityConfig {
                             "/api/v1/message/view/**",
                             "/api/v1/donation/view",
                             "/api/v1/donation/view/**",
-                            "/uploads/image/**").permitAll(); // no auth
+                            "/storage/**").permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",
                             "/api/v1/panti/create",

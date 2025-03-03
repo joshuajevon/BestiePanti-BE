@@ -10,9 +10,9 @@ import java.io.File;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String uploadDir = new File("uploads/image/").getAbsolutePath();
+        String uploadDir = new File("storage").getAbsolutePath();
 
-        registry.addResourceHandler("/uploads/image/**")
+        registry.addResourceHandler("/storage/**")
                 .addResourceLocations("file:" + uploadDir + "/");
     }
 }
