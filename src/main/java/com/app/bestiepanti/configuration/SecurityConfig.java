@@ -29,47 +29,44 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) 
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .disable())
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", 
-                                            "/api/v1/login", 
-                                            "/api/v1/register",
-                                            "/api/v1/user",
-                                            "/api/v1/panti/view",
-                                            "/api/v1/panti/view/**",
-                                            "/api/v1/panti/urgent",
-                                            "/api/v1/message/view",
-                                            "/api/v1/message/view/**",
-                                            "/api/v1/donation/view",
-                                            "/api/v1/donation/view/**"
-                                            ).permitAll(); // no auth
-                                            
+                    registry.requestMatchers("/",
+                            "/api/v1/login",
+                            "/api/v1/register",
+                            "/api/v1/user",
+                            "/api/v1/panti/view",
+                            "/api/v1/panti/view/**",
+                            "/api/v1/panti/urgent",
+                            "/api/v1/message/view",
+                            "/api/v1/message/view/**",
+                            "/api/v1/donation/view",
+                            "/api/v1/donation/view/**",
+                            "/uploads/image/**").permitAll(); // no auth
+
                     registry.requestMatchers("/api/v1/admin/**",
-                                            "/api/v1/panti/create",
-                                            "/api/v1/panti/update/**",
-                                            "/api/v1/panti/delete/**",
-                                            "/api/v1/donatur/update/**",
-                                            "/api/v1/donatur/view",
-                                            "/api/v1/donatur/delete/**",
-                                            "/api/v1/donation/delete/**"
-                                            ).hasRole("ADMIN");
+                            "/api/v1/panti/create",
+                            "/api/v1/panti/update/**",
+                            "/api/v1/panti/delete/**",
+                            "/api/v1/donatur/update/**",
+                            "/api/v1/donatur/view",
+                            "/api/v1/donatur/delete/**",
+                            "/api/v1/donation/delete/**").hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",
-                                            "/api/v1/donatur/update/**",
-                                            "/api/v1/donatur/view/**",
-                                            "/api/v1/message/create/**",
-                                            "/api/v1/donation/create/**"
-                                            ).hasRole("DONATUR");
+                            "/api/v1/donatur/update/**",
+                            "/api/v1/donatur/view/**",
+                            "/api/v1/message/create/**",
+                            "/api/v1/donation/create/**").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
-                                            "/api/v1/panti/update/**",
-                                            "/api/v1/donation/verify/**",
-                                            "/api/v1/message/accept/**",
-                                            "/api/v1/message/delete/**"
-                                            ).hasRole("PANTI");
-                                            
+                            "/api/v1/panti/update/**",
+                            "/api/v1/donation/verify/**",
+                            "/api/v1/message/accept/**",
+                            "/api/v1/message/delete/**").hasRole("PANTI");
+
                     registry.anyRequest().authenticated();
                 })
                 .exceptionHandling(exceptionHandling -> exceptionHandling
