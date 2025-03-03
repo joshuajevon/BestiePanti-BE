@@ -48,13 +48,13 @@ public class PantiSeeder implements CommandLineRunner {
                 List<String> donationTypes = Arrays.asList("Dana","Pangan","Barang","Tenaga");
                 List<String> pickedDonationTypes = pickRandomDonationTypes(donationTypes);
                 panti.setDonationTypes(pickedDonationTypes);
-                List<String> images = Arrays.asList("test" + i + ".png");
+                List<String> images = Arrays.asList("test1.png");
                 panti.setImage(images);
                 List<Integer> isUrgentTypes = Arrays.asList(1,0);
                 Integer pickedIsUrgent = pickIsUrgent(isUrgentTypes);
                 panti.setIsUrgent(pickedIsUrgent);
                 panti.setPhone("08123123123" + i);
-                panti.setQris("test" + i + ".png");
+                panti.setQris("test1.png");
                 List<String> regions = Arrays.asList("Jakarta","Bogor","Depok","Tanggerang","Bekasi");
                 String pickedRegion = pickRandomRegion(regions);
                 panti.setRegion(pickedRegion);

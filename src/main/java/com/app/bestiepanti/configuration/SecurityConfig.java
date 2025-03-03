@@ -44,7 +44,10 @@ public class SecurityConfig {
                             "/api/v1/message/view/**",
                             "/api/v1/donation/view",
                             "/api/v1/donation/view/**",
-                            "/storage/**").permitAll(); // no auth
+                            "/storage/image/**",
+                            "/storage/qris/**",
+                            "/storage/profile/**"
+                            ).permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",
                             "/api/v1/panti/create",
@@ -53,19 +56,22 @@ public class SecurityConfig {
                             "/api/v1/donatur/update/**",
                             "/api/v1/donatur/view",
                             "/api/v1/donatur/delete/**",
-                            "/api/v1/donation/delete/**").hasRole("ADMIN");
+                            "/api/v1/donation/delete/**",
+                            "/storage/donation/**").hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",
                             "/api/v1/donatur/update/**",
                             "/api/v1/donatur/view/**",
                             "/api/v1/message/create/**",
-                            "/api/v1/donation/create/**").hasRole("DONATUR");
+                            "/api/v1/donation/create/**",
+                            "/storage/donation/**").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
                             "/api/v1/donation/verify/**",
                             "/api/v1/message/accept/**",
-                            "/api/v1/message/delete/**").hasRole("PANTI");
+                            "/api/v1/message/delete/**",
+                            "/storage/donation/**").hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
                 })
