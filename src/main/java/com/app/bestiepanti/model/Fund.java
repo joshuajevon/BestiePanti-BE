@@ -1,7 +1,6 @@
 package com.app.bestiepanti.model;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

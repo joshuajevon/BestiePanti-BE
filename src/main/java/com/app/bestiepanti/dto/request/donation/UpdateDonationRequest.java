@@ -1,7 +1,5 @@
 package com.app.bestiepanti.dto.request.donation;
 
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.app.bestiepanti.model.NonFund;
 
 @Repository
-public interface NonFundRepository extends JpaRepository<NonFund, BigInteger>{
+public interface NonFundDonationRepository extends JpaRepository<NonFund, BigInteger>{
     @Query(value = "SELECT * FROM NonFunds WHERE donation_id = ?1", nativeQuery = true)
     NonFund findByDonationId(BigInteger donationId);  
 
