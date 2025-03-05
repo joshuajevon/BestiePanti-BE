@@ -42,8 +42,8 @@ public class SecurityConfig {
                             "/api/v1/panti/urgent",
                             "/api/v1/message/view",
                             "/api/v1/message/view/**",
-                            "/api/v1/donation/view",
-                            "/api/v1/donation/view/**",
+                            "/api/v1/donation/fund/view",
+                            "/api/v1/donation/fund/view/**",
                             "/storage/image/**",
                             "/storage/qris/**",
                             "/storage/profile/**"
@@ -56,19 +56,19 @@ public class SecurityConfig {
                             "/api/v1/donatur/update/**",
                             "/api/v1/donatur/view",
                             "/api/v1/donatur/delete/**",
-                            "/api/v1/donation/delete/**",
+                            "/api/v1/donation/fund/delete/**",
                             "/storage/donation/**").hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",
                             "/api/v1/donatur/update/**",
                             "/api/v1/donatur/view/**",
                             "/api/v1/message/create/**",
-                            "/api/v1/donation/create/**",
+                            "/api/v1/donation/fund/create/**",
                             "/storage/donation/**").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
-                            "/api/v1/donation/verify/**",
+                            "/api/v1/donation/fund/verify/**",
                             "/api/v1/message/accept/**",
                             "/api/v1/message/delete/**",
                             "/storage/donation/**").hasRole("PANTI");

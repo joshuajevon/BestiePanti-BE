@@ -1,0 +1,189 @@
+package com.app.bestiepanti.service;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.app.bestiepanti.configuration.ApplicationConfig;
+import com.app.bestiepanti.dto.request.donation.CreateFundDonationRequest;
+import com.app.bestiepanti.dto.request.donation.ImageFundDonationRequest;
+import com.app.bestiepanti.dto.request.donation.UpdateDonationRequest;
+import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
+import com.app.bestiepanti.exception.UserNotFoundException;
+import com.app.bestiepanti.model.Donation;
+import com.app.bestiepanti.model.Fund;
+import com.app.bestiepanti.model.UserApp;
+import com.app.bestiepanti.repository.DonationRepository;
+import com.app.bestiepanti.repository.FundRepository;
+import com.app.bestiepanti.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class FundDonationService {
+
+    private final DonationRepository donationRepository;
+    private final ApplicationConfig applicationConfig;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final FundRepository fundRepository;
+
+    public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
+        String email = authentication.getName();
+        UserApp userDonatur = userService.findUserByEmail(email);
+
+        Donation donation = new Donation();
+        LocalDate fundDonationDate = LocalDate.now();
+        donation.setDonationDate(fundDonationDate);
+        donation.setDonationTypes(Arrays.asList("Dana"));
+        donation.setDonaturId(userDonatur);
+        donation.setPantiId(userPanti);
+        donation.setIsOnsite(0);
+        donation.setStatus(Donation.STATUS_PENDING);
+        donation.setInsertedTimestamp(LocalDateTime.now());
+        donationRepository.save(donation);
+
+        Fund fund = new Fund();
+        fund.setAccountNumber(request.getAccountNumber());
+        fund.setAccountName(request.getAccountName());
+        fund.setDonationId(donation);
+        processImage(request, fund);
+        fundRepository.save(fund);
+        
+        return createFundDonationResponse(donation, fund);
+    }
+
+    public List<FundDonationResponse> viewAllFundDonation() {
+        List<Donation> donationList = donationRepository.findAll();
+        List<FundDonationResponse> fundDonationResponseList = new ArrayList<>();
+        for (Donation donation : donationList) {
+            Fund fund = fundRepository.findByDonationId(donation.getId());
+            FundDonationResponse fundDonationResponse = createFundDonationResponse(donation, fund);
+            fundDonationResponseList.add(fundDonationResponse);
+        }
+        return fundDonationResponseList;
+    }
+
+    public void deleteFundDonation(BigInteger id){
+
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
+            Fund fund = fundRepository.findByDonationId(id);
+            if(fund != null && fund.getImage() != null){
+                String fileName = fund.getImage();
+                Path filePath = Paths.get(applicationConfig.getImageDonationUploadDir(), fileName);
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                }
+            }
+            fundRepository.delete(fund);
+            donationRepository.delete(donation);
+        } catch (NoSuchElementException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete Fund Donation with id " + id, e);
+        }
+    }
+
+    public List<FundDonationResponse> viewFundDonationByUserId(BigInteger userId) throws UserNotFoundException{
+        UserApp user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id " + userId + " Not Found"));
+        List<FundDonationResponse> fundDonationResponses = new ArrayList<>();
+        List<Donation> donations = new ArrayList<>();
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+            donations = donationRepository.findAllByDonaturId(userId);
+        } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+            donations = donationRepository.findAllByPantiId(userId);
+        }
+
+        if(!donations.isEmpty()){
+            for (Donation donation : donations) {
+                Fund fund = fundRepository.findByDonationId(donation.getId());
+                FundDonationResponse response = createFundDonationResponse(donation, fund);
+                fundDonationResponses.add(response);
+            }
+        }
+        return fundDonationResponses;
+    }
+
+    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateDonationRequest request){
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
+            donation.setStatus(request.getStatus());
+            donation.setVerifiedTimestamp(LocalDateTime.now());
+            donationRepository.save(donation);
+            
+            Fund fund = fundRepository.findByDonationId(id);
+            if(fund != null){
+                processImage(request, fund);
+                fund.setAccountName(request.getAccountName());
+                fund.setAccountNumber(request.getAccountNumber());
+                fund.setNominalAmount(request.getNominalAmount());
+                fundRepository.save(fund);
+            }
+            return createFundDonationResponse(donation, fund);
+        } catch (NumberFormatException e) {
+            throw e;
+        } catch (NoSuchElementException e) {
+            throw e;
+        }
+    }
+
+        
+    public FundDonationResponse createFundDonationResponse(Donation donation, Fund fund) {
+        return FundDonationResponse.builder()
+                .id(donation.getId())
+                .donaturId(donation.getDonaturId().getId())
+                .pantiId(donation.getPantiId().getId())
+                .donationDate(donation.getDonationDate().toString())
+                .isOnsite(donation.getIsOnsite())
+                .donationTypes(donation.getDonationTypes())
+                .image(fund.getImage())
+                .accountName(fund.getAccountName())
+                .accountNumber(fund.getAccountNumber())
+                .nominalAmount(fund.getNominalAmount())
+                .status(donation.getStatus())
+                .insertedTimestamp(donation.getInsertedTimestamp())
+                .verifiedTimestamp(donation.getVerifiedTimestamp())
+                .build();
+    }
+    
+    public void processImage(ImageFundDonationRequest request, Fund fund) {
+        try {
+            if (request.getImage() != null && !request.getImage().isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + fund.getDonationId().getPantiId().getName() + "_" + request.getImage().getOriginalFilename();
+                Path filePath = Paths.get(applicationConfig.getImageDonationUploadDir(), fileName);
+                    
+                    try {
+                        if(fund.getImage() != null){
+                            String prevFileName = fund.getImage();
+                            Path prevFilePath = Paths.get(applicationConfig.getImageDonationUploadDir(), prevFileName);
+                            if (Files.exists(prevFilePath)) {
+                                Files.delete(prevFilePath);
+                            }
+                        }
+                        Files.write(filePath, request.getImage().getBytes());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to save image", e);
+                    }
+                    fund.setImage(fileName);
+                }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save images", e);
+        }
+    }
+}

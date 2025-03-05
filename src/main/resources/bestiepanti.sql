@@ -49,10 +49,7 @@ CREATE TABLE donations (
     donation_date DATE,
     is_onsite INTEGER,
     donation_type VARCHAR(255)[],
-    image VARCHAR(255)[],
     status VARCHAR(255),
-    number VARCHAR(255),
-    notes TEXT,
     inserted_timestamp TIMESTAMP,
     verified_timestamp TIMESTAMP,
     CONSTRAINT fk_donatur
@@ -62,6 +59,29 @@ CREATE TABLE donations (
         FOREIGN KEY(panti_id)
         REFERENCES users(id)
 );
+
+CREATE TABLE funds(
+    id BIGINT PRIMARY KEY,
+    donation_id BIGINT,
+    nominal_amount VARCHAR(255),
+    account_number VARCHAR(255),
+    account_name VARCHAR(255),
+    image VARCHAR(255),
+    CONSTRAINT fk_donation
+        FOREIGN KEY(donation_id)
+        REFERENCES donations(id)
+)
+
+CREATE TABLE nonfunds(
+    id BIGINT PRIMARY KEY,
+    donation_id BIGINT,
+    pic VARCHAR(255),
+    active_phone VARCHAR(255),
+    notes TEXT,
+    CONSTRAINT fk_donation
+        FOREIGN KEY(donation_id)
+        REFERENCES donations(id)
+)
 
 CREATE TABLE messages (
     id BIGINT  PRIMARY KEY,

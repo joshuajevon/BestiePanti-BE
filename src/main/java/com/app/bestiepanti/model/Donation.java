@@ -46,13 +46,7 @@ public class Donation {
 
     @Column(name = "donation_types")
     private List<String> donationTypes;
-
-    private List<String> image;
     
-    private String notes;
-
-    private String number;
-
     private String status;
 
     @Column(name = "inserted_timestamp")

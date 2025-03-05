@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.response.donation;
+package com.app.bestiepanti.dto.response.donation.fund;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class DonationResponse {
+public class FundDonationResponse {
 
     private BigInteger id;
 
@@ -32,11 +32,13 @@ public class DonationResponse {
 
     private List<String> donationTypes;
     
-    private List<String> images;
+    private String image;
 
-    private String notes;
+    private String nominalAmount;
 
-    private String number;
+    private String accountNumber;
+    
+    private String accountName;
 
     private String status;
 
