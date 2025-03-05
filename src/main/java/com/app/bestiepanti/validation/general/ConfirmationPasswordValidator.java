@@ -20,8 +20,8 @@ public class ConfirmationPasswordValidator implements ConstraintValidator<Confir
             boolean isValid = password != null && password.equals(confirmationPassword);
             if (!isValid) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("Konfirmasi Password Tidak Sama")
-                       .addPropertyNode("confirmationPassword").addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Konfirmasi Kata Sandi tidak cocok")
+                        .addPropertyNode("confirmationPassword").addConstraintViolation();
             }
             return isValid;
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -29,5 +29,3 @@ public class ConfirmationPasswordValidator implements ConstraintValidator<Confir
         }
     }
 }
-
-
