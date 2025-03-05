@@ -69,23 +69,24 @@ public class UserService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
+            throw new UserNotFoundException("Email atau Kata Sandi tidak valid. Silakan coba lagi.");
         }
         String jwtToken = jwtService.generateToken(user);
         String existingToken = jwtConfig.getActiveToken(loginRequest.getEmail());
-        if(existingToken != null) jwtConfig.blacklistToken(existingToken);
+        if (existingToken != null)
+            jwtConfig.blacklistToken(existingToken);
         jwtConfig.storeActiveToken(loginRequest.getEmail(), jwtToken);
-        
-        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+
+        if (user.getRole().getName().equals(UserApp.ROLE_DONATUR)) {
             Donatur donatur = donaturRepository.findByUserId(user.getId());
             log.info("Donatur " + user.getId() + " is logged in!");
             return createDonaturResponse(user, donatur, jwtToken);
-        } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+        } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)) {
             Panti panti = pantiRepository.findByUserId(user.getId());
             Payment payment = paymentRespository.findByPantiId(panti.getId());
             log.info("Panti " + user.getId() + " is logged in!");
             return createPantiResponse(user, panti, payment, jwtToken);
-        } else if(user.getRole().getName().equals(UserApp.ROLE_ADMIN)){
+        } else if (user.getRole().getName().equals(UserApp.ROLE_ADMIN)) {
             log.info("Admin " + user.getId() + " is logged in!");
             return createAdminResponse(user, jwtToken);
         }
@@ -95,7 +96,8 @@ public class UserService {
     public UserApp findUserByEmail(String email) throws UserNotFoundException {
         UserApp user = userRepository.findByEmail(email)
                 .orElseThrow(
-                        () -> new UserNotFoundException("Tidak ditemukan akun dengan alamat email ini. Silakan mendaftar."));
+                        () -> new UserNotFoundException(
+                                "Tidak ditemukan akun dengan alamat email ini. Silakan mendaftar."));
         return user;
     }
 
@@ -111,15 +113,15 @@ public class UserService {
         return donatur;
     }
 
-    public Object getUser() throws UserNotFoundException{
+    public Object getUser() throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserApp user = findUserByEmail(email);
 
-        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
+        if (user.getRole().getName().equals(UserApp.ROLE_DONATUR)) {
             Donatur donatur = donaturRepository.findByUserId(user.getId());
             return createDonaturResponse(user, donatur, null);
-        } else if(user.getRole().getName().equals(UserApp.ROLE_PANTI)){
+        } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)) {
             Panti panti = pantiRepository.findByUserId(user.getId());
             Payment payment = paymentRespository.findByPantiId(panti.getId());
             return createPantiResponse(user, panti, payment, null);
