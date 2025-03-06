@@ -1,12 +1,12 @@
-package com.app.bestiepanti.dto.request.donation;
-
+package com.app.bestiepanti.dto.request.donation.nonfund;
 
 import java.util.List;
+
+import jakarta.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CreateNonFundDonationRequest {
-
+public class UpdateNonFundDonationRequest {
     @NotEmpty(message = "Tanggal donasi tidak boleh kosong")
     private String donationDate;
 
@@ -36,4 +35,7 @@ public class CreateNonFundDonationRequest {
 
     @NotEmpty(message = "Catatan tidak boleh kosong")
     private String notes;
+
+    @NotEmpty(message = "Status tidak boleh kosong")
+    private String status;
 }

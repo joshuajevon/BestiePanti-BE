@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.request.donation;
+package com.app.bestiepanti.dto.request.donation.fund;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CreateFundDonationRequest implements ImageFundDonationRequest{
+public class UpdateFundDonationRequest implements ImageFundDonationRequest{
     
     @NotEmpty(message = "Nomor rekening tidak boleh kosong")
     private String accountNumber;
@@ -27,4 +27,10 @@ public class CreateFundDonationRequest implements ImageFundDonationRequest{
     
     @NotNull(message = "Bukti transfer tidak boleh kosong")
     private MultipartFile image;
+
+    @NotEmpty(message = "Jumlah transfer tidak boleh kosong")
+    private String nominalAmount;
+
+    @NotEmpty(message = "Status tidak boleh kosong")
+    private String status;
 }

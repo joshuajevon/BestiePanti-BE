@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.bestiepanti.dto.request.donation.CreateFundDonationRequest;
-import com.app.bestiepanti.dto.request.donation.UpdateDonationRequest;
+import com.app.bestiepanti.dto.request.donation.fund.CreateFundDonationRequest;
+import com.app.bestiepanti.dto.request.donation.fund.UpdateFundDonationRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponses;
@@ -59,7 +59,7 @@ public class FundDonationController {
     public ResponseEntity<GeneralResponse> deleteFundDonation(@PathVariable BigInteger id) {
         try {
             fundDonationService.deleteFundDonation(id);
-            GeneralResponse generalResponse = new GeneralResponse("Donation with ID " + id + " has been successfully deleted");
+            GeneralResponse generalResponse = new GeneralResponse("Fund Donation with ID " + id + " has been successfully deleted");
             log.info("Fund donation " + id + " is deleted!");
             return new ResponseEntity<>(generalResponse,HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -78,7 +78,7 @@ public class FundDonationController {
     }
     
     @RequestMapping(value = VERIFY_FUND_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateDonationRequest request) {
+    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateFundDonationRequest request) {
         try {
             log.info("Request Body: " + request.toString());
             FundDonationResponse fundDonationResponse = fundDonationService.verifyFundDonation(id, request);

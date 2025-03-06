@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.request.donation;
+package com.app.bestiepanti.dto.request.donation.fund;
 
 import org.springframework.web.multipart.MultipartFile;
 

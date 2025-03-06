@@ -21,6 +21,8 @@ public class MessageResponse {
 
     private BigInteger donaturId;
 
+    private String donaturName;
+
     private BigInteger pantiId;
 
     private String message;

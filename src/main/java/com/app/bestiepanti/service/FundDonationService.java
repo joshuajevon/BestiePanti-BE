@@ -17,16 +17,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
-import com.app.bestiepanti.dto.request.donation.CreateFundDonationRequest;
-import com.app.bestiepanti.dto.request.donation.ImageFundDonationRequest;
-import com.app.bestiepanti.dto.request.donation.UpdateDonationRequest;
+import com.app.bestiepanti.dto.request.donation.fund.CreateFundDonationRequest;
+import com.app.bestiepanti.dto.request.donation.fund.ImageFundDonationRequest;
+import com.app.bestiepanti.dto.request.donation.fund.UpdateFundDonationRequest;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
 import com.app.bestiepanti.model.Fund;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonationRepository;
-import com.app.bestiepanti.repository.FundRepository;
+import com.app.bestiepanti.repository.FundDonationRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class FundDonationService {
     private final ApplicationConfig applicationConfig;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final FundRepository fundRepository;
+    private final FundDonationRepository fundDonationRepository;
 
     public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,18 +61,19 @@ public class FundDonationService {
         Fund fund = new Fund();
         fund.setAccountNumber(request.getAccountNumber());
         fund.setAccountName(request.getAccountName());
+        fund.setNominalAmount(request.getNominalAmount());
         fund.setDonationId(donation);
         processImage(request, fund);
-        fundRepository.save(fund);
+        fundDonationRepository.save(fund);
         
         return createFundDonationResponse(donation, fund);
     }
 
     public List<FundDonationResponse> viewAllFundDonation() {
-        List<Donation> donationList = donationRepository.findAll();
+        List<Donation> donationList = donationRepository.findAllByFundTypes();
         List<FundDonationResponse> fundDonationResponseList = new ArrayList<>();
         for (Donation donation : donationList) {
-            Fund fund = fundRepository.findByDonationId(donation.getId());
+            Fund fund = fundDonationRepository.findByDonationId(donation.getId());
             FundDonationResponse fundDonationResponse = createFundDonationResponse(donation, fund);
             fundDonationResponseList.add(fundDonationResponse);
         }
@@ -82,8 +83,8 @@ public class FundDonationService {
     public void deleteFundDonation(BigInteger id){
 
         try {
-            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
-            Fund fund = fundRepository.findByDonationId(id);
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
+            Fund fund = fundDonationRepository.findByDonationId(id);
             if(fund != null && fund.getImage() != null){
                 String fileName = fund.getImage();
                 Path filePath = Paths.get(applicationConfig.getImageDonationUploadDir(), fileName);
@@ -91,7 +92,7 @@ public class FundDonationService {
                     Files.delete(filePath);
                 }
             }
-            fundRepository.delete(fund);
+            fundDonationRepository.delete(fund);
             donationRepository.delete(donation);
         } catch (NoSuchElementException e) {
             throw e;
@@ -105,14 +106,14 @@ public class FundDonationService {
         List<FundDonationResponse> fundDonationResponses = new ArrayList<>();
         List<Donation> donations = new ArrayList<>();
         if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)){
-            donations = donationRepository.findAllByDonaturId(userId);
+            donations = donationRepository.findAllByDonaturIdAndFundTypes(userId);
         } else if (user.getRole().getName().equals(UserApp.ROLE_PANTI)){
-            donations = donationRepository.findAllByPantiId(userId);
+            donations = donationRepository.findAllByPantiIdAndFundTypes(userId);
         }
 
         if(!donations.isEmpty()){
             for (Donation donation : donations) {
-                Fund fund = fundRepository.findByDonationId(donation.getId());
+                Fund fund = fundDonationRepository.findByDonationId(donation.getId());
                 FundDonationResponse response = createFundDonationResponse(donation, fund);
                 fundDonationResponses.add(response);
             }
@@ -120,20 +121,20 @@ public class FundDonationService {
         return fundDonationResponses;
     }
 
-    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateDonationRequest request){
+    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request){
         try {
-            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Donation with id " + id + " Not Found"));
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
             donation.setStatus(request.getStatus());
             donation.setVerifiedTimestamp(LocalDateTime.now());
             donationRepository.save(donation);
             
-            Fund fund = fundRepository.findByDonationId(id);
+            Fund fund = fundDonationRepository.findByDonationId(id);
             if(fund != null){
                 processImage(request, fund);
                 fund.setAccountName(request.getAccountName());
                 fund.setAccountNumber(request.getAccountNumber());
                 fund.setNominalAmount(request.getNominalAmount());
-                fundRepository.save(fund);
+                fundDonationRepository.save(fund);
             }
             return createFundDonationResponse(donation, fund);
         } catch (NumberFormatException e) {

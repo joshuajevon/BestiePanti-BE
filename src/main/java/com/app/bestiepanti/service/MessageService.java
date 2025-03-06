@@ -105,6 +105,7 @@ public class MessageService {
         return MessageResponse.builder()
                 .id(message.getId())
                 .donaturId(message.getDonaturId().getId())
+                .donaturName(message.getDonaturId().getName())
                 .pantiId(message.getPantiId().getId())
                 .message(message.getMessage())
                 .timestamp(message.getTimestamp())
