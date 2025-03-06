@@ -34,4 +34,6 @@ public class Donatur {
     private LocalDate dob;
 
     private String address;
+
+    private String profile;
 }

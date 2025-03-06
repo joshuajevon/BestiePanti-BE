@@ -23,6 +23,8 @@ public class MessageResponse {
 
     private String donaturName;
 
+    private String donaturProfile;
+
     private BigInteger pantiId;
 
     private String message;

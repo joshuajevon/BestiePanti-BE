@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.app.bestiepanti.dto.request.MessageRequest;
 import com.app.bestiepanti.dto.response.message.MessageResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
+import com.app.bestiepanti.model.Donatur;
 import com.app.bestiepanti.model.Message;
 import com.app.bestiepanti.model.UserApp;
+import com.app.bestiepanti.repository.DonaturRepository;
 import com.app.bestiepanti.repository.MessageRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
@@ -27,6 +29,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final DonaturRepository donaturRepository;
 
     public MessageResponse createMessage(MessageRequest request, BigInteger pantiId) throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -34,6 +37,7 @@ public class MessageService {
         String email = authentication.getName();
         UserApp userDonatur = userService.findUserByEmail(email);
         Message message = new Message();
+        Donatur donatur = donaturRepository.findByUserId(userDonatur.getId());
 
         if(userPanti != null && userDonatur != null){
             message.setDonaturId(userDonatur);
@@ -43,7 +47,8 @@ public class MessageService {
             message.setMessage(request.getMessage());
             messageRepository.save(message);
         }
-        return createMessageResponse(message);
+
+        return createMessageResponse(message, donatur);
     }
 
     public List<MessageResponse> viewAllMessages() {
@@ -51,7 +56,8 @@ public class MessageService {
         List<MessageResponse> messageResponseList = new ArrayList<>();
         if(!messages.isEmpty()){
             for (Message message : messages) {
-                MessageResponse messageResponse = createMessageResponse(message);
+                Donatur donatur = donaturRepository.findByUserId(message.getDonaturId().getId());
+                MessageResponse messageResponse = createMessageResponse(message, donatur);
                 messageResponseList.add(messageResponse);
             }
         }
@@ -71,7 +77,9 @@ public class MessageService {
 
         if(!messages.isEmpty()){
             for (Message message : messages) {
-                MessageResponse response = createMessageResponse(message);
+                Donatur donatur = new Donatur();
+                if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)) donatur = donaturRepository.findByUserId(userId);
+                MessageResponse response = createMessageResponse(message, donatur);
                 messageResponses.add(response);
             }
         }
@@ -101,11 +109,12 @@ public class MessageService {
         }
     }
 
-    public MessageResponse createMessageResponse(Message message){
+    public MessageResponse createMessageResponse(Message message, Donatur donatur){
         return MessageResponse.builder()
                 .id(message.getId())
-                .donaturId(message.getDonaturId().getId())
+                .donaturId(message.getId())
                 .donaturName(message.getDonaturId().getName())
+                .donaturProfile(donatur.getProfile())
                 .pantiId(message.getPantiId().getId())
                 .message(message.getMessage())
                 .timestamp(message.getTimestamp())

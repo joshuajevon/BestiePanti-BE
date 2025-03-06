@@ -37,6 +37,9 @@ public class ApplicationConfig {
     @Value("${donation.image.upload-dir}")
     private String imageDonationUploadDir;
 
+    @Value("${profile.image.upload-dir}")
+    private String profileImageUploadDir;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -65,6 +68,7 @@ public class ApplicationConfig {
         createDirectory(imageUploadDir);
         createDirectory(qrisUploadDir);
         createDirectory(imageDonationUploadDir);
+        createDirectory(profileImageUploadDir);
     }
 
     private void createDirectory(String path) {

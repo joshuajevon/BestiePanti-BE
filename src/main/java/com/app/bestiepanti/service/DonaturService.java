@@ -1,6 +1,10 @@
 package com.app.bestiepanti.service;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,6 +13,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.app.bestiepanti.configuration.ApplicationConfig;
+import com.app.bestiepanti.dto.request.donatur.ProfileDonaturRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -25,6 +31,7 @@ public class DonaturService {
  
     private final UserRepository userRepository;
     private final DonaturRepository donaturRepository;
+    private final ApplicationConfig applicationConfig;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
 
     public DonaturResponse updateDonatur(BigInteger id, UpdateDonaturRequest request) throws UserNotFoundException {
@@ -35,6 +42,7 @@ public class DonaturService {
 
         Donatur donatur = donaturRepository.findByUserId(id);
         if(donatur != null){
+            processProfile(request, donatur);
             LocalDate dob = LocalDate.parse(request.getDob(), formatter);
             donatur.setDob(dob);
             donatur.setGender(request.getGender());
@@ -49,6 +57,16 @@ public class DonaturService {
     public void deleteDonatur(BigInteger id) throws UserNotFoundException {
         if (!userRepository.existsById(id)) throw new UserNotFoundException("User with id " + id + " Not Found");
         try {
+            Donatur donatur = donaturRepository.findByUserId(id);
+            if(donatur != null){
+                if (donatur.getProfile() != null) {
+                    String fileQris = donatur.getProfile();
+                    Path filePath = Paths.get(applicationConfig.getProfileImageUploadDir(), fileQris);
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                }
+            }
             donaturRepository.deleteByUserId(id);
             userRepository.deleteById(id);
         } catch (Exception e) {
@@ -66,6 +84,7 @@ public class DonaturService {
                 .gender(donatur.getGender())
                 .phone(donatur.getPhone())
                 .address(donatur.getAddress())
+                .profile(donatur.getProfile())
                 .build();
     }
 
@@ -88,6 +107,30 @@ public class DonaturService {
             donaturResponse = createDonaturResponse(donatur.getUser(), donatur);
         }
         return donaturResponse;
+    }
+
+    private void processProfile(ProfileDonaturRequest request, Donatur donatur) {
+        try {
+            if (request.getProfile() != null && !request.getProfile().isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + donatur.getUser().getId() + "_" + request.getProfile().getOriginalFilename();
+                Path filePath = Paths.get(applicationConfig.getProfileImageUploadDir(), fileName);
+                try {
+                    if(donatur.getProfile() != null){
+                        String prevFileName = donatur.getProfile();
+                        Path prevFilePath = Paths.get(applicationConfig.getProfileImageUploadDir(), prevFileName);
+                        if (Files.exists(prevFilePath)) {
+                            Files.delete(prevFilePath);
+                        }
+                    }
+                    Files.write(filePath, request.getProfile().getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save profile", e);
+                }
+                donatur.setProfile(fileName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save profile", e);
+        }
     }
 
 }

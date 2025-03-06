@@ -34,4 +34,6 @@ public class DonaturResponse{
     private String dob;
 
     private String address;
+
+    private String profile;
 }

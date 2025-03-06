@@ -1,5 +1,7 @@
 package com.app.bestiepanti.dto.request.donatur;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UpdateDonaturRequest{
+public class UpdateDonaturRequest implements ProfileDonaturRequest{
     
     @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;
@@ -35,5 +37,7 @@ public class UpdateDonaturRequest{
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address; 
+
+    private MultipartFile profile;
    
 }
