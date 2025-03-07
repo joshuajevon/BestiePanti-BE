@@ -109,6 +109,8 @@ public class UserService {
         donatur.setPhone(userRequest.getPhone());
         LocalDate dob = LocalDate.parse(userRequest.getDob());
         donatur.setDob(dob);
+        if(userRequest.getGender().equals("L")) donatur.setProfile("defaultProfileMale.png");
+        else if(userRequest.getGender().equals("P")) donatur.setProfile("defaultProfileFemale.png");
         donaturRepository.save(donatur);
         return donatur;
     }
