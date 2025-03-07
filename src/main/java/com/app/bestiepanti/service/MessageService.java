@@ -78,7 +78,7 @@ public class MessageService {
         if(!messages.isEmpty()){
             for (Message message : messages) {
                 Donatur donatur = new Donatur();
-                if(user.getRole().getName().equals(UserApp.ROLE_DONATUR)) donatur = donaturRepository.findByUserId(userId);
+                donatur = donaturRepository.findByUserId(message.getDonaturId().getId());
                 MessageResponse response = createMessageResponse(message, donatur);
                 messageResponses.add(response);
             }
