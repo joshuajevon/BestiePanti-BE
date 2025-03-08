@@ -18,9 +18,13 @@ import com.app.bestiepanti.dto.request.donatur.ProfileDonaturRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
+import com.app.bestiepanti.model.Donation;
 import com.app.bestiepanti.model.Donatur;
+import com.app.bestiepanti.model.Message;
 import com.app.bestiepanti.model.UserApp;
+import com.app.bestiepanti.repository.DonationRepository;
 import com.app.bestiepanti.repository.DonaturRepository;
+import com.app.bestiepanti.repository.MessageRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,11 @@ public class DonaturService {
  
     private final UserRepository userRepository;
     private final DonaturRepository donaturRepository;
+    private final FundDonationService fundDonationService;
+    private final NonFundDonationService nonFundDonationService;
+    private final DonationRepository donationRepository;
+    private final MessageService messageService;
+    private final MessageRepository messageRepository;
     private final ApplicationConfig applicationConfig;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
 
@@ -67,6 +76,24 @@ public class DonaturService {
                     }
                 }
             }
+            
+            List<Donation> donations = donationRepository.findAllByDonaturId(id);
+            if(!donations.isEmpty()){
+                for (Donation donation : donations) {
+                    if(donation.getDonationTypes().contains("Dana"))
+                        fundDonationService.deleteFundDonation(donation.getId());
+                    else
+                        nonFundDonationService.deleteNonFundDonation(donation.getId());
+                }
+            }
+
+            List<Message> messages = messageRepository.findAllByDonaturId(id);
+            if(!messages.isEmpty()){
+                for (Message message : messages) {
+                    messageService.deleteMessage(message.getId());
+                }
+            }
+
             donaturRepository.deleteByUserId(id);
             userRepository.deleteById(id);
         } catch (Exception e) {

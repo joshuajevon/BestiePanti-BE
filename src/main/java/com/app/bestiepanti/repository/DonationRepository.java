@@ -30,5 +30,9 @@ public interface DonationRepository extends JpaRepository<Donation, BigInteger>{
     @Query(value = "SELECT * FROM Donations WHERE NOT ('Dana' = ANY (donation_types))", nativeQuery = true)
     List<Donation> findAllByNonFundTypes();
 
+    @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1", nativeQuery = true)
+    List<Donation> findAllByDonaturId(@Param("id") BigInteger id);
 
+    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1", nativeQuery = true)
+    List<Donation> findAllByPantiId(@Param("id") BigInteger id);
 }

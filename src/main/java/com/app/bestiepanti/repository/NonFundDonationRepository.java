@@ -13,6 +13,4 @@ public interface NonFundDonationRepository extends JpaRepository<NonFund, BigInt
     @Query(value = "SELECT * FROM NonFunds WHERE donation_id = ?1", nativeQuery = true)
     NonFund findByDonationId(BigInteger donationId);  
 
-    @Query(value = "DELETE FROM NonFunds WHERE donation_id = ?1", nativeQuery = true)
-    void deleteByDonationId(BigInteger donationId);
 }

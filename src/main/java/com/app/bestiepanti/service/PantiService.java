@@ -19,10 +19,14 @@ import com.app.bestiepanti.dto.request.panti.ImagePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
+import com.app.bestiepanti.model.Donation;
+import com.app.bestiepanti.model.Message;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
+import com.app.bestiepanti.repository.DonationRepository;
+import com.app.bestiepanti.repository.MessageRepository;
 import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
@@ -38,6 +42,11 @@ public class PantiService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final PantiRepository pantiRepository;
+     private final FundDonationService fundDonationService;
+    private final NonFundDonationService nonFundDonationService;
+    private final DonationRepository donationRepository;
+    private final MessageService messageService;
+    private final MessageRepository messageRepository;
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
     private final PaymentRespository paymentRespository;
@@ -129,7 +138,6 @@ public class PantiService {
                         Files.delete(filePath);
                     }
                 }
-
             }
 
             Payment payment = paymentRespository.findByPantiId(panti.getId());
@@ -142,7 +150,25 @@ public class PantiService {
                     }
                 }
             }
-            paymentRespository.deleteByPantiId(panti.getId());
+
+            List<Donation> donations = donationRepository.findAllByPantiId(id);
+            if(!donations.isEmpty()){
+                for (Donation donation : donations) {
+                    if(donation.getDonationTypes().contains("Dana"))
+                        fundDonationService.deleteFundDonation(donation.getId());
+                    else
+                        nonFundDonationService.deleteNonFundDonation(donation.getId());
+                }
+            }
+
+            List<Message> messages = messageRepository.findAllByPantiId(id);
+            if(!messages.isEmpty()){
+                for (Message message : messages) {
+                    messageService.deleteMessage(message.getId());
+                }
+            }
+
+            paymentRespository.delete(payment);
             pantiRepository.deleteByUserId(id);
             userRepository.deleteById(id);
         } catch (Exception e) {

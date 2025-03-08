@@ -70,6 +70,7 @@ CREATE TABLE funds(
     CONSTRAINT fk_donation
         FOREIGN KEY(donation_id)
         REFERENCES donations(id)
+        ON DELETE CASCADE
 )
 
 CREATE TABLE nonfunds(
@@ -81,6 +82,7 @@ CREATE TABLE nonfunds(
     CONSTRAINT fk_donation
         FOREIGN KEY(donation_id)
         REFERENCES donations(id)
+        ON DELETE CASCADE
 )
 
 CREATE TABLE messages (

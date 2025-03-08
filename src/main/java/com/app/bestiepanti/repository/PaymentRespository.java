@@ -14,6 +14,4 @@ public interface PaymentRespository extends JpaRepository<Payment, BigInteger>{
     @Query(value = "SELECT * FROM Payments WHERE panti_id = ?1", nativeQuery = true)
     Payment findByPantiId(BigInteger pantiId);  
 
-    @Query(value = "DELETE FROM Payments WHERE panti_id = ?1", nativeQuery = true)
-    void deleteByPantiId(BigInteger pantiId);
 }
