@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
@@ -42,11 +40,8 @@ public class FundDonationService {
     private final FundDonationRepository fundDonationRepository;
 
     public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userDonatur = userService.getAuthenticate();
         UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
-        String email = authentication.getName();
-        UserApp userDonatur = userService.findUserByEmail(email);
-
         Donation donation = new Donation();
         LocalDate fundDonationDate = LocalDate.now();
         donation.setDonationDate(fundDonationDate);

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.dto.request.MessageRequest;
@@ -32,10 +30,8 @@ public class MessageService {
     private final DonaturRepository donaturRepository;
 
     public MessageResponse createMessage(MessageRequest request, BigInteger pantiId) throws UserNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userDonatur = userService.getAuthenticate();
         UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
-        String email = authentication.getName();
-        UserApp userDonatur = userService.findUserByEmail(email);
         Message message = new Message();
         Donatur donatur = donaturRepository.findByUserId(userDonatur.getId());
 

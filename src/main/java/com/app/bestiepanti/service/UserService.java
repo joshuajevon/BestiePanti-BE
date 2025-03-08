@@ -116,9 +116,7 @@ public class UserService {
     }
 
     public Object getUser() throws UserNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        UserApp user = findUserByEmail(email);
+        UserApp user = getAuthenticate();
 
         if (user.getRole().getName().equals(UserApp.ROLE_DONATUR)) {
             Donatur donatur = donaturRepository.findByUserId(user.getId());
@@ -129,6 +127,13 @@ public class UserService {
             return createPantiResponse(user, panti, payment, null);
         }
         return createAdminResponse(user, null);
+    }
+
+    public UserApp getAuthenticate() throws UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserApp user = findUserByEmail(email);
+        return user;
     }
 
     public AdminResponse createAdminResponse(UserApp userApp, String token) {
@@ -151,6 +156,7 @@ public class UserService {
                 .dob(donatur.getDob().toString())
                 .gender(donatur.getGender())
                 .address(donatur.getAddress())
+                .profile(donatur.getProfile())
                 .token(token)
                 .build();
     }
