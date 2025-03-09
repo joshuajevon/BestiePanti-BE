@@ -68,7 +68,7 @@ public class MessageController {
     }
     
     @RequestMapping(value = ACCEPT_MESSAGE_ENDPOINT, method=RequestMethod.PUT)
-    public ResponseEntity<GeneralResponse> acceptMessage(@PathVariable BigInteger id) {
+    public ResponseEntity<GeneralResponse> acceptMessage(@PathVariable BigInteger id) throws UserNotFoundException {
         try {
             messageService.acceptMessage(id);
             GeneralResponse generalResponse = new GeneralResponse("Message with ID " + id + " has been accepted!");
@@ -80,7 +80,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = DELETE_MESSAGE_ENDPOINT, method=RequestMethod.DELETE)
-    public ResponseEntity<GeneralResponse> deleteMessage(@PathVariable BigInteger id) {
+    public ResponseEntity<GeneralResponse> deleteMessage(@PathVariable BigInteger id) throws UserNotFoundException {
         try {
             messageService.deleteMessage(id);
             GeneralResponse generalResponse = new GeneralResponse("Message with ID " + id + " has been deleted!");

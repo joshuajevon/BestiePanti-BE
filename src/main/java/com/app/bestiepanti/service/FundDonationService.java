@@ -116,9 +116,15 @@ public class FundDonationService {
         return fundDonationResponses;
     }
 
-    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request){
-        try {
+    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request) throws UserNotFoundException{
+        try {  
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
+            
+            UserApp userPanti = userService.getAuthenticate();
+            if(userPanti.getId() != donation.getPantiId().getId()){
+                throw new UserNotFoundException("User is not permitted to verify this fund donation");
+            }
+
             donation.setStatus(request.getStatus());
             donation.setVerifiedTimestamp(LocalDateTime.now());
             donationRepository.save(donation);

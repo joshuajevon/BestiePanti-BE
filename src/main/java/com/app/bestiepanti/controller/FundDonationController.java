@@ -78,7 +78,7 @@ public class FundDonationController {
     }
     
     @RequestMapping(value = VERIFY_FUND_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateFundDonationRequest request) {
+    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @ModelAttribute UpdateFundDonationRequest request) throws UserNotFoundException {
         try {
             log.info("Request Body: " + request.toString());
             FundDonationResponse fundDonationResponse = fundDonationService.verifyFundDonation(id, request);

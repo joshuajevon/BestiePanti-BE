@@ -82,9 +82,14 @@ public class MessageService {
         return messageResponses;
     }
 
-    public void acceptMessage(BigInteger id){
+    public void acceptMessage(BigInteger id) throws UserNotFoundException{
         try {
             Message message = messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Message with id " + id + " Not Found"));
+            UserApp userPanti = userService.getAuthenticate();
+            if(userPanti.getId() != message.getPantiId().getId()){
+                throw new UserNotFoundException("User is not permitted to accept this message");
+            }
+
             if(message != null){
                 message.setIsShown(1);
                 messageRepository.save(message);
@@ -94,9 +99,14 @@ public class MessageService {
         }
     }
 
-    public void deleteMessage(BigInteger id){
+    public void deleteMessage(BigInteger id) throws UserNotFoundException{
         try {
             Message message = messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Message with id " + id + " Not Found"));
+            UserApp userPanti = userService.getAuthenticate();
+            if(userPanti.getId() != message.getPantiId().getId()){
+                throw new UserNotFoundException("User is not permitted to delete this message");
+            }
+
             if(message != null){
                 messageRepository.delete(message);
             }

@@ -81,7 +81,7 @@ public class NonFundDonationController {
     
     @RequestMapping(value = VERIFY_NON_FUND_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @RequestBody UpdateNonFundDonationRequest request) {
+    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @RequestBody UpdateNonFundDonationRequest request) throws UserNotFoundException {
         try {
             log.info("Request Body: " + request.toString());
             NonFundDonationResponse nonFundDonationResponse = nonFundDonationService.verifyNonFundDonation(id, request);
