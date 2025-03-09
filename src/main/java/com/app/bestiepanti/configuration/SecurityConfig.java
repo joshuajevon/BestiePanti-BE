@@ -69,7 +69,8 @@ public class SecurityConfig {
                             "/api/v1/donation/fund/create/**",
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
-                            "/donatur/profile/update").hasRole("DONATUR");
+                            "/donatur/profile/update",
+                            "/profile/delete").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
@@ -78,7 +79,8 @@ public class SecurityConfig {
                             "/api/v1/message/accept/**",
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
-                            "/panti/profile/update").hasRole("PANTI");
+                            "/panti/profile/update",
+                            "/profile/delete").hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
                 })

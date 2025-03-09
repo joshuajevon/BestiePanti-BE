@@ -68,7 +68,7 @@ public class DonaturService {
         try {
             Donatur donatur = donaturRepository.findByUserId(id);
             if(donatur != null){
-                if (donatur.getProfile() != null) {
+                if (donatur.getProfile() != null && !(donatur.getProfile().equals("defaultProfileMale.png") || donatur.getProfile().equals("defaultProfileFemale.png"))) {
                     String fileQris = donatur.getProfile();
                     Path filePath = Paths.get(applicationConfig.getProfileImageUploadDir(), fileQris);
                     if (Files.exists(filePath)) {
@@ -142,7 +142,7 @@ public class DonaturService {
                 String fileName = System.currentTimeMillis() + "_" + donatur.getUser().getId() + "_" + request.getProfile().getOriginalFilename();
                 Path filePath = Paths.get(applicationConfig.getProfileImageUploadDir(), fileName);
                 try {
-                    if(donatur.getProfile() != null){
+                    if(donatur.getProfile() != null && !(donatur.getProfile().equals("defaultProfileMale.png") || donatur.getProfile().equals("defaultProfileFemale.png"))){
                         String prevFileName = donatur.getProfile();
                         Path prevFilePath = Paths.get(applicationConfig.getProfileImageUploadDir(), prevFileName);
                         if (Files.exists(prevFilePath)) {

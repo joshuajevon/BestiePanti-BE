@@ -1,5 +1,6 @@
 package com.app.bestiepanti.controller;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,6 +8,7 @@ import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
+import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -16,6 +18,8 @@ import com.app.bestiepanti.service.PantiService;
 import com.app.bestiepanti.service.UserService;
 
 import jakarta.validation.Valid;
+
+import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +42,7 @@ public class UserController {
     public static final String USER_ENDPOINT = "/user";
     public static final String UPDATE_DONATUR_ENDPOINT = "/donatur/profile/update";
     public static final String UPDATE_PANTI_ENDPOINT = "/panti/profile/update";
+    public static final String DELETE_USER_ENDPOINT = "/profile/delete";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -66,7 +71,7 @@ public class UserController {
     }
     
     @RequestMapping(value = UPDATE_DONATUR_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<DonaturResponse> updateDonaturProfile(UpdateDonaturRequest request) throws UserNotFoundException {
+    public ResponseEntity<DonaturResponse> updateDonaturProfile(@Valid @ModelAttribute UpdateDonaturRequest request) throws UserNotFoundException {
         UserApp user = userService.getAuthenticate();
         DonaturResponse donaturResponse = donaturService.updateDonatur(user.getId(), request);
         log.info("Response Body: " + donaturResponse);
@@ -74,10 +79,22 @@ public class UserController {
     }
     
     @RequestMapping(value = UPDATE_PANTI_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PantiResponse> updatePantiProfile(UpdatePantiRequest request) throws UserNotFoundException {
+    public ResponseEntity<PantiResponse> updatePantiProfile(@Valid @ModelAttribute UpdatePantiRequest request) throws UserNotFoundException {
         UserApp user = userService.getAuthenticate();
         PantiResponse pantiResponse = pantiService.updatePanti(user.getId(), request);
         log.info("Response Body: " + pantiResponse);
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = DELETE_USER_ENDPOINT, method=RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUserProfile() throws UserNotFoundException, IOException {
+        UserApp user = userService. getAuthenticate();
+        if(user.getRole().getName().equals(UserApp.ROLE_DONATUR))
+            donaturService.deleteDonatur(user.getId());
+        else if(user.getRole().getName().equals(UserApp.ROLE_PANTI))
+            pantiService.deletePanti(user.getId());
+        GeneralResponse generalResponse = new GeneralResponse("User with ID " + user.getId() + " has been successfully deleted");
+        log.info("User " + user.getId() + " is deleted!");
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 }
