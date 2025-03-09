@@ -102,9 +102,11 @@ public class MessageService {
     public void deleteMessage(BigInteger id) throws UserNotFoundException{
         try {
             Message message = messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Message with id " + id + " Not Found"));
-            UserApp userPanti = userService.getAuthenticate();
-            if(userPanti.getId() != message.getPantiId().getId()){
-                throw new UserNotFoundException("User is not permitted to delete this message");
+            UserApp user = userService.getAuthenticate();
+            if (user.getRole().getName().equals(UserApp.ROLE_PANTI)) {
+                if(user.getId() != message.getPantiId().getId()){
+                    throw new UserNotFoundException("User is not permitted to delete this message");
+                }
             }
 
             if(message != null){
