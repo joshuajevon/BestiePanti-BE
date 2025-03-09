@@ -2,6 +2,7 @@ package com.app.bestiepanti.dto.request.donation.fund;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.bestiepanti.validation.image.FileType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -26,6 +27,7 @@ public class UpdateFundDonationRequest implements ImageFundDonationRequest{
     private String accountName;
     
     @NotNull(message = "Bukti transfer tidak boleh kosong")
+    @FileType(allowedTypes = {"image/png", "image/jpeg","image/jpg"}, message = "File harus format PNG / JPEG / JPG")
     private MultipartFile image;
 
     @NotEmpty(message = "Jumlah transfer tidak boleh kosong")

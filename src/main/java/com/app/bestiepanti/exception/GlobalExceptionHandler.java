@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +37,15 @@ public class GlobalExceptionHandler {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("error_message", ex.getMessage());
         logger.error("Validation errors: {}", errorMap);
+        return errorMap;
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    public Map<String, String> handleMaxSizeException(MaxUploadSizeExceededException ex){
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("image", "Ukuran file melebihi batas maksimum yang diizinkan yaitu 2MB.");
+        logger.error("File upload error: {}", errorMap);
         return errorMap;
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.bestiepanti.validation.image.FileType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -30,6 +31,7 @@ public class UpdatePantiRequest implements ImagePantiRequest{
     private String email;
 
     @NotEmpty(message = "Gambar tidak boleh kosong")
+    @FileType(allowedTypes = {"image/png", "image/jpeg","image/jpg"}, message = "File harus format PNG / JPEG / JPG")
     private List<MultipartFile> image;
 
     @NotEmpty(message = "Deskripsi tidak boleh kosong")
@@ -59,5 +61,6 @@ public class UpdatePantiRequest implements ImagePantiRequest{
     @NotEmpty(message = "Nama pemilik rekening tidak boleh kosong")
     private String bankAccountName;
    
+    @FileType(allowedTypes = {"image/png", "image/jpeg","image/jpg"}, message = "File harus format PNG / JPEG / JPG")
     private MultipartFile qris;
 }

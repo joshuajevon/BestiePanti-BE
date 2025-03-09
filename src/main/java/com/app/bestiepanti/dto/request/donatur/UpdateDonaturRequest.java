@@ -2,6 +2,7 @@ package com.app.bestiepanti.dto.request.donatur;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.bestiepanti.validation.image.FileType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -38,6 +39,7 @@ public class UpdateDonaturRequest implements ProfileDonaturRequest{
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address; 
 
+    @FileType(allowedTypes = {"image/png", "image/jpeg","image/jpg"}, message = "File harus format PNG / JPEG / JPG")
     private MultipartFile profile;
    
 }
