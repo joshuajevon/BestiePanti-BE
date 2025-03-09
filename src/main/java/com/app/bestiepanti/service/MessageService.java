@@ -120,7 +120,7 @@ public class MessageService {
     public MessageResponse createMessageResponse(Message message, Donatur donatur){
         return MessageResponse.builder()
                 .id(message.getId())
-                .donaturId(message.getId())
+                .donaturId(donatur.getUser().getId())
                 .donaturName(message.getDonaturId().getName())
                 .donaturProfile(donatur.getProfile())
                 .pantiId(message.getPantiId().getId())
