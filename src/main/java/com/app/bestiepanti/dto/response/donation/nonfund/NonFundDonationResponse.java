@@ -24,7 +24,11 @@ public class NonFundDonationResponse {
 
     private BigInteger donaturId;
 
+    private String donaturName;
+
     private BigInteger pantiId;
+
+    private String pantiName;
 
     private String donationDate;
 
