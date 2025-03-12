@@ -100,7 +100,7 @@ public class UserService {
 
             user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
             userRepository.save(user);
-            donatur = saveToDonaturWithGoogle(user);
+            // donatur = saveToDonaturWithGoogle(user);
         } else {
             // Normal Regitration
             user.setName(registerRequest.getName());
@@ -303,16 +303,17 @@ public class UserService {
         return createAdminResponse(user, null);
     }
 
-    public Donatur saveToDonaturWithGoogle(UserApp user) {
-        Donatur donatur = new Donatur();
-        donatur.setUser(user);
-        donatur.setAddress(null);
-        donatur.setGender(null);
-        donatur.setPhone(null);
-        donatur.setDob(null);
-        donaturRepository.save(donatur);
-        return donatur;
-    }
+    // public Donatur saveToDonaturWithGoogle(UserApp user) {
+    //     Donatur donatur = new Donatur();
+    //     donatur.setUser(user);
+    //     donatur.setAddress(null);
+    //     donatur.setGender(null);
+    //     donatur.setPhone(null);
+    //     donatur.setDob(null);
+    //     donatur.setProfile(null);
+    //     donaturRepository.save(donatur);
+    //     return donatur;
+    // }
 
     public UserApp getAuthenticate() throws UserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -337,14 +338,14 @@ public class UserService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
-                .phone(donatur.getPhone())
-                .dob(Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null))
-                .gender(donatur.getGender())
-                .address(donatur.getAddress())
-                .profile(donatur.getProfile())
+                .phone(donatur != null ? donatur.getPhone(): null)
+                .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
+                .gender(donatur != null ? donatur.getGender() : null)
+                .address(donatur != null ? donatur.getAddress() : null)
+                .profile(donatur != null ? donatur.getProfile() : null)
                 .token(token)
                 .build();
-    }
+    }       
 
     public PantiResponse createPantiResponse(UserApp userApp, Panti panti, Payment payment, String jwtToken) {
         return PantiResponse.builder()
