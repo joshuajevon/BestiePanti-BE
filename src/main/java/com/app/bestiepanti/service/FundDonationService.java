@@ -22,9 +22,11 @@ import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
 import com.app.bestiepanti.model.Fund;
+import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonationRepository;
 import com.app.bestiepanti.repository.FundDonationRepository;
+import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class FundDonationService {
 
     private final DonationRepository donationRepository;
+    private final PantiRepository pantiRepository;
     private final ApplicationConfig applicationConfig;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -42,6 +45,7 @@ public class FundDonationService {
     public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
         UserApp userDonatur = userService.getAuthenticate();
         UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
+        Panti panti = pantiRepository.findByUserId(pantiId);
         Donation donation = new Donation();
         LocalDate fundDonationDate = LocalDate.now();
         donation.setDonationDate(fundDonationDate);
@@ -61,15 +65,16 @@ public class FundDonationService {
         processImage(request, fund);
         fundDonationRepository.save(fund);
         
-        return createFundDonationResponse(donation, fund);
+        return createFundDonationResponse(donation, fund, panti);
     }
 
     public List<FundDonationResponse> viewAllFundDonation() {
         List<Donation> donationList = donationRepository.findAllByFundTypes();
         List<FundDonationResponse> fundDonationResponseList = new ArrayList<>();
         for (Donation donation : donationList) {
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             Fund fund = fundDonationRepository.findByDonationId(donation.getId());
-            FundDonationResponse fundDonationResponse = createFundDonationResponse(donation, fund);
+            FundDonationResponse fundDonationResponse = createFundDonationResponse(donation, fund, panti);
             fundDonationResponseList.add(fundDonationResponse);
         }
         return fundDonationResponseList;
@@ -108,8 +113,9 @@ public class FundDonationService {
 
         if(!donations.isEmpty()){
             for (Donation donation : donations) {
+                Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
                 Fund fund = fundDonationRepository.findByDonationId(donation.getId());
-                FundDonationResponse response = createFundDonationResponse(donation, fund);
+                FundDonationResponse response = createFundDonationResponse(donation, fund, panti);
                 fundDonationResponses.add(response);
             }
         }
@@ -119,7 +125,7 @@ public class FundDonationService {
     public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request) throws UserNotFoundException{
         try {  
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
-            
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
             if(userPanti.getId() != donation.getPantiId().getId()){
                 throw new UserNotFoundException("User is not permitted to verify this fund donation");
@@ -137,7 +143,7 @@ public class FundDonationService {
                 fund.setNominalAmount(request.getNominalAmount());
                 fundDonationRepository.save(fund);
             }
-            return createFundDonationResponse(donation, fund);
+            return createFundDonationResponse(donation, fund, panti);
         } catch (NumberFormatException e) {
             throw e;
         } catch (NoSuchElementException e) {
@@ -146,7 +152,7 @@ public class FundDonationService {
     }
 
         
-    public FundDonationResponse createFundDonationResponse(Donation donation, Fund fund) {
+    public FundDonationResponse createFundDonationResponse(Donation donation, Fund fund, Panti panti) {
         return FundDonationResponse.builder()
                 .id(donation.getId())
                 .donaturId(donation.getDonaturId().getId())
@@ -161,6 +167,7 @@ public class FundDonationService {
                 .accountNumber(fund.getAccountNumber())
                 .nominalAmount(fund.getNominalAmount())
                 .status(donation.getStatus())
+                .profile(panti.getImage().getFirst())
                 .insertedTimestamp(donation.getInsertedTimestamp())
                 .verifiedTimestamp(donation.getVerifiedTimestamp())
                 .build();

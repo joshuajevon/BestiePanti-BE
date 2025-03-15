@@ -44,6 +44,8 @@ public class NonFundDonationResponse {
 
     private String status;
 
+    private String profile;
+
     private LocalDateTime insertedTimestamp;
 
     private LocalDateTime verifiedTimestamp;

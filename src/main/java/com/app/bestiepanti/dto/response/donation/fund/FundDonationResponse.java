@@ -46,6 +46,8 @@ public class FundDonationResponse {
 
     private String status;
 
+    private String profile;
+
     private LocalDateTime insertedTimestamp;
 
     private LocalDateTime verifiedTimestamp;

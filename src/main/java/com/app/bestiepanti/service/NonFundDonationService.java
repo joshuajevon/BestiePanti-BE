@@ -15,9 +15,11 @@ import com.app.bestiepanti.dto.response.donation.nonfund.NonFundDonationResponse
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
 import com.app.bestiepanti.model.NonFund;
+import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonationRepository;
 import com.app.bestiepanti.repository.NonFundDonationRepository;
+import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class NonFundDonationService {
 
     private final UserRepository userRepository;
+    private final PantiRepository pantiRepository;
     private final UserService userService;
     private final DonationRepository donationRepository;
     private final NonFundDonationRepository nonFundDonationRepository;
@@ -34,6 +37,7 @@ public class NonFundDonationService {
     public NonFundDonationResponse createNonFundDonation(CreateNonFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
         UserApp userDonatur = userService.getAuthenticate();
         UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
+        Panti panti = pantiRepository.findByUserId(pantiId);
         Donation donation = new Donation();
         LocalDate fundDonationDate = LocalDate.parse(request.getDonationDate());
         donation.setDonationDate(fundDonationDate);
@@ -52,15 +56,16 @@ public class NonFundDonationService {
         nonFund.setDonationId(donation);
         nonFundDonationRepository.save(nonFund);
         
-        return createNonFundDonationResponse(donation, nonFund);
+        return createNonFundDonationResponse(donation, nonFund, panti);
     }
 
     public List<NonFundDonationResponse> viewAllNonFundDonation() {
         List<Donation> donationList = donationRepository.findAllByNonFundTypes();
         List<NonFundDonationResponse> nonFundDonationResponseList = new ArrayList<>();
         for (Donation donation : donationList) {
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             NonFund nonFund = nonFundDonationRepository.findByDonationId(donation.getId());
-            NonFundDonationResponse nonFundDonationResponse = createNonFundDonationResponse(donation, nonFund);
+            NonFundDonationResponse nonFundDonationResponse = createNonFundDonationResponse(donation, nonFund, panti);
             nonFundDonationResponseList.add(nonFundDonationResponse);
         }
         return nonFundDonationResponseList;
@@ -93,8 +98,9 @@ public class NonFundDonationService {
 
         if(!donations.isEmpty()){
             for (Donation donation : donations) {
+                Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
                 NonFund nonFund = nonFundDonationRepository.findByDonationId(donation.getId());
-                NonFundDonationResponse response = createNonFundDonationResponse(donation, nonFund);
+                NonFundDonationResponse response = createNonFundDonationResponse(donation, nonFund, panti);
                 nonFundDonationResponses.add(response);
             }
         }
@@ -104,7 +110,7 @@ public class NonFundDonationService {
     public NonFundDonationResponse verifyNonFundDonation(BigInteger id, UpdateNonFundDonationRequest request) throws UserNotFoundException{
         try {
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Non Fund Donation with id " + id + " Not Found"));
-            
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
             if(userPanti.getId() != donation.getPantiId().getId()){
                 throw new UserNotFoundException("User is not permitted to verify this non fund donation");
@@ -125,7 +131,7 @@ public class NonFundDonationService {
                 nonFund.setActivePhone(request.getActivePhone());
                 nonFundDonationRepository.save(nonFund);
             }
-            return createNonFundDonationResponse(donation, nonFund);
+            return createNonFundDonationResponse(donation, nonFund, panti);
         } catch (NumberFormatException e) {
             throw e;
         } catch (NoSuchElementException e) {
@@ -133,7 +139,7 @@ public class NonFundDonationService {
         }
     }
 
-    public NonFundDonationResponse createNonFundDonationResponse(Donation donation, NonFund nonFund) {
+    public NonFundDonationResponse createNonFundDonationResponse(Donation donation, NonFund nonFund, Panti panti) {
         return NonFundDonationResponse.builder()
                 .id(donation.getId())
                 .donaturId(donation.getDonaturId().getId())
@@ -147,6 +153,7 @@ public class NonFundDonationService {
                 .pic(nonFund.getPic())
                 .notes(nonFund.getNotes())
                 .status(donation.getStatus())
+                .profile(panti.getImage().getFirst())
                 .insertedTimestamp(donation.getInsertedTimestamp())
                 .verifiedTimestamp(donation.getVerifiedTimestamp())
                 .build();
