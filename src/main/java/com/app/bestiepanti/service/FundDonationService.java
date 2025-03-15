@@ -137,7 +137,6 @@ public class FundDonationService {
             
             Fund fund = fundDonationRepository.findByDonationId(id);
             if(fund != null){
-                processImage(request, fund);
                 fund.setAccountName(request.getAccountName());
                 fund.setAccountNumber(request.getAccountNumber());
                 fund.setNominalAmount(request.getNominalAmount());
