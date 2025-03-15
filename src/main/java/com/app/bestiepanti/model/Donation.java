@@ -22,9 +22,9 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "donations")
 public class Donation {
 
-    public static final String STATUS_ACCEPTED = "ACCEPTED";
+    public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_PENDING = "PENDING";
-    public static final String STATUS_CANCELLED = "CANCELLED";
+    public static final String STATUS_REJECTED = "REJECTED";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
