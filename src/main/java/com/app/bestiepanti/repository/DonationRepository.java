@@ -12,16 +12,16 @@ import com.app.bestiepanti.model.Donation;
 
 @Repository
 public interface DonationRepository extends JpaRepository<Donation, BigInteger>{
-    @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1 AND 'Dana' = ANY (donation_types)", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1 AND 'Dana' = ANY (donation_types) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByDonaturIdAndFundTypes(@Param("id") BigInteger id);
     
-    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND 'Dana' = ANY (donation_types)", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND 'Dana' = ANY (donation_types) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByPantiIdAndFundTypes(@Param("id") BigInteger id);
 
-    @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1 AND NOT ('Dana' = ANY (donation_types))", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1 AND NOT ('Dana' = ANY (donation_types)) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByDonaturIdAndNonFundTypes(@Param("id") BigInteger id);
     
-    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND NOT ('Dana' = ANY (donation_types))", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND NOT ('Dana' = ANY (donation_types)) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByPantiIdAndNonFundTypes(@Param("id") BigInteger id);    
     
     @Query(value = "SELECT * FROM Donations WHERE 'Dana' = ANY (donation_types) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)

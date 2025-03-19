@@ -72,7 +72,7 @@ public class NonFundDonationController {
     }
 
     @RequestMapping(value = VIEW_NON_FUND_DONATION_BY_USER_ID_ENDPOINT, method=RequestMethod.GET)
-    public ResponseEntity<NonFundDonationResponses> viewFundDonationByUserId(@PathVariable BigInteger userId) throws UserNotFoundException {
+    public ResponseEntity<NonFundDonationResponses> viewNonFundDonationByUserId(@PathVariable BigInteger userId) throws UserNotFoundException {
         NonFundDonationResponses nonFundDonationResponses = new NonFundDonationResponses();
         List<NonFundDonationResponse> nonFundDonationResponsesList = nonFundDonationService.viewNonFundDonationByUserId(userId);
         nonFundDonationResponses.setNonFundDonationResponse(nonFundDonationResponsesList);
