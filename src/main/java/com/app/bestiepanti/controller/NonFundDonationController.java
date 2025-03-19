@@ -37,7 +37,7 @@ public class NonFundDonationController {
     public static final String DELETE_NON_FUND_DONATION_ENDPOINT = "/delete/{id}";
     public static final String VIEW_NON_FUND_DONATION_BY_USER_ID_ENDPOINT = "/view/{userId}";
     public static final String VERIFY_NON_FUND_DONATION_ENDPOINT = "/verify/{id}";
-    public static final String VIEW_NON_FUND_DONATION_BY_DONATION_ID_ENDPOINT = "/view/donation/{donationId}";
+    public static final String VIEW_NON_FUND_DONATION_BY_DONATION_ID_ENDPOINT = "/get/{donationId}";
 
     private final NonFundDonationService nonFundDonationService;
 

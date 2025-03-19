@@ -48,7 +48,8 @@ public class SecurityConfig {
                             "/api/v1/donation/nonfund/view/**",
                             "/storage/image/**",
                             "/storage/qris/**",
-                            "/storage/profile/**"
+                            "/storage/profile/**",
+                            "/storage/donation/**"
                             ).permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",
@@ -59,8 +60,7 @@ public class SecurityConfig {
                             "/api/v1/donatur/view",
                             "/api/v1/donatur/delete/**",
                             "/api/v1/donation/fund/delete/**",
-                            "/api/v1/donation/nonfund/delete/**",
-                            "/storage/donation/**").hasRole("ADMIN");
+                            "/api/v1/donation/nonfund/delete/**").hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",
                             "/api/v1/donatur/update/**",
@@ -69,18 +69,18 @@ public class SecurityConfig {
                             "/api/v1/donation/fund/create/**",
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
-                            "/donatur/profile/update",
-                            "/profile/delete").hasRole("DONATUR");
+                            "/donatur/profile/update").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
                             "/api/v1/donation/fund/verify/**",
                             "/api/v1/donation/nonfund/verify/**",
+                            "/api/v1/donation/fund/get/**",
+                            "/api/v1/donation/nonfund/get/**",
                             "/api/v1/message/accept/**",
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
-                            "/panti/profile/update",
-                            "/profile/delete").hasRole("PANTI");
+                            "/panti/profile/update").hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
                 })
