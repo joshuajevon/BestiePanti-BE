@@ -147,7 +147,6 @@ public class NonFundDonationService {
             if(userPanti.getId() != donation.getPantiId().getId()){
                 throw new UserNotFoundException("User is not permitted to access this non fund donation");
             }
-            donationRepository.save(donation);
             NonFund nonFund = nonFundDonationRepository.findByDonationId(id);
 
           return createNonFundDonationResponse(donation, nonFund, panti);
