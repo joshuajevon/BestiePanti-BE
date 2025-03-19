@@ -156,7 +156,7 @@ public class FundDonationService {
             Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
             if(userPanti.getId() != donation.getPantiId().getId()){
-                throw new UserNotFoundException("User is not permitted to verify this fund donation");
+                throw new UserNotFoundException("User is not permitted to access this fund donation");
             }
             Fund fund = fundDonationRepository.findByDonationId(id);
             return createFundDonationResponse(donation, fund, panti);

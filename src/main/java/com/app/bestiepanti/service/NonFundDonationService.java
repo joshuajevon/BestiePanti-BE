@@ -145,7 +145,7 @@ public class NonFundDonationService {
             Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
             if(userPanti.getId() != donation.getPantiId().getId()){
-                throw new UserNotFoundException("User is not permitted to verify this non fund donation");
+                throw new UserNotFoundException("User is not permitted to access this non fund donation");
             }
             donationRepository.save(donation);
             NonFund nonFund = nonFundDonationRepository.findByDonationId(id);
