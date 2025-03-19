@@ -139,6 +139,23 @@ public class NonFundDonationService {
         }
     }
 
+    public NonFundDonationResponse viewNonFundDonationByDonationId(BigInteger id) throws UserNotFoundException{
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Non Fund Donation with id " + id + " Not Found"));
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
+            UserApp userPanti = userService.getAuthenticate();
+            if(userPanti.getId() != donation.getPantiId().getId()){
+                throw new UserNotFoundException("User is not permitted to verify this non fund donation");
+            }
+            donationRepository.save(donation);
+            NonFund nonFund = nonFundDonationRepository.findByDonationId(id);
+
+          return createNonFundDonationResponse(donation, nonFund, panti);
+        } catch (NumberFormatException | NoSuchElementException e) {
+            throw e;
+        }
+    }
+
     public NonFundDonationResponse createNonFundDonationResponse(Donation donation, NonFund nonFund, Panti panti) {
         return NonFundDonationResponse.builder()
                 .id(donation.getId())

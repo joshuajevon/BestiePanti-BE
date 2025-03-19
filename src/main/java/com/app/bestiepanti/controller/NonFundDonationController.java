@@ -37,6 +37,7 @@ public class NonFundDonationController {
     public static final String DELETE_NON_FUND_DONATION_ENDPOINT = "/delete/{id}";
     public static final String VIEW_NON_FUND_DONATION_BY_USER_ID_ENDPOINT = "/view/{userId}";
     public static final String VERIFY_NON_FUND_DONATION_ENDPOINT = "/verify/{id}";
+    public static final String VIEW_NON_FUND_DONATION_BY_DONATION_ID_ENDPOINT = "/view/donation/{donationId}";
 
     private final NonFundDonationService nonFundDonationService;
 
@@ -91,5 +92,12 @@ public class NonFundDonationController {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponse);
         }
+    }
+
+    @RequestMapping(value = VIEW_NON_FUND_DONATION_BY_DONATION_ID_ENDPOINT, method=RequestMethod.GET)
+    public ResponseEntity<NonFundDonationResponse> viewNonFundDonationById(@PathVariable BigInteger donationId) throws UserNotFoundException {
+        NonFundDonationResponse nonFundDonationResponse = nonFundDonationService.viewNonFundDonationByDonationId(donationId);
+        log.info("Response Body: " + nonFundDonationResponse );
+        return new ResponseEntity<>(nonFundDonationResponse , HttpStatus.OK);
     }
 }
