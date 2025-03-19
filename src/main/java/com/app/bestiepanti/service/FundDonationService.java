@@ -150,7 +150,21 @@ public class FundDonationService {
         }
     }
 
-        
+    public FundDonationResponse viewFundDonationByDonationId(BigInteger id) throws UserNotFoundException {
+        try {
+            Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
+            Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
+            UserApp userPanti = userService.getAuthenticate();
+            if(userPanti.getId() != donation.getPantiId().getId()){
+                throw new UserNotFoundException("User is not permitted to verify this fund donation");
+            }
+            Fund fund = fundDonationRepository.findByDonationId(id);
+            return createFundDonationResponse(donation, fund, panti);
+        } catch (NumberFormatException | NoSuchElementException e) {
+            throw e;
+        }
+    }
+
     public FundDonationResponse createFundDonationResponse(Donation donation, Fund fund, Panti panti) {
         return FundDonationResponse.builder()
                 .id(donation.getId())
