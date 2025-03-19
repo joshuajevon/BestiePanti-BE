@@ -24,10 +24,10 @@ public interface DonationRepository extends JpaRepository<Donation, BigInteger>{
     @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND NOT ('Dana' = ANY (donation_types))", nativeQuery = true)
     List<Donation> findAllByPantiIdAndNonFundTypes(@Param("id") BigInteger id);    
     
-    @Query(value = "SELECT * FROM Donations WHERE 'Dana' = ANY (donation_types)", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE 'Dana' = ANY (donation_types) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByFundTypes();
 
-    @Query(value = "SELECT * FROM Donations WHERE NOT ('Dana' = ANY (donation_types))", nativeQuery = true)
+    @Query(value = "SELECT * FROM Donations WHERE NOT ('Dana' = ANY (donation_types)) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 1 ELSE 0 END, verified_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByNonFundTypes();
 
     @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1", nativeQuery = true)
