@@ -97,7 +97,6 @@ public class PantiService {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
     
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
 
         Panti panti = pantiRepository.findByUserId(id);
         if(panti != null){

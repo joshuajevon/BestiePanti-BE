@@ -26,10 +26,6 @@ public class UpdatePantiRequest implements ImagePantiRequest{
     @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;
 
-    @NotEmpty(message = "Email tidak boleh kosong")
-    @Email(message = "Email harus valid")
-    private String email;
-
     @NotEmpty(message = "Gambar tidak boleh kosong")
     @FileType(allowedTypes = {"image/png", "image/jpeg","image/jpg"}, message = "File harus format PNG / JPEG / JPG")
     private List<MultipartFile> image;

@@ -47,7 +47,6 @@ public class DonaturService {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
     
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
 
         Donatur donatur = donaturRepository.findByUserId(id);
         if(donatur != null){
