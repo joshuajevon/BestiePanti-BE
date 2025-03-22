@@ -41,7 +41,7 @@ public class DonaturService {
     private final MessageService messageService;
     private final MessageRepository messageRepository;
     private final ApplicationConfig applicationConfig;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public DonaturResponse updateDonatur(BigInteger id, UpdateDonaturRequest request) throws UserNotFoundException {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
