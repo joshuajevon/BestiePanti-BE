@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
 import com.app.bestiepanti.dto.request.panti.ImagePantiRequest;
+import com.app.bestiepanti.dto.request.panti.UpdateIsUrgentPantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
@@ -104,7 +105,6 @@ public class PantiService {
             panti.setDescription(request.getDescription());
             panti.setPhone(request.getPhone());
             panti.setDonationTypes(request.getDonationTypes());
-            panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
             panti.setAddress(request.getAddress());
             panti.setRegion(request.getRegion());
             pantiRepository.save(panti);
@@ -245,10 +245,10 @@ public class PantiService {
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
                 .region(panti.getRegion())
-                .bankAccountName(payment.getBankAccountName())
-                .bankAccountNumber(payment.getBankAccountNumber())
-                .bankName(payment.getBankName())
-                .qris(payment.getQris())
+                .bankAccountName(payment != null ? payment.getBankAccountName() : null)
+                .bankAccountNumber(payment != null ? payment.getBankAccountNumber() : null)
+                .bankName(payment != null ? payment.getBankName() : null)
+                .qris(payment != null ? payment.getQris() : null)
                 .token(jwtToken)
                 .build();
     }
@@ -286,6 +286,14 @@ public class PantiService {
             pantiResponseList.add(pantiResponse);
         }
         return pantiResponseList;
+    }
+
+    public PantiResponse updateIsUrgentPanti(BigInteger id, UpdateIsUrgentPantiRequest request) throws UserNotFoundException {
+        UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
+        Panti panti = pantiRepository.findByUserId(id);
+        if(panti != null)
+            panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
+        return createPantiResponse(user, panti, null, null);
     }
 
 }

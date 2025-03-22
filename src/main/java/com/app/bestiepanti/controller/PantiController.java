@@ -9,12 +9,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
-import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
+import com.app.bestiepanti.dto.request.panti.UpdateIsUrgentPantiRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponses;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
@@ -34,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PantiController {
    
     public static final String CREATE_PANTI_ENDPOINT = "/create";
-    public static final String UPDATE_PANTI_ENDPOINT = "/update/{id}";
+    public static final String UPDATE_IS_URGENT_PANTI_ENDPOINT = "/update/{id}";
     public static final String DELETE_PANTI_ENDPOINT = "/delete/{id}";
     public static final String VIEW_ALL_PANTI_ENDPOINT = "/view";
     public static final String VIEW_PANTI_BY_ID_ENDPOINT = "/view/{id}";
@@ -49,10 +51,11 @@ public class PantiController {
         return new ResponseEntity<>(pantiResponse, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = UPDATE_PANTI_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PantiResponse> updatePanti(@PathVariable BigInteger id, @Valid @ModelAttribute UpdatePantiRequest request) throws UserNotFoundException {
+    @RequestMapping(value = UPDATE_IS_URGENT_PANTI_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<PantiResponse> updateIsUrgentPanti(@PathVariable BigInteger id, @Valid @RequestBody UpdateIsUrgentPantiRequest request) throws UserNotFoundException {
         log.info("Request Body: " + request.toString());
-        PantiResponse pantiResponse= pantiService.updatePanti(id, request);
+        PantiResponse pantiResponse= pantiService.updateIsUrgentPanti(id, request);
         log.info("Panti " + id + " is updated!");
         return new ResponseEntity<>(pantiResponse, HttpStatus.OK);
     }

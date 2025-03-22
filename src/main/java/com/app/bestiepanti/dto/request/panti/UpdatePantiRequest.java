@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,9 +36,6 @@ public class UpdatePantiRequest implements ImagePantiRequest{
 
     @NotEmpty(message = "Jenis Donasi tidak boleh kosong")
     private List<String> donationTypes;
-
-    @NotNull(message = "Urgensi tidak boleh kosong")
-    private String isUrgent;
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address;
