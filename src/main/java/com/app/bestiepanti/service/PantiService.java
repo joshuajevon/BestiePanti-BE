@@ -254,7 +254,7 @@ public class PantiService {
     }
 
     public List<PantiResponse> viewAllPanti() {
-        List<Panti> pantiList = pantiRepository.findAll();
+        List<Panti> pantiList = pantiRepository.findAllByOrderByIdDesc();
         List<PantiResponse> pantiResponseList = new ArrayList<>();
         for (Panti panti : pantiList) {
             Payment payment = paymentRespository.findByPantiId(panti.getId());

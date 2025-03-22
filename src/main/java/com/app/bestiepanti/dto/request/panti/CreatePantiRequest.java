@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,8 @@ public class CreatePantiRequest implements ImagePantiRequest{
     private String email;
 
     @NotEmpty(message = "Kata Sandi tidak boleh kosong")
-    @Size(min = 6, message = "Kata Sandi harus memiliki minimal 6 karakter")
+    @Size(min = 8, message = "Kata Sandi harus memiliki minimal 8 karakter")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$", message = "Kata Sandi harus mengandung huruf dan angka")
     private String password;
 
     private String confirmationPassword;
