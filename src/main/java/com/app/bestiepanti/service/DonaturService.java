@@ -115,7 +115,7 @@ public class DonaturService {
     }
 
     public List<DonaturResponse> viewAllDonatur() {
-        List<Donatur> donaturList = donaturRepository.findAll();
+        List<Donatur> donaturList = donaturRepository.findAllByOrderByIdDesc();
         List<DonaturResponse> donaturResponseList = new ArrayList<>();
         for (Donatur donatur : donaturList) {
             DonaturResponse donaturResponse = createDonaturResponse(donatur.getUser(), donatur);
