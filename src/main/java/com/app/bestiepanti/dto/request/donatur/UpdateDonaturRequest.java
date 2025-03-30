@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class UpdateDonaturRequest implements ProfileDonaturRequest{
     private String name;
 
     @NotEmpty(message = "Nomor Telepon tidak boleh kosong")
+    @Pattern(regexp = "8\\d+", message = "Nomor Telepon harus numerik dan dimulai dengan angka 8")
     private String phone;
 
     @NotEmpty(message = "Jenis Kelamin tidak boleh kosong")

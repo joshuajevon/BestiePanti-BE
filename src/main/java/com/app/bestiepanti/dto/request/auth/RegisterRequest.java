@@ -37,6 +37,7 @@ public class RegisterRequest {
     private String confirmationPassword;
 
     @NotEmpty(message = "Nomor Telepon tidak boleh kosong")
+    @Pattern(regexp = "8\\d+", message = "Nomor Telepon harus numerik dan dimulai dengan angka 8")
     private String phone;
 
     @NotEmpty(message = "Jenis Kelamin tidak boleh kosong")

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class CreateFundDonationRequest implements ImageFundDonationRequest{
     
     @NotEmpty(message = "Nomor rekening tidak boleh kosong")
+    @Pattern(regexp = "\\d+", message = "Nomor rekening harus numerik")
     private String accountNumber;
     
     @NotEmpty(message = "Nama pemilik rekening tidak boleh kosong")
@@ -31,5 +33,6 @@ public class CreateFundDonationRequest implements ImageFundDonationRequest{
     private MultipartFile image;
     
     @NotEmpty(message = "Jumlah transfer tidak boleh kosong")
+    @Pattern(regexp = "\\d+", message = "Jumlah transfer harus numerik")
     private String nominalAmount;
 }
