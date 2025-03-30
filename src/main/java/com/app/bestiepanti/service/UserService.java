@@ -1,6 +1,10 @@
 package com.app.bestiepanti.service;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Random;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,18 +15,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.JwtConfig;
+import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
+import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donatur;
+import com.app.bestiepanti.model.ForgotPassword;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
+import com.app.bestiepanti.repository.ForgotPasswordRepository;
 import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
@@ -45,6 +53,8 @@ public class UserService {
     private final PantiRepository pantiRepository;
     private final JwtConfig jwtConfig;
     private final PaymentRespository paymentRespository;
+    private final EmailService emailService;
+    private final ForgotPasswordRepository forgotPasswordRepository;
 
     public DonaturResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
@@ -91,6 +101,49 @@ public class UserService {
             return createAdminResponse(user, jwtToken);
         }
         throw new UserNotFoundException("Role tidak ditemukan untuk pengguna. Silakan hubungi dukungan.");
+    }
+
+    public void verifyEmail(String email) throws UserNotFoundException{
+        UserApp user = findUserByEmail(email);
+        int otp = otpGenerator();
+        MailRequest mailBody = MailRequest.builder()
+                            .to(email)
+                            .text("JANGAN BERIKAN KODE OTP ke siapapun! Kode OTP anda adalah : " + otp)
+                            .subject("[No Reply] OTP Forgot Password Bestie Panti Account")
+                            .build();
+        
+        ForgotPassword fp = ForgotPassword.builder()
+                    .otp(otp)
+                    .expirationTime(new Date(System.currentTimeMillis() + 70 * 1000))
+                    .user(user)
+                    .build();
+        
+        emailService.sendSimpleMessage(mailBody);
+        forgotPasswordRepository.save(fp);
+    }
+
+    public void verifyOtp(Integer otp, String email) throws UserNotFoundException {
+        UserApp user = findUserByEmail(email);
+        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUserId(otp, user.getId()).orElseThrow(() -> new RuntimeException("Invalid OTP for email " + email));
+        
+        if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
+            forgotPasswordRepository.deleteById(fp.getFpid());
+            throw new RuntimeException("OTP has expired for email: " + email);
+        }
+    }
+
+    public void changePassword(ChangePasswordRequest changePassword, String email) {
+        if(!Objects.equals(changePassword.getPassword(), changePassword.getConfirmationPassword())){
+            throw new RuntimeException("Please enter the password again!");
+        }
+
+        String encodedPassword = passwordEncoder.encode(changePassword.getPassword());
+        userRepository.updatePassword(email, encodedPassword);
+    }
+
+    public Integer otpGenerator(){
+        Random random = new Random();
+        return random.nextInt(100_000, 999_999);
     }
 
     public UserApp findUserByEmail(String email) throws UserNotFoundException {

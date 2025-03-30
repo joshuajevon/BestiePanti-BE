@@ -40,6 +40,9 @@ public class ApplicationConfig {
     @Value("${profile.image.upload-dir}")
     private String profileImageUploadDir;
 
+    @Value("${spring.mail.username}")
+    private String mailUsername;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));

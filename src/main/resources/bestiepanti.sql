@@ -113,3 +113,12 @@ CREATE TABLE payments (
         REFERENCES pantis(id)
 )
 
+CREATE TABLE forgot_passwords (
+    fpid BIGINT PRIMARY KEY,
+    otp INTEGER,
+    expiration_time TIMESTAMP,
+    user_id BIGINT,
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
+)

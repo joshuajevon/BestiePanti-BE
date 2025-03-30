@@ -49,7 +49,8 @@ public class SecurityConfig {
                             "/storage/image/**",
                             "/storage/qris/**",
                             "/storage/profile/**",
-                            "/storage/donation/**"
+                            "/storage/donation/**",
+                            "/api/v1/forgot-password/**"
                             ).permitAll(); // no auth
 
                     registry.requestMatchers("/api/v1/admin/**",
