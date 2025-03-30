@@ -1,13 +1,14 @@
 package com.app.bestiepanti.controller;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.ChangePasswordRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyEmailRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
@@ -46,9 +47,9 @@ public class UserController {
     public static final String UPDATE_PANTI_ENDPOINT = "/panti/profile/update";
     public static final String DELETE_USER_ENDPOINT = "/profile/delete";
     public static final String FORGOT_PASSWORD_ENDPOINT = "/forgot-password";
-    public static final String VERIFY_EMAIL_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-email/{email}";
-    public static final String VERIFY_OTP_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp/{otp}/{email}";
-    public static final String CHANGE_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/change-password/{email}";
+    public static final String VERIFY_EMAIL_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-email";
+    public static final String VERIFY_OTP_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
+    public static final String CHANGE_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/change-password";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -105,26 +106,26 @@ public class UserController {
     }
 
     @RequestMapping(value = VERIFY_EMAIL_ENDPOINT, method=RequestMethod.POST)
-    public ResponseEntity<Object> verifyEmail(@PathVariable String email) throws UserNotFoundException {
-        userService.verifyEmail(email);
-        GeneralResponse generalResponse = new GeneralResponse("Email sudah terkirim ke " + email + "!");
-        log.info("Email sent for verification to " + email + "!");
+    public ResponseEntity<Object> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) throws UserNotFoundException {
+        userService.verifyEmail(request.getEmail());
+        GeneralResponse generalResponse = new GeneralResponse("Email sudah terkirim ke " + request.getEmail() + "!");
+        log.info("Email sent for verification to " + request.getEmail() + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = VERIFY_OTP_ENDPOINT, method = RequestMethod.POST)
-    public ResponseEntity<Object> verifyOtp(@PathVariable Integer otp, @PathVariable String email) throws UserNotFoundException{
-        userService.verifyOtp(otp, email);
-        GeneralResponse generalResponse = new GeneralResponse("Otp sudah terverifikasi untuk " + email + "!");
-        log.info("Otp verified for email " + email + "!");
+    public ResponseEntity<Object> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) throws UserNotFoundException{
+        userService.verifyOtp(request);
+        GeneralResponse generalResponse = new GeneralResponse("Otp sudah terverifikasi untuk " + request.getEmail() + "!");
+        log.info("Otp verified for email " + request.getEmail() + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
     
     @RequestMapping(value = CHANGE_PASSWORD_ENDPOINT, method=RequestMethod.POST)
-    public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePasswordRequest changePassword, @PathVariable String email) {
-        userService.changePassword(changePassword, email);
-        GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui untuk " + email + "!");
-        log.info("Password has been changed for email " + email + "!");
+    public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePasswordRequest changePassword) {
+        userService.changePassword(changePassword);
+        GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui untuk " + changePassword.getEmail() + "!");
+        log.info("Password has been changed for email " + changePassword.getEmail() + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
     

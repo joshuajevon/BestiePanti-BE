@@ -3,7 +3,6 @@ package com.app.bestiepanti.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Random;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,14 +14,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.JwtConfig;
-import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.ChangePasswordRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
+import com.app.bestiepanti.exception.ValidationException;
 import com.app.bestiepanti.model.Donatur;
 import com.app.bestiepanti.model.ForgotPassword;
 import com.app.bestiepanti.model.Panti;
@@ -108,13 +109,14 @@ public class UserService {
         int otp = otpGenerator();
         MailRequest mailBody = MailRequest.builder()
                             .to(email)
-                            .text("JANGAN BERIKAN KODE OTP ke siapapun! Kode OTP anda adalah : " + otp)
+                            .text("JANGAN BERIKAN KODE OTP ke siapapun! Kode OTP anda adalah : " + otp +". Silahkan memasukkan kode OTP pada form tersedia dalam jangka waktu 90s.")
                             .subject("[No Reply] OTP Forgot Password Bestie Panti Account")
                             .build();
         
         ForgotPassword fp = ForgotPassword.builder()
                     .otp(otp)
-                    .expirationTime(new Date(System.currentTimeMillis() + 70 * 1000))
+                    .expirationTime(new Date(System.currentTimeMillis() + 90 * 1000)) // expire after 90s
+                    .isUsed(0)
                     .user(user)
                     .build();
         
@@ -122,23 +124,33 @@ public class UserService {
         forgotPasswordRepository.save(fp);
     }
 
-    public void verifyOtp(Integer otp, String email) throws UserNotFoundException {
-        UserApp user = findUserByEmail(email);
-        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUserId(otp, user.getId()).orElseThrow(() -> new RuntimeException("Invalid OTP for email " + email));
+    public void verifyOtp(VerifyOtpRequest request) throws UserNotFoundException {
+        UserApp user = findUserByEmail(request.getEmail());
+        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUserId(request.getOtp(), user.getId()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + request.getEmail()));
         
-        if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
-            forgotPasswordRepository.deleteById(fp.getFpid());
-            throw new RuntimeException("OTP has expired for email: " + email);
+        if(fp.getIsUsed() == 0){
+            if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
+                forgotPasswordRepository.deleteById(fp.getId());
+                throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
+            } 
+            fp.setIsUsed(1);
+            forgotPasswordRepository.save(fp);
+        } else {
+            throw new ValidationException("Kode OTP sudah digunakan!");
         }
+        
     }
 
-    public void changePassword(ChangePasswordRequest changePassword, String email) {
-        if(!Objects.equals(changePassword.getPassword(), changePassword.getConfirmationPassword())){
-            throw new RuntimeException("Please enter the password again!");
-        }
+    public void changePassword(ChangePasswordRequest changePassword) {
+        ForgotPassword fp = forgotPasswordRepository.findByUserEmail(changePassword.getEmail()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + changePassword.getEmail()));
+
+        if (fp.getIsUsed() == 0) 
+            throw new ValidationException("Kode OTP belum terverifikasi. Silahkan memverifikasi terlebih dahulu!");
 
         String encodedPassword = passwordEncoder.encode(changePassword.getPassword());
-        userRepository.updatePassword(email, encodedPassword);
+        userRepository.updatePassword(changePassword.getEmail(), encodedPassword);
+
+        forgotPasswordRepository.deleteById(fp.getId());
     }
 
     public Integer otpGenerator(){

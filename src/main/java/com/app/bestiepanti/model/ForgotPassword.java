@@ -12,26 +12,29 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
+@Data
 @Table(name = "forgot_passwords")
 public class ForgotPassword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer fpid;
+    private Integer id;
 
     @Column(nullable = false)
     private Integer otp;
 
-    @Column(nullable = false)
+    @Column(name = "expiration_time", nullable = false)
     private Date expirationTime;
+
+    @Column(name = "is_used")
+    private Integer isUsed;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

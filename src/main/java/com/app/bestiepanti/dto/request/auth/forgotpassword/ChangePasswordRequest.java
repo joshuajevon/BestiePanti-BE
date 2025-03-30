@@ -1,9 +1,10 @@
-package com.app.bestiepanti.dto.request.auth;
+package com.app.bestiepanti.dto.request.auth.forgotpassword;
 
 import com.app.bestiepanti.validation.general.ConfirmationPassword;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -19,6 +20,10 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @ConfirmationPassword
 public class ChangePasswordRequest {
+
+    @NotEmpty(message = "Email tidak boleh kosong")
+    @Email(message = "Email harus valid")
+    private String email;
 
     @NotEmpty(message = "Kata Sandi tidak boleh kosong")
     @Size(min = 8, message = "Kata Sandi harus memiliki minimal 8 karakter")

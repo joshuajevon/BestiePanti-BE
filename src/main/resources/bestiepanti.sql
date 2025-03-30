@@ -114,9 +114,10 @@ CREATE TABLE payments (
 )
 
 CREATE TABLE forgot_passwords (
-    fpid BIGINT PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     otp INTEGER,
     expiration_time TIMESTAMP,
+    is_used INTEGER,
     user_id BIGINT,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
