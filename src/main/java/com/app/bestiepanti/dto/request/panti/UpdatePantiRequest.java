@@ -45,6 +45,9 @@ public class UpdatePantiRequest implements ImagePantiRequest{
     @NotEmpty(message = "Wilayah tidak boleh kosong")
     private String region;
 
+    @NotEmpty(message = "Google Maps tidak boleh kosong")
+    private String maps;
+
     @NotEmpty(message = "Nama bank tidak boleh kosong")
     private String bankName;
 

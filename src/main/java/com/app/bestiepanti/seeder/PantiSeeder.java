@@ -60,6 +60,7 @@ public class PantiSeeder implements CommandLineRunner {
                 List<String> regions = Arrays.asList("Jakarta","Bogor","Depok","Tanggerang","Bekasi");
                 String pickedRegion = pickRandomRegion(regions);
                 panti.setRegion(pickedRegion);
+                panti.setMaps("test.maps");
                 panti.setUser(user);
                 pantiRepository.save(panti);
 

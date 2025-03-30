@@ -43,5 +43,7 @@ public class Panti {
     private String address;
 
     private String region;
+
+    private String maps;
    
 }

@@ -89,6 +89,7 @@ public class PantiService {
         panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         panti.setAddress(request.getAddress());
         panti.setRegion(request.getRegion());
+        panti.setMaps(request.getMaps());
         panti.setUser(user);
         pantiRepository.save(panti);
         return panti;
@@ -106,6 +107,7 @@ public class PantiService {
             panti.setPhone(request.getPhone());
             panti.setDonationTypes(request.getDonationTypes());
             panti.setAddress(request.getAddress());
+            panti.setMaps(request.getMaps());
             panti.setRegion(request.getRegion());
             pantiRepository.save(panti);
         }
