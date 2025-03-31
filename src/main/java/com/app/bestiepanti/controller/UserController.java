@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @RequestMapping(value = VERIFY_EMAIL_ENDPOINT, method=RequestMethod.POST)
-    public ResponseEntity<Object> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) throws UserNotFoundException {
+    public ResponseEntity<Object> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) throws Exception {
         userService.verifyEmail(request.getEmail());
         GeneralResponse generalResponse = new GeneralResponse("Email sudah terkirim ke " + request.getEmail() + "!");
         log.info("Email sent for verification to " + request.getEmail() + "!");

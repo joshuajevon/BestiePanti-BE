@@ -3,6 +3,8 @@ package com.app.bestiepanti.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -104,12 +106,11 @@ public class UserService {
         throw new UserNotFoundException("Role tidak ditemukan untuk pengguna. Silakan hubungi dukungan.");
     }
 
-    public void verifyEmail(String email) throws UserNotFoundException{
+    public void verifyEmail(String email) throws Exception{
         UserApp user = findUserByEmail(email);
-        int otp = otpGenerator();
+        Integer otp = otpGenerator();
         MailRequest mailBody = MailRequest.builder()
                             .to(email)
-                            .text("JANGAN BERIKAN KODE OTP ke siapapun! Kode OTP anda adalah : " + otp +". Silahkan memasukkan kode OTP pada form tersedia dalam jangka waktu 90s.")
                             .subject("[No Reply] OTP Forgot Password Bestie Panti Account")
                             .build();
         
@@ -119,8 +120,12 @@ public class UserService {
                     .isUsed(0)
                     .user(user)
                     .build();
-        
-        emailService.sendSimpleMessage(mailBody);
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", user.getName());
+        variables.put("otp", otp.toString());
+
+        emailService.sendSimpleMessage(mailBody, variables);
         forgotPasswordRepository.save(fp);
     }
 
