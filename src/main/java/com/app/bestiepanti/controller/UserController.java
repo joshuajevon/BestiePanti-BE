@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
@@ -50,6 +51,7 @@ public class UserController {
     public static final String VERIFY_EMAIL_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-email";
     public static final String VERIFY_OTP_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
     public static final String RESET_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/reset-password";
+    public static final String CHANGE_PASSWORD_ENDPOINT = "/change-password";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -126,6 +128,14 @@ public class UserController {
         userService.resetPassword(resetPassword);
         GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui untuk " + resetPassword.getEmail() + "!");
         log.info("Password has been changed for email " + resetPassword.getEmail() + "!");
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = CHANGE_PASSWORD_ENDPOINT, method=RequestMethod.PATCH)
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) throws UserNotFoundException {
+        userService.changePassword(request);
+        GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui!");
+        log.info("Password has been changed!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
     

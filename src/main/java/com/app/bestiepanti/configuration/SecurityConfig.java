@@ -52,8 +52,8 @@ public class SecurityConfig {
                             "/storage/donation/**",
                             "/api/v1/forgot-password/**"
                             ).permitAll(); // no auth
-
-                    registry.requestMatchers("/api/v1/admin/**",
+                            
+                            registry.requestMatchers("/api/v1/admin/**",
                             "/api/v1/panti/create",
                             "/api/v1/panti/update/**",
                             "/api/v1/panti/delete/**",
@@ -61,7 +61,8 @@ public class SecurityConfig {
                             "/api/v1/donatur/view",
                             "/api/v1/donatur/delete/**",
                             "/api/v1/donation/fund/delete/**",
-                            "/api/v1/donation/nonfund/delete/**").hasRole("ADMIN");
+                            "/api/v1/donation/nonfund/delete/**"
+                            ).hasRole("ADMIN");
 
                     registry.requestMatchers("/api/v1/donatur/",
                             "/api/v1/donatur/update/**",
@@ -70,7 +71,8 @@ public class SecurityConfig {
                             "/api/v1/donation/fund/create/**",
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
-                            "/donatur/profile/update").hasRole("DONATUR");
+                            "/donatur/profile/update",
+                            "/api/v1/change-password").hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
@@ -81,7 +83,8 @@ public class SecurityConfig {
                             "/api/v1/message/accept/**",
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
-                            "/panti/profile/update").hasRole("PANTI");
+                            "/panti/profile/update",
+                            "/api/v1/change-password").hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
                 })

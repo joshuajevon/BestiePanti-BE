@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.JwtConfig;
+import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
@@ -156,6 +157,19 @@ public class UserService {
         userRepository.updatePassword(resetPassword.getEmail(), encodedPassword);
 
         forgotPasswordRepository.deleteById(fp.getId());
+    }
+
+    public void changePassword(ChangePasswordRequest request) throws UserNotFoundException {
+        UserApp user = getAuthenticate();
+
+        if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword()))
+            throw new ValidationException("Kata sandi lama salah!");
+
+        if(!request.getNewPassword().equals(request.getConfirmationPassword()))
+            throw new ValidationException("Konfirmasi kata sandi baru tidak sama!");
+        
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     public Integer otpGenerator(){
