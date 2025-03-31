@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
-import com.app.bestiepanti.dto.request.auth.forgotpassword.ChangePasswordRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyEmailRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
@@ -49,7 +49,7 @@ public class UserController {
     public static final String FORGOT_PASSWORD_ENDPOINT = "/forgot-password";
     public static final String VERIFY_EMAIL_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-email";
     public static final String VERIFY_OTP_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
-    public static final String CHANGE_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/change-password";
+    public static final String RESET_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/reset-password";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -121,11 +121,11 @@ public class UserController {
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
     
-    @RequestMapping(value = CHANGE_PASSWORD_ENDPOINT, method=RequestMethod.POST)
-    public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePasswordRequest changePassword) {
-        userService.changePassword(changePassword);
-        GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui untuk " + changePassword.getEmail() + "!");
-        log.info("Password has been changed for email " + changePassword.getEmail() + "!");
+    @RequestMapping(value = RESET_PASSWORD_ENDPOINT, method=RequestMethod.POST)
+    public ResponseEntity<Object> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPassword) {
+        userService.resetPassword(resetPassword);
+        GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui untuk " + resetPassword.getEmail() + "!");
+        log.info("Password has been changed for email " + resetPassword.getEmail() + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
     

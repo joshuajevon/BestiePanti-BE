@@ -19,7 +19,7 @@ import com.app.bestiepanti.configuration.JwtConfig;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
-import com.app.bestiepanti.dto.request.auth.forgotpassword.ChangePasswordRequest;
+import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
@@ -146,14 +146,14 @@ public class UserService {
         
     }
 
-    public void changePassword(ChangePasswordRequest changePassword) {
-        ForgotPassword fp = forgotPasswordRepository.findByUserEmail(changePassword.getEmail()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + changePassword.getEmail()));
+    public void resetPassword(ResetPasswordRequest resetPassword) {
+        ForgotPassword fp = forgotPasswordRepository.findByUserEmail(resetPassword.getEmail()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + resetPassword.getEmail()));
 
         if (fp.getIsUsed() == 0) 
             throw new ValidationException("Kode OTP belum terverifikasi. Silahkan memverifikasi terlebih dahulu!");
 
-        String encodedPassword = passwordEncoder.encode(changePassword.getPassword());
-        userRepository.updatePassword(changePassword.getEmail(), encodedPassword);
+        String encodedPassword = passwordEncoder.encode(resetPassword.getPassword());
+        userRepository.updatePassword(resetPassword.getEmail(), encodedPassword);
 
         forgotPasswordRepository.deleteById(fp.getId());
     }

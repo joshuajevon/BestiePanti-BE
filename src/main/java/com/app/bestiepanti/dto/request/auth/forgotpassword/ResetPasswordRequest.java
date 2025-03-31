@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @ConfirmationPassword
-public class ChangePasswordRequest {
+public class ResetPasswordRequest {
 
     @NotEmpty(message = "Email tidak boleh kosong")
     @Email(message = "Email harus valid")
