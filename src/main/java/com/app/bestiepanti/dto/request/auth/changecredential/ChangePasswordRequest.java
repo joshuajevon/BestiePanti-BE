@@ -1,4 +1,4 @@
-package com.app.bestiepanti.dto.request.auth;
+package com.app.bestiepanti.dto.request.auth.changecredential;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

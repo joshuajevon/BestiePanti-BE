@@ -43,6 +43,9 @@ public class ApplicationConfig {
     @Value("${spring.mail.username}")
     private String mailUsername;
 
+    @Value("${url.front-end.bestiepanti}")
+    private String urlFrontEnd;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));

@@ -50,7 +50,8 @@ public class SecurityConfig {
                             "/storage/qris/**",
                             "/storage/profile/**",
                             "/storage/donation/**",
-                            "/api/v1/forgot-password/**"
+                            "/api/v1/forgot-password/**",
+                            "/api/v1/check-email/**"
                             ).permitAll(); // no auth
                             
                             registry.requestMatchers("/api/v1/admin/**",
@@ -72,7 +73,9 @@ public class SecurityConfig {
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
                             "/donatur/profile/update",
-                            "/api/v1/change-password").hasRole("DONATUR");
+                            "/api/v1/change-password",
+                            "/api/v1/change-email"
+                            ).hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
                             "/api/v1/panti/update/**",
@@ -84,7 +87,9 @@ public class SecurityConfig {
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
                             "/panti/profile/update",
-                            "/api/v1/change-password").hasRole("PANTI");
+                            "/api/v1/change-password",
+                            "/api/v1/change-email"
+                            ).hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
                 })

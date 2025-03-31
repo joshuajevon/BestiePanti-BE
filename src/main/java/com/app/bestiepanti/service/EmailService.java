@@ -22,8 +22,8 @@ public class EmailService {
     private final Configuration freemarkerConfig;
     private final ApplicationConfig applicationConfig;
 
-    public void sendSimpleMessage(MailRequest mailBody, Map<String, Object> variables) throws Exception {
-         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    public void sendEmailOtp(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
         helper.setTo(mailBody.getTo());
@@ -35,6 +35,20 @@ public class EmailService {
 
         helper.setText(htmlContent, true);
         javaMailSender.send(mimeMessage);
+    }
 
+    public void sendEmailVerification(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        helper.setTo(mailBody.getTo());
+        helper.setFrom(applicationConfig.getMailUsername());
+        helper.setSubject(mailBody.getSubject());
+
+        Template template = freemarkerConfig.getTemplate("email-verification-template.ftl");
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
+
+        helper.setText(htmlContent, true);
+        javaMailSender.send(mimeMessage);
     }
 }   

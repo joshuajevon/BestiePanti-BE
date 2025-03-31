@@ -123,3 +123,15 @@ CREATE TABLE forgot_passwords (
         FOREIGN KEY(user_id)
         REFERENCES users(id)
 )
+
+CREATE TABLE email_verifications (
+    id BIGINT PRIMARY KEY,
+    new_email VARCHAR(255),
+    token VARCHAR(64),
+    expiration_time TIMESTAMP,
+    is_verified BOOLEAN DEFAULT FALSE,
+    user_id BIGINT,
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
+)

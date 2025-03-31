@@ -1,12 +1,15 @@
 package com.app.bestiepanti.service;
 
+import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,11 +18,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.configuration.JwtConfig;
-import com.app.bestiepanti.dto.request.auth.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.auth.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.changecredential.ChangeEmailRequest;
+import com.app.bestiepanti.dto.request.auth.changecredential.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
@@ -28,12 +33,14 @@ import com.app.bestiepanti.dto.response.panti.PantiResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.exception.ValidationException;
 import com.app.bestiepanti.model.Donatur;
+import com.app.bestiepanti.model.EmailVerification;
 import com.app.bestiepanti.model.ForgotPassword;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
+import com.app.bestiepanti.repository.EmailVerificationRepository;
 import com.app.bestiepanti.repository.ForgotPasswordRepository;
 import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.PaymentRespository;
@@ -59,6 +66,8 @@ public class UserService {
     private final PaymentRespository paymentRespository;
     private final EmailService emailService;
     private final ForgotPasswordRepository forgotPasswordRepository;
+    private final EmailVerificationRepository emailVerificationRepository;
+    private final ApplicationConfig applicationConfig;
 
     public DonaturResponse register(RegisterRequest registerRequest) {
         UserApp user = new UserApp();
@@ -126,7 +135,7 @@ public class UserService {
         variables.put("name", user.getName());
         variables.put("otp", otp.toString());
 
-        emailService.sendSimpleMessage(mailBody, variables);
+        emailService.sendEmailOtp(mailBody, variables);
         forgotPasswordRepository.save(fp);
     }
 
@@ -170,6 +179,52 @@ public class UserService {
         
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    public void changeEmail(ChangeEmailRequest request) throws Exception {
+        UserApp user = getAuthenticate();
+
+        String token = UUID.randomUUID().toString();
+
+        EmailVerification emailVerification = EmailVerification.builder()
+                                                .user(user)
+                                                .newEmail(request.getEmail())
+                                                .token(token)
+                                                .expirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
+                                                .isVerified(false)
+                                                .build();
+        emailVerificationRepository.save(emailVerification);
+
+        String verificationLink = "http://localhost:8080/api/v1/check-email?token=" + token;
+        Map<String, Object> variables = Map.of(
+            "name", user.getName(),
+            "verificationLink", verificationLink
+        );
+        MailRequest mailRequest = MailRequest.builder()
+            .to(request.getEmail())
+            .subject("[No Reply] Verify Email Bestie Panti Account")
+            .build();
+        emailService.sendEmailVerification(mailRequest, variables);
+    }
+
+    public HttpHeaders checkEmail(String token) throws UserNotFoundException {
+        EmailVerification emailVerification = emailVerificationRepository.findByToken(token).orElseThrow(() -> new ValidationException("Invalid token."));
+
+        if (emailVerification.getExpirationTime().before(new Date())) {
+            throw new ValidationException("Verification token expired.");
+        }
+
+        UserApp user = userRepository.findById(emailVerification.getUser().getId())
+            .orElseThrow(() -> new UserNotFoundException("User with id " + emailVerification.getUser().getId() + " Not Found"));
+        user.setEmail(emailVerification.getNewEmail());
+        userRepository.save(user);
+
+        emailVerification.setIsVerified(true);
+        emailVerificationRepository.save(emailVerification);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(applicationConfig.getUrlFrontEnd()));
+        return headers;
     }
 
     public Integer otpGenerator(){
@@ -265,4 +320,5 @@ public class UserService {
                 .token(jwtToken)
                 .build();
     }
+
 }
