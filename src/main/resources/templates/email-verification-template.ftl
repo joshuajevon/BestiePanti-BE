@@ -40,7 +40,7 @@
             padding: 10px 20px;
             margin: 20px 0;
             background-color: #4F46E5;
-            color: #ffffff;
+            color: #ffffff !important;
             text-decoration: none;
             border-radius: 5px;
             font-size: 16px;
