@@ -25,6 +25,7 @@ import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonationRepository;
 import com.app.bestiepanti.repository.DonaturRepository;
 import com.app.bestiepanti.repository.MessageRepository;
+import com.app.bestiepanti.repository.TwoStepVerificationRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class DonaturService {
     private final DonationRepository donationRepository;
     private final MessageService messageService;
     private final MessageRepository messageRepository;
+    private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -93,6 +95,7 @@ public class DonaturService {
                 }
             }
 
+            twoStepVerificationRepository.deleteByEmail(donatur.getUser().getEmail());
             donaturRepository.deleteByUserId(id);
             userRepository.deleteById(id);
         } catch (Exception e) {

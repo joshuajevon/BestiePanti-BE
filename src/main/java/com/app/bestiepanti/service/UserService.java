@@ -23,11 +23,12 @@ import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.configuration.JwtConfig;
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
-import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.request.auth.changecredential.ChangeEmailRequest;
 import com.app.bestiepanti.dto.request.auth.changecredential.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
+import com.app.bestiepanti.dto.request.auth.register.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.register.VerifyOtpRegisterRequest;
 import com.app.bestiepanti.dto.response.AdminResponse;
 import com.app.bestiepanti.dto.response.donatur.DonaturResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponse;
@@ -73,51 +74,60 @@ public class UserService {
     private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
 
-    public void register(RegisterRequest registerRequest) throws Exception {
-        UserApp user = new UserApp();
-        user.setName(registerRequest.getName());
-        user.setEmail(registerRequest.getEmail());
+    // public void register(RegisterRequest registerRequest) throws Exception {
+    //     UserApp user = new UserApp();
+    //     user.setName(registerRequest.getName());
+    //     user.setEmail(registerRequest.getEmail());
+    //     user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-        user.setRole(role);
-
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        userRepository.save(user);
+    //     Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+    //     user.setRole(role);
         
-        saveToDonatur(registerRequest, user);   
-        sendOtpTwoStepRegistration(user);
-    }
+    //     saveToDonatur(registerRequest, user);   
+    //     sendOtpTwoStepRegistration(user);
+    // }
 
-    private void sendOtpTwoStepRegistration(UserApp user) throws Exception {
+    public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
         MailRequest mailBody = MailRequest.builder()
-                                .to(user.getEmail())
+                                .to(request.getEmail())
                                 .subject("[No Reply] OTP Two Step Verification Bestie Panti Account")
                                 .build();
 
         Integer otp = otpGenerator();
         TwoStepVerification twoStepVerification = new TwoStepVerification();
         twoStepVerification.setExpirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000));
-        twoStepVerification.setUser(user);
+        twoStepVerification.setEmail(request.getEmail());
         twoStepVerification.setOtp(passwordEncoder.encode(otp.toString()));
         twoStepVerificationRepository.save(twoStepVerification);
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("name", user.getName());
+        variables.put("name", request.getName());
         variables.put("otp", otp.toString());
 
         emailService.sendEmailOtp(mailBody, variables);
     }
 
-    public DonaturResponse verifyOtpRegistration(VerifyOtpRequest request) throws UserNotFoundException {
-        UserApp user = findUserByEmail(request.getEmail());
-        
-        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByUserId(user.getId());
+    public DonaturResponse verifyOtpRegistration(VerifyOtpRegisterRequest request) throws UserNotFoundException {
+        UserApp user = new UserApp();
+        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByEmail(request.getEmail());
+
         if (twoStepVerification != null && passwordEncoder.matches(request.getOtp(), twoStepVerification.getOtp())) {
             if(twoStepVerification.getVerifiedTimestamp() == null){
                 if(twoStepVerification.getExpirationTime().before(Date.from(Instant.now()))) {
                     twoStepVerificationRepository.deleteById(twoStepVerification.getId());
                     throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail() + ". Silahkan mendaftar ulang!");
                 }
+                
+                user.setName(request.getName());
+                user.setEmail(request.getEmail());
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+                Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+                user.setRole(role);
+                userRepository.save(user);
+                
+                saveToDonatur(request, user);   
+                        
                 twoStepVerification.setVerifiedTimestamp(LocalDateTime.now());
                 twoStepVerificationRepository.save(twoStepVerification);
             } else {
@@ -134,11 +144,6 @@ public class UserService {
 
     public Object login(LoginRequest loginRequest) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
-        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByUserId(user.getId());
-
-        if(twoStepVerification.getVerifiedTimestamp() == null){
-            throw new ValidationException("Harap untuk memverifikasi akun terlebih dahulu pada email Anda!");
-        }
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -177,7 +182,7 @@ public class UserService {
         
         ForgotPassword fp = ForgotPassword.builder()
                     .otp(passwordEncoder.encode(otp.toString()))
-                    .expirationTime(new Date(System.currentTimeMillis() + 90 * 1000)) // expire after 90s
+                    .expirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // expire after 15 min
                     .isUsed(0)
                     .user(user)
                     .build();
@@ -293,7 +298,7 @@ public class UserService {
         return user;
     }
 
-    public Donatur saveToDonatur(RegisterRequest userRequest, UserApp user) {
+    public Donatur saveToDonatur(VerifyOtpRegisterRequest userRequest, UserApp user) {
         Donatur donatur = new Donatur();
         donatur.setUser(user);
         donatur.setAddress(userRequest.getAddress());

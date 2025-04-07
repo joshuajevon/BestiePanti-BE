@@ -143,9 +143,5 @@ CREATE TABLE two_step_verifications (
     otp VARCHAR(255),
     expiration_time TIMESTAMP,
     verified_timestamp TIMESTAMP,
-    user_id BIGINT,
-    CONSTRAINT fk_user
-        FOREIGN KEY(user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+    email VARCHAR(255)
 );

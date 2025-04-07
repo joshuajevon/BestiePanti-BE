@@ -5,12 +5,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
-import com.app.bestiepanti.dto.request.auth.RegisterRequest;
 import com.app.bestiepanti.dto.request.auth.changecredential.ChangeEmailRequest;
 import com.app.bestiepanti.dto.request.auth.changecredential.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyEmailRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyOtpRequest;
+import com.app.bestiepanti.dto.request.auth.register.RegisterRequest;
+import com.app.bestiepanti.dto.request.auth.register.VerifyOtpRegisterRequest;
 import com.app.bestiepanti.dto.request.donatur.UpdateDonaturRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
@@ -66,14 +67,14 @@ public class UserController {
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Object> register(@Valid @RequestBody RegisterRequest userRequest) throws Exception{     
-        userService.register(userRequest);
+        userService.sendOtpTwoStepRegistration(userRequest);
         log.info("Email has been sent to email's donatur: " + userRequest.getEmail());
         GeneralResponse generalResponse = new GeneralResponse("Email sudah terkirim kepada email donatur: " + userRequest.getEmail());
         return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = VERIFY_OTP_REGISTRATION_ENDPOINT, method = RequestMethod.POST)
-    public ResponseEntity<Object> verifyOtpRegistration(@Valid @RequestBody VerifyOtpRequest request) throws UserNotFoundException{
+    public ResponseEntity<Object> verifyOtpRegistration(@Valid @RequestBody VerifyOtpRegisterRequest request) throws UserNotFoundException{
         DonaturResponse donaturResponse = userService.verifyOtpRegistration(request);
         log.info("Otp verified for email " + donaturResponse.getEmail() + "!");
         return new ResponseEntity<>(donaturResponse, HttpStatus.OK);

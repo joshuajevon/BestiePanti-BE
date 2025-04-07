@@ -1,4 +1,5 @@
-package com.app.bestiepanti.dto.request.auth;
+package com.app.bestiepanti.dto.request.auth.register;
+
 
 import com.app.bestiepanti.validation.general.ConfirmationPassword;
 import com.app.bestiepanti.validation.general.UniqueEmail;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @ConfirmationPassword
-public class RegisterRequest {
+public class VerifyOtpRegisterRequest {
     @NotEmpty(message = "Nama tidak boleh kosong")
     private String name;
 
@@ -48,5 +50,7 @@ public class RegisterRequest {
 
     @NotEmpty(message = "Alamat tidak boleh kosong")
     private String address;
-    
+
+    @NotNull(message = "Kode OTP tidak boleh kosong")
+    private String otp;
 }
