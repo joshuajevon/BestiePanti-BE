@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
@@ -74,18 +76,38 @@ public class UserService {
     private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
 
-    // public void register(RegisterRequest registerRequest) throws Exception {
-    //     UserApp user = new UserApp();
-    //     user.setName(registerRequest.getName());
-    //     user.setEmail(registerRequest.getEmail());
-    //     user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+    public Object authenticateWithGoogle(OAuth2User principal) throws UserNotFoundException {
+        UserApp user = new UserApp();
+        Donatur donatur = new Donatur();
+        String name = null;
+        String email = null;
+        if (principal != null) {
+            name = principal.getAttribute("name"); 
+            email = principal.getAttribute("email");
+        } else {
+            throw new ValidationException("Pengguna tidak terautentikasi!");
+        }
 
-    //     Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-    //     user.setRole(role);
-        
-    //     saveToDonatur(registerRequest, user);   
-    //     sendOtpTwoStepRegistration(user);
-    // }
+        Optional<UserApp> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setEmail(email);
+            loginRequest.setPassword(UUID.randomUUID().toString());
+            return login(loginRequest, true);
+        }
+        user.setName(name);
+        user.setEmail(email);
+        log.info("Logged in to Google Account Email: " + email); 
+
+        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+        user.setRole(role);
+
+        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        userRepository.save(user);
+
+        String jwtToken = jwtService.generateToken(user);
+        return createDonaturResponse(user, donatur, jwtToken);
+    }
 
     public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
         MailRequest mailBody = MailRequest.builder()
@@ -142,13 +164,15 @@ public class UserService {
         return createDonaturResponse(user, donatur, jwtToken);
     }
 
-    public Object login(LoginRequest loginRequest) throws UserNotFoundException {
+    public Object login(LoginRequest loginRequest, Boolean isGoogle) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Email atau Kata Sandi tidak valid. Silakan coba lagi.");
+        if (!isGoogle) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            } catch (AuthenticationException e) {
+                throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
+            }
         }
         String jwtToken = jwtService.generateToken(user);
         String existingToken = jwtConfig.getActiveToken(loginRequest.getEmail());
@@ -349,11 +373,11 @@ public class UserService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
-                .phone(donatur.getPhone())
-                .dob(donatur.getDob().toString())
-                .gender(donatur.getGender())
-                .address(donatur.getAddress())
-                .profile(donatur.getProfile())
+                .phone(donatur != null ? donatur.getPhone(): null)
+                .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
+                .gender(donatur != null ? donatur.getGender() : null)
+                .address(donatur != null ? donatur.getAddress() : null)
+                .profile(donatur != null ? donatur.getProfile() : null)
                 .token(token)
                 .build();
     }
