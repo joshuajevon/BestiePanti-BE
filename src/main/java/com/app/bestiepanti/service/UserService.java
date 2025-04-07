@@ -95,7 +95,7 @@ public class UserService {
 
         Integer otp = otpGenerator();
         TwoStepVerification twoStepVerification = new TwoStepVerification();
-        twoStepVerification.setExpirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000));
+        twoStepVerification.setExpirationTime(new Date(System.currentTimeMillis() + 90 * 1000));
         twoStepVerification.setEmail(request.getEmail());
         twoStepVerification.setOtp(passwordEncoder.encode(otp.toString()));
         twoStepVerificationRepository.save(twoStepVerification);
@@ -109,7 +109,7 @@ public class UserService {
 
     public DonaturResponse verifyOtpRegistration(VerifyOtpRegisterRequest request) throws UserNotFoundException {
         UserApp user = new UserApp();
-        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByEmail(request.getEmail());
+        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findTopByEmailOrderByIdDesc(request.getEmail());
 
         if (twoStepVerification != null && passwordEncoder.matches(request.getOtp(), twoStepVerification.getOtp())) {
             if(twoStepVerification.getVerifiedTimestamp() == null){
@@ -182,7 +182,7 @@ public class UserService {
         
         ForgotPassword fp = ForgotPassword.builder()
                     .otp(passwordEncoder.encode(otp.toString()))
-                    .expirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // expire after 15 min
+                    .expirationTime(new Date(System.currentTimeMillis() + 90 * 1000)) // expire after 90s
                     .isUsed(0)
                     .user(user)
                     .build();
@@ -248,7 +248,7 @@ public class UserService {
                                                 .user(user)
                                                 .newEmail(request.getEmail())
                                                 .token(token)
-                                                .expirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
+                                                .expirationTime(new Date(System.currentTimeMillis() + 90 * 1000))
                                                 .isVerified(false)
                                                 .build();
         emailVerificationRepository.save(emailVerification);

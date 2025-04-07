@@ -53,7 +53,7 @@
             <h1>Halo, ${name}!</h1>
             <p><b>JANGAN BERIKAN KODE OTP ke siapapun!</b></p>
             <p>Kode OTP Anda adalah: <strong>${otp}</strong></p>
-            <p>Harap gunakan kode OTP ini dalam waktu 15 menit sebelum kedaluwarsa.</p>
+            <p>Harap gunakan kode OTP ini dalam waktu 90s sebelum kedaluwarsa.</p>
         </div>
         <div class="email-footer">
             <p>Jika Anda tidak meminta permintaan pengiriman kode OTP, abaikan email ini.</p>

@@ -72,7 +72,7 @@
             <p>Silakan klik tombol di bawah ini untuk memverifikasi dan mengatur ulang email Anda:</p>
 
             <a href="${verificationLink}" class="verification-button">Verifikasi Email</a>
-            <p>Harap gunakan tautan ini dalam waktu 15 menit sebelum kedaluwarsa.</p>
+            <p>Harap gunakan tautan ini dalam waktu 90s sebelum kedaluwarsa.</p>
         </div>
         <div class="email-footer">
             <p>Jika Anda tidak meminta pengaturan ulang email, abaikan email ini.</p>
