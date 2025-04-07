@@ -84,8 +84,11 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userRepository.save(user);
         
-        saveToDonatur(registerRequest, user);
-            
+        saveToDonatur(registerRequest, user);   
+        sendOtpTwoStepRegistration(user);
+    }
+
+    private void sendOtpTwoStepRegistration(UserApp user) throws Exception {
         MailRequest mailBody = MailRequest.builder()
                                 .to(user.getEmail())
                                 .subject("[No Reply] OTP Two Step Verification Bestie Panti Account")
@@ -184,7 +187,7 @@ public class UserService {
 
     public void verifyOtpForgotPassword(VerifyOtpRequest request) throws UserNotFoundException {
         UserApp user = findUserByEmail(request.getEmail());
-        ForgotPassword fp = forgotPasswordRepository.findByUserId(user.getId()).orElseThrow(() -> new ValidationException("Tidak ditemukan permintaan ubah password pada akun " + user.getId()));
+        ForgotPassword fp = forgotPasswordRepository.findTopByUserIdOrderByIdDesc(user.getId()).orElseThrow(() -> new ValidationException("Tidak ditemukan permintaan ubah password pada akun " + user.getId()));
         if (fp != null && passwordEncoder.matches(request.getOtp(), fp.getOtp())) {
             if(fp.getIsUsed() == 0){
                 if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
@@ -202,7 +205,7 @@ public class UserService {
     }
 
     public void resetPassword(ResetPasswordRequest resetPassword) {
-        ForgotPassword fp = forgotPasswordRepository.findByUserEmail(resetPassword.getEmail()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + resetPassword.getEmail()));
+        ForgotPassword fp = forgotPasswordRepository.findTopByUserEmail(resetPassword.getEmail()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + resetPassword.getEmail()));
 
         if (fp.getIsUsed() == 0) 
             throw new ValidationException("Kode OTP belum terverifikasi. Silahkan memverifikasi terlebih dahulu!");
