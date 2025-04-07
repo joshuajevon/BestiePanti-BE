@@ -51,7 +51,8 @@ public class SecurityConfig {
                             "/storage/profile/**",
                             "/storage/donation/**",
                             "/api/v1/forgot-password/**",
-                            "/api/v1/check-email/**"
+                            "/api/v1/check-email/**",
+                            "/api/v1/verify-otp"
                             ).permitAll(); // no auth
                             
                             registry.requestMatchers("/api/v1/admin/**",

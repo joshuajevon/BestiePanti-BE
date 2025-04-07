@@ -1,5 +1,7 @@
 package com.app.bestiepanti.model;
 
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -20,21 +22,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-@Table(name = "forgot_passwords")
-public class ForgotPassword {
-
+@Table(name = "two_step_verifications")
+public class TwoStepVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private BigInteger id;
+    
     @Column(nullable = false)
     private String otp;
 
-    @Column(name = "expiration_time", nullable = false)
+    @Column(name = "expiration_time")
     private Date expirationTime;
 
-    @Column(name = "is_used")
-    private Integer isUsed;
+    @Column(name = "verified_timestamp")
+    private LocalDateTime verifiedTimestamp;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

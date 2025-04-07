@@ -54,7 +54,7 @@ public class DonaturService {
             LocalDate dob = LocalDate.parse(request.getDob(), formatter);
             donatur.setDob(dob);
             donatur.setGender(request.getGender());
-            donatur.setPhone(request.getPhone());
+            donatur.setPhone("+62"+request.getPhone());
             donatur.setAddress(request.getAddress());
             donaturRepository.save(donatur);
         }

@@ -3,6 +3,7 @@ package com.app.bestiepanti.service;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.app.bestiepanti.model.ForgotPassword;
 import com.app.bestiepanti.model.Panti;
 import com.app.bestiepanti.model.Payment;
 import com.app.bestiepanti.model.Role;
+import com.app.bestiepanti.model.TwoStepVerification;
 import com.app.bestiepanti.model.UserApp;
 import com.app.bestiepanti.repository.DonaturRepository;
 import com.app.bestiepanti.repository.EmailVerificationRepository;
@@ -45,6 +47,7 @@ import com.app.bestiepanti.repository.ForgotPasswordRepository;
 import com.app.bestiepanti.repository.PantiRepository;
 import com.app.bestiepanti.repository.PaymentRespository;
 import com.app.bestiepanti.repository.RoleRepository;
+import com.app.bestiepanti.repository.TwoStepVerificationRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -67,9 +70,10 @@ public class UserService {
     private final EmailService emailService;
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
 
-    public DonaturResponse register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) throws Exception {
         UserApp user = new UserApp();
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
@@ -79,9 +83,48 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userRepository.save(user);
+        
+        saveToDonatur(registerRequest, user);
+            
+        MailRequest mailBody = MailRequest.builder()
+                                .to(user.getEmail())
+                                .subject("[No Reply] OTP Two Step Verification Bestie Panti Account")
+                                .build();
 
-        Donatur donatur = saveToDonatur(registerRequest, user);
+        Integer otp = otpGenerator();
+        TwoStepVerification twoStepVerification = new TwoStepVerification();
+        twoStepVerification.setExpirationTime(new Date(System.currentTimeMillis() + 15 * 60 * 1000));
+        twoStepVerification.setUser(user);
+        twoStepVerification.setOtp(passwordEncoder.encode(otp.toString()));
+        twoStepVerificationRepository.save(twoStepVerification);
 
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", user.getName());
+        variables.put("otp", otp.toString());
+
+        emailService.sendEmailOtp(mailBody, variables);
+    }
+
+    public DonaturResponse verifyOtpRegistration(VerifyOtpRequest request) throws UserNotFoundException {
+        UserApp user = findUserByEmail(request.getEmail());
+
+        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByUserId(user.getId());
+        if (twoStepVerification != null && passwordEncoder.matches(request.getOtp(), twoStepVerification.getOtp())) {
+            if(twoStepVerification.getVerifiedTimestamp() == null){
+                if(twoStepVerification.getExpirationTime().before(Date.from(Instant.now()))) {
+                    twoStepVerificationRepository.deleteById(twoStepVerification.getId());
+                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
+                } 
+                twoStepVerification.setVerifiedTimestamp(LocalDateTime.now());
+                twoStepVerificationRepository.save(twoStepVerification);
+            } else {
+                throw new ValidationException("Kode OTP sudah digunakan!");
+            }
+        } else {
+            throw new ValidationException("Kode OTP tidak valid!");
+        }
+
+        Donatur donatur = donaturRepository.findByUserId(user.getId());
         String jwtToken = jwtService.generateToken(user);
         return createDonaturResponse(user, donatur, jwtToken);
     }
@@ -125,7 +168,7 @@ public class UserService {
                             .build();
         
         ForgotPassword fp = ForgotPassword.builder()
-                    .otp(otp)
+                    .otp(passwordEncoder.encode(otp.toString()))
                     .expirationTime(new Date(System.currentTimeMillis() + 90 * 1000)) // expire after 90s
                     .isUsed(0)
                     .user(user)
@@ -139,21 +182,23 @@ public class UserService {
         forgotPasswordRepository.save(fp);
     }
 
-    public void verifyOtp(VerifyOtpRequest request) throws UserNotFoundException {
+    public void verifyOtpForgotPassword(VerifyOtpRequest request) throws UserNotFoundException {
         UserApp user = findUserByEmail(request.getEmail());
-        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUserId(request.getOtp(), user.getId()).orElseThrow(() -> new ValidationException("Kode OTP tidak valid untuk " + request.getEmail()));
-        
-        if(fp.getIsUsed() == 0){
-            if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
-                forgotPasswordRepository.deleteById(fp.getId());
-                throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
-            } 
-            fp.setIsUsed(1);
-            forgotPasswordRepository.save(fp);
+        ForgotPassword fp = forgotPasswordRepository.findByUserId(user.getId()).orElseThrow(() -> new ValidationException("Tidak ditemukan permintaan ubah password pada akun " + user.getId()));
+        if (fp != null && passwordEncoder.matches(request.getOtp(), fp.getOtp())) {
+            if(fp.getIsUsed() == 0){
+                if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
+                    forgotPasswordRepository.deleteById(fp.getId());
+                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
+                } 
+                fp.setIsUsed(1);
+                forgotPasswordRepository.save(fp);
+            } else {
+                throw new ValidationException("Kode OTP sudah digunakan!");
+            }
         } else {
-            throw new ValidationException("Kode OTP sudah digunakan!");
+            throw new ValidationException("Kode OTP tidak valid untuk " + request.getEmail());
         }
-        
     }
 
     public void resetPassword(ResetPasswordRequest resetPassword) {
@@ -195,7 +240,7 @@ public class UserService {
                                                 .build();
         emailVerificationRepository.save(emailVerification);
 
-        String verificationLink = "http://localhost:8080/api/v1/check-email?token=" + token;
+        String verificationLink = applicationConfig.getUrlBackEnd() + "/api/v1/check-email?token=" + token;
         Map<String, Object> variables = Map.of(
             "name", user.getName(),
             "verificationLink", verificationLink
@@ -245,7 +290,7 @@ public class UserService {
         donatur.setUser(user);
         donatur.setAddress(userRequest.getAddress());
         donatur.setGender(userRequest.getGender());
-        donatur.setPhone(userRequest.getPhone());
+        donatur.setPhone("+62"+userRequest.getPhone());
         LocalDate dob = LocalDate.parse(userRequest.getDob());
         donatur.setDob(dob);
         if(userRequest.getGender().equals("L")) donatur.setProfile("defaultProfileMale.png");

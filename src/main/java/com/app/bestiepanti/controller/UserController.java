@@ -52,11 +52,12 @@ public class UserController {
     public static final String DELETE_USER_ENDPOINT = "/profile/delete";
     public static final String FORGOT_PASSWORD_ENDPOINT = "/forgot-password";
     public static final String VERIFY_EMAIL_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-email";
-    public static final String VERIFY_OTP_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
+    public static final String VERIFY_OTP_FORGOT_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
     public static final String RESET_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/reset-password";
     public static final String CHANGE_PASSWORD_ENDPOINT = "/change-password";
     public static final String CHANGE_EMAIL_ENDPOINT = "/change-email";
     public static final String CHECK_EMAIL_ENDPOINT = "/check-email";
+    public static final String VERIFY_OTP_REGISTRATION_ENDPOINT = "/verify-otp";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -64,10 +65,18 @@ public class UserController {
     
     @RequestMapping(value = REGISTER_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<DonaturResponse> register(@Valid @RequestBody RegisterRequest userRequest){     
-        DonaturResponse donaturResponse = userService.register(userRequest);
-        log.info("Donatur " + donaturResponse.getId() + " is registered!");
-        return new ResponseEntity<>(donaturResponse, HttpStatus.CREATED);
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterRequest userRequest) throws Exception{     
+        userService.register(userRequest);
+        log.info("Email has been sent to email's donatur: " + userRequest.getEmail());
+        GeneralResponse generalResponse = new GeneralResponse("Email sudah terkirim kepada email donatur: " + userRequest.getEmail());
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = VERIFY_OTP_REGISTRATION_ENDPOINT, method = RequestMethod.POST)
+    public ResponseEntity<Object> verifyOtpRegistration(@Valid @RequestBody VerifyOtpRequest request) throws UserNotFoundException{
+        DonaturResponse donaturResponse = userService.verifyOtpRegistration(request);
+        log.info("Otp verified for email " + donaturResponse.getEmail() + "!");
+        return new ResponseEntity<>(donaturResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,9 +129,9 @@ public class UserController {
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
-    @RequestMapping(value = VERIFY_OTP_ENDPOINT, method = RequestMethod.POST)
-    public ResponseEntity<Object> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) throws UserNotFoundException{
-        userService.verifyOtp(request);
+    @RequestMapping(value = VERIFY_OTP_FORGOT_PASSWORD_ENDPOINT, method = RequestMethod.POST)
+    public ResponseEntity<Object> verifyOtpForgotPassword(@Valid @RequestBody VerifyOtpRequest request) throws UserNotFoundException{
+        userService.verifyOtpForgotPassword(request);
         GeneralResponse generalResponse = new GeneralResponse("Otp sudah terverifikasi untuk " + request.getEmail() + "!");
         log.info("Otp verified for email " + request.getEmail() + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);

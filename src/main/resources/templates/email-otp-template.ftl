@@ -47,17 +47,16 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Reset Kata Sandi Anda</h1>
+            <h1>OTP Akun Bestie Panti</h1>
         </div>
         <div class="email-body">
             <h1>Halo, ${name}!</h1>
             <p><b>JANGAN BERIKAN KODE OTP ke siapapun!</b></p>
-            <p>Kami menerima permintaan Anda untuk mengatur ulang kata sandi Anda.</p>
             <p>Kode OTP Anda adalah: <strong>${otp}</strong></p>
             <p>Silakan gunakan kode OTP ini dalam waktu 90 detik.</p>
         </div>
         <div class="email-footer">
-            <p>Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan email ini.</p>
+            <p>Jika Anda tidak meminta permintaan pengiriman kode OTP, abaikan email ini.</p>
             <p>Copyright © 2025 BestiePanti. All rights reserved.</p>
         </div>
     </div>

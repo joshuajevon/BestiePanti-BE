@@ -115,7 +115,7 @@ CREATE TABLE payments (
 
 CREATE TABLE forgot_passwords (
     id BIGINT PRIMARY KEY,
-    otp INTEGER,
+    otp VARCHAR(255),
     expiration_time TIMESTAMP,
     is_used INTEGER,
     user_id BIGINT,
@@ -130,6 +130,17 @@ CREATE TABLE email_verifications (
     token VARCHAR(64),
     expiration_time TIMESTAMP,
     is_verified BOOLEAN DEFAULT FALSE,
+    user_id BIGINT,
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
+)
+
+CREATE TABLE two_step_verifications (
+    id BIGINT PRIMARY KEY,
+    otp VARCHAR(255),
+    expiration_time TIMESTAMP,
+    verified_timestamp TIMESTAMP,
     user_id BIGINT,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)

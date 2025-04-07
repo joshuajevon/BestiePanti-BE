@@ -22,5 +22,5 @@ public class VerifyOtpRequest {
     private String email;
 
     @NotNull(message = "Kode OTP tidak boleh kosong")
-    private Integer otp;
+    private String otp;
 }
