@@ -3,6 +3,7 @@ package com.app.bestiepanti.model;
 import java.math.BigInteger;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class Panti {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
  
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserApp user;
  

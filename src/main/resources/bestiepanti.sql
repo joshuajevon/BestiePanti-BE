@@ -28,6 +28,7 @@ CREATE TABLE pantis (
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE donaturs (
@@ -41,6 +42,7 @@ CREATE TABLE donaturs (
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE donations (
@@ -145,4 +147,5 @@ CREATE TABLE two_step_verifications (
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
-)
+        ON DELETE CASCADE
+);

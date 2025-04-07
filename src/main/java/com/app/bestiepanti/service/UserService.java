@@ -110,14 +110,14 @@ public class UserService {
 
     public DonaturResponse verifyOtpRegistration(VerifyOtpRequest request) throws UserNotFoundException {
         UserApp user = findUserByEmail(request.getEmail());
-
+        
         TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByUserId(user.getId());
         if (twoStepVerification != null && passwordEncoder.matches(request.getOtp(), twoStepVerification.getOtp())) {
             if(twoStepVerification.getVerifiedTimestamp() == null){
                 if(twoStepVerification.getExpirationTime().before(Date.from(Instant.now()))) {
                     twoStepVerificationRepository.deleteById(twoStepVerification.getId());
-                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
-                } 
+                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail() + ". Silahkan mendaftar ulang!");
+                }
                 twoStepVerification.setVerifiedTimestamp(LocalDateTime.now());
                 twoStepVerificationRepository.save(twoStepVerification);
             } else {
@@ -134,6 +134,11 @@ public class UserService {
 
     public Object login(LoginRequest loginRequest) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
+        TwoStepVerification twoStepVerification = twoStepVerificationRepository.findByUserId(user.getId());
+
+        if(twoStepVerification.getVerifiedTimestamp() == null){
+            throw new ValidationException("Harap untuk memverifikasi akun terlebih dahulu pada email Anda!");
+        }
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
