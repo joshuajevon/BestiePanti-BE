@@ -104,7 +104,8 @@ public class SecurityConfig {
                                 .userInfoEndpoint(userInfo -> userInfo
                                         .userService(oAuth2UserService())
                                 )
-                        .successHandler(authenticationSuccessHandler()))
+                        // .successHandler(authenticationSuccessHandler())
+                        )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(management -> management
@@ -128,8 +129,8 @@ public class SecurityConfig {
         return new DefaultOAuth2UserService();
     }
 
-    @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler(){
-        return new CustomAuthenticationSuccessHandler();
-    }
+//     @Bean
+//     public AuthenticationSuccessHandler authenticationSuccessHandler(){
+//         return new CustomAuthenticationSuccessHandler();
+//     }
 }
