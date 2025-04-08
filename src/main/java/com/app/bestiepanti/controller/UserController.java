@@ -91,12 +91,6 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    // @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.GET)
-    // public ResponseEntity<?> authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
-    //     userService.authenticateWithGoogle(principal, response);
-    //     return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
-
     @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.GET)
     public void authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
         userService.authenticateWithGoogle(principal, response);
