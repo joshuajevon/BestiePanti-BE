@@ -42,6 +42,8 @@ public class PantiResponse{
 
     private String region;
 
+    private String maps;
+
     private String bankName;
 
     private String bankAccountNumber;

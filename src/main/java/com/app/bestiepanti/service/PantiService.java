@@ -247,6 +247,7 @@ public class PantiService {
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
                 .region(panti.getRegion())
+                .maps(panti.getMaps())
                 .bankAccountName(payment != null ? payment.getBankAccountName() : null)
                 .bankAccountNumber(payment != null ? payment.getBankAccountNumber() : null)
                 .bankName(payment != null ? payment.getBankName() : null)

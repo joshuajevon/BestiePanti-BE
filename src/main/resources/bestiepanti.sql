@@ -24,7 +24,7 @@ CREATE TABLE pantis (
     is_urgent INTEGER,
     address VARCHAR(255),
     region VARCHAR(255),
-    maps VARCHAR(255),
+    maps TEXT,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
