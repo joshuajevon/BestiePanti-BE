@@ -79,40 +79,43 @@ public class UserService {
     private final ApplicationConfig applicationConfig;
 
     public void authenticateWithGoogle(OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
-        UserApp user = new UserApp();
         String name = null;
         String email = null;
-
+    
         if (principal != null) {
             name = principal.getAttribute("name");
             email = principal.getAttribute("email");
         } else {
             throw new ValidationException("Pengguna tidak terautentikasi!");
         }
-
+    
         Optional<UserApp> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
+            UserApp user = existingUser.get();
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setEmail(email);
             loginRequest.setPassword(UUID.randomUUID().toString());
-            String jwtToken = jwtService.generateToken(user);
-            response.sendRedirect(applicationConfig.getUrlFrontEnd() + "login/callback?token=" + jwtToken);
-        } else {
-            user.setName(name);
-            user.setEmail(email);
-            log.info("Logged in to Google Account Email: " + email);
-    
-            Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-            user.setRole(role);
-    
-            user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-            userRepository.save(user);
     
             String jwtToken = jwtService.generateToken(user);
             String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
             response.sendRedirect(redirectUrl);
+            return;
         }
-
+    
+        UserApp newUser = new UserApp();
+        newUser.setName(name);
+        newUser.setEmail(email);
+        log.info("Logged in to Google Account Email: " + email);
+    
+        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+        newUser.setRole(role);
+    
+        newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        userRepository.save(newUser);
+    
+        String jwtToken = jwtService.generateToken(newUser);
+        String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
+        response.sendRedirect(redirectUrl);
     }
 
     public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
