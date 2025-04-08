@@ -97,22 +97,22 @@ public class UserService {
             loginRequest.setPassword(UUID.randomUUID().toString());
             String jwtToken = jwtService.generateToken(user);
             response.sendRedirect(applicationConfig.getUrlFrontEnd() + "login/callback?token=" + jwtToken);
-            return;
+        } else {
+            user.setName(name);
+            user.setEmail(email);
+            log.info("Logged in to Google Account Email: " + email);
+    
+            Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+            user.setRole(role);
+    
+            user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+            userRepository.save(user);
+    
+            String jwtToken = jwtService.generateToken(user);
+            String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
+            response.sendRedirect(redirectUrl);
         }
 
-        user.setName(name);
-        user.setEmail(email);
-        log.info("Logged in to Google Account Email: " + email);
-
-        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-        user.setRole(role);
-
-        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-        userRepository.save(user);
-
-        String jwtToken = jwtService.generateToken(user);
-        String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
-        response.sendRedirect(redirectUrl);
     }
 
     public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
