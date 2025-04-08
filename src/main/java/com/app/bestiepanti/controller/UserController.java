@@ -23,6 +23,7 @@ import com.app.bestiepanti.service.DonaturService;
 import com.app.bestiepanti.service.PantiService;
 import com.app.bestiepanti.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
@@ -90,10 +91,15 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
+    // @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.GET)
+    // public ResponseEntity<?> authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
+    //     userService.authenticateWithGoogle(principal, response);
+    //     return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
+
     @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.GET)
-    public ResponseEntity<?> authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal) throws UserNotFoundException {
-        Object response = userService.authenticateWithGoogle(principal);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public void authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
+        userService.authenticateWithGoogle(principal, response);
     }
 
     @RequestMapping(value = USER_ENDPOINT, method=RequestMethod.GET)

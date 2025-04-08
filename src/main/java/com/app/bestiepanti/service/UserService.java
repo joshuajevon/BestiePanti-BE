@@ -1,5 +1,6 @@
 package com.app.bestiepanti.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -53,6 +54,7 @@ import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.TwoStepVerificationRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,28 +78,34 @@ public class UserService {
     private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
 
-    public Object authenticateWithGoogle(OAuth2User principal) throws UserNotFoundException {
+    public void authenticateWithGoogle(OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
         UserApp user = new UserApp();
         Donatur donatur = new Donatur();
         String name = null;
         String email = null;
+
         if (principal != null) {
-            name = principal.getAttribute("name"); 
+            name = principal.getAttribute("name");
             email = principal.getAttribute("email");
         } else {
             throw new ValidationException("Pengguna tidak terautentikasi!");
         }
 
-        Optional<UserApp> existingUser = userRepository.findByEmail(email);
-        if (existingUser.isPresent()) {
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.setEmail(email);
-            loginRequest.setPassword(UUID.randomUUID().toString());
-            return login(loginRequest, true);
-        }
+        // Optional<UserApp> existingUser = userRepository.findByEmail(email);
+        // if (existingUser.isPresent()) {
+        //     // If user exists, log in and redirect to home page with token
+        //     LoginRequest loginRequest = new LoginRequest();
+        //     loginRequest.setEmail(email);
+        //     loginRequest.setPassword(UUID.randomUUID().toString());
+        //     String jwtToken = login(loginRequest, true).getToken();
+        //     response.sendRedirect("http://localhost:5173/?token=" + jwtToken);
+        //     return;
+        // }
+
+        // If user is new, register and redirect to home page with token
         user.setName(name);
         user.setEmail(email);
-        log.info("Logged in to Google Account Email: " + email); 
+        log.info("Logged in to Google Account Email: " + email);
 
         Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
         user.setRole(role);
@@ -105,9 +113,52 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         userRepository.save(user);
 
+        // Generate JWT token for new user
         String jwtToken = jwtService.generateToken(user);
-        return createDonaturResponse(user, donatur, jwtToken);
+
+        // Redirect to home page with token and additional user info
+        String redirectUrl = "http://localhost:5173/login/callback"
+            + "?token=" + jwtToken;
+            // + "&id=" + user.getId()
+            // + "&name=" + URLEncoder.encode(user.getName(), StandardCharsets.UTF_8)
+            // + "&email=" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8)
+            // + "&role=" + user.getRole().getName();
+
+        response.sendRedirect(redirectUrl);
     }
+
+    // public Object authenticateWithGoogle(OAuth2User principal) throws UserNotFoundException {
+    //     UserApp user = new UserApp();
+    //     Donatur donatur = new Donatur();
+    //     String name = null;
+    //     String email = null;
+    //     if (principal != null) {
+    //         name = principal.getAttribute("name"); 
+    //         email = principal.getAttribute("email");
+    //     } else {
+    //         throw new ValidationException("Pengguna tidak terautentikasi!");
+    //     }
+
+    //     Optional<UserApp> existingUser = userRepository.findByEmail(email);
+    //     if (existingUser.isPresent()) {
+    //         LoginRequest loginRequest = new LoginRequest();
+    //         loginRequest.setEmail(email);
+    //         loginRequest.setPassword(UUID.randomUUID().toString());
+    //         return login(loginRequest, true);
+    //     }
+    //     user.setName(name);
+    //     user.setEmail(email);
+    //     log.info("Logged in to Google Account Email: " + email); 
+
+    //     Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+    //     user.setRole(role);
+
+    //     user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+    //     userRepository.save(user);
+
+    //     String jwtToken = jwtService.generateToken(user);
+    //     return createDonaturResponse(user, donatur, jwtToken);
+    // }
 
     public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
         MailRequest mailBody = MailRequest.builder()
