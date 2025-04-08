@@ -96,7 +96,7 @@ public class UserService {
             loginRequest.setEmail(email);
             loginRequest.setPassword(UUID.randomUUID().toString());
             String jwtToken = jwtService.generateToken(user);
-            response.sendRedirect(applicationConfig.getUrlFrontEnd() + "login/callback/?token=" + jwtToken);
+            response.sendRedirect(applicationConfig.getUrlFrontEnd() + "login/callback?token=" + jwtToken);
             return;
         }
 
