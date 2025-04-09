@@ -112,6 +112,8 @@ public class UserService {
     
         newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         userRepository.save(newUser);
+
+        saveToDonaturWithGoogle(newUser);
     
         String jwtToken = jwtService.generateToken(newUser);
         String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
@@ -235,7 +237,7 @@ public class UserService {
             if(fp.getIsUsed() == 0){
                 if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
                     forgotPasswordRepository.deleteById(fp.getId());
-                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail());
+                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail() + ". Silahkan mendaftar ulang!");
                 } 
                 fp.setIsUsed(1);
                 forgotPasswordRepository.save(fp);
@@ -364,6 +366,18 @@ public class UserService {
         String email = authentication.getName();
         UserApp user = findUserByEmail(email);
         return user;
+    }
+
+    public Donatur saveToDonaturWithGoogle(UserApp user) {
+        Donatur donatur = new Donatur();
+        donatur.setUser(user);
+        donatur.setAddress(null);
+        donatur.setGender(null);
+        donatur.setPhone(null);
+        donatur.setDob(null);
+        donatur.setProfile(null);
+        donaturRepository.save(donatur);
+        return donatur;
     }
 
     public AdminResponse createAdminResponse(UserApp userApp, String token) {

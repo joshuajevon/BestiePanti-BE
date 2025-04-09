@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,11 +110,11 @@ public class DonaturService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
-                .dob(donatur.getDob().toString())
-                .gender(donatur.getGender())
-                .phone(donatur.getPhone())
-                .address(donatur.getAddress())
-                .profile(donatur.getProfile())
+                .phone(donatur != null ? donatur.getPhone(): null)
+                .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
+                .gender(donatur != null ? donatur.getGender() : null)
+                .address(donatur != null ? donatur.getAddress() : null)
+                .profile(donatur != null ? donatur.getProfile() : null)
                 .build();
     }
 
