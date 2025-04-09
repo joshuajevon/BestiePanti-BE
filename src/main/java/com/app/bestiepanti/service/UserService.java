@@ -1,5 +1,6 @@
 package com.app.bestiepanti.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
@@ -51,6 +54,7 @@ import com.app.bestiepanti.repository.RoleRepository;
 import com.app.bestiepanti.repository.TwoStepVerificationRepository;
 import com.app.bestiepanti.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,18 +78,45 @@ public class UserService {
     private final TwoStepVerificationRepository twoStepVerificationRepository;
     private final ApplicationConfig applicationConfig;
 
-    // public void register(RegisterRequest registerRequest) throws Exception {
-    //     UserApp user = new UserApp();
-    //     user.setName(registerRequest.getName());
-    //     user.setEmail(registerRequest.getEmail());
-    //     user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-
-    //     Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
-    //     user.setRole(role);
-        
-    //     saveToDonatur(registerRequest, user);   
-    //     sendOtpTwoStepRegistration(user);
-    // }
+    public void authenticateWithGoogle(OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
+        String name = null;
+        String email = null;
+    
+        if (principal != null) {
+            name = principal.getAttribute("name");
+            email = principal.getAttribute("email");
+        } else {
+            throw new ValidationException("Pengguna tidak terautentikasi!");
+        }
+    
+        Optional<UserApp> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            UserApp user = existingUser.get();
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setEmail(email);
+            loginRequest.setPassword(UUID.randomUUID().toString());
+    
+            String jwtToken = jwtService.generateToken(user);
+            String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
+            response.sendRedirect(redirectUrl);
+            return;
+        }
+    
+        UserApp newUser = new UserApp();
+        newUser.setName(name);
+        newUser.setEmail(email);
+        log.info("Logged in to Google Account Email: " + email);
+    
+        Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
+        newUser.setRole(role);
+    
+        newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        userRepository.save(newUser);
+    
+        String jwtToken = jwtService.generateToken(newUser);
+        String redirectUrl = applicationConfig.getUrlFrontEnd() + "/login/callback?token=" + jwtToken;
+        response.sendRedirect(redirectUrl);
+    }
 
     public void sendOtpTwoStepRegistration(RegisterRequest request) throws Exception {
         MailRequest mailBody = MailRequest.builder()
@@ -142,13 +173,15 @@ public class UserService {
         return createDonaturResponse(user, donatur, jwtToken);
     }
 
-    public Object login(LoginRequest loginRequest) throws UserNotFoundException {
+    public Object login(LoginRequest loginRequest, Boolean isGoogle) throws UserNotFoundException {
         UserApp user = findUserByEmail(loginRequest.getEmail());
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Email atau Kata Sandi tidak valid. Silakan coba lagi.");
+        if (!isGoogle) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            } catch (AuthenticationException e) {
+                throw new UserNotFoundException("Email atau kata sandi tidak valid. Silakan coba lagi.");
+            }
         }
         String jwtToken = jwtService.generateToken(user);
         String existingToken = jwtConfig.getActiveToken(loginRequest.getEmail());
@@ -349,11 +382,11 @@ public class UserService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
-                .phone(donatur.getPhone())
-                .dob(donatur.getDob().toString())
-                .gender(donatur.getGender())
-                .address(donatur.getAddress())
-                .profile(donatur.getProfile())
+                .phone(donatur != null ? donatur.getPhone(): null)
+                .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
+                .gender(donatur != null ? donatur.getGender() : null)
+                .address(donatur != null ? donatur.getAddress() : null)
+                .profile(donatur != null ? donatur.getProfile() : null)
                 .token(token)
                 .build();
     }

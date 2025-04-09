@@ -23,6 +23,7 @@ import com.app.bestiepanti.service.DonaturService;
 import com.app.bestiepanti.service.PantiService;
 import com.app.bestiepanti.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
@@ -31,6 +32,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +62,7 @@ public class UserController {
     public static final String CHANGE_EMAIL_ENDPOINT = "/change-email";
     public static final String CHECK_EMAIL_ENDPOINT = "/check-email";
     public static final String VERIFY_OTP_REGISTRATION_ENDPOINT = "/verify-otp";
+    public static final String LOGIN_GOOGLE_ENDPOINT = LOGIN_ENDPOINT + "/google";
 
     private final UserService userService;
     private final DonaturService donaturService;
@@ -83,8 +87,13 @@ public class UserController {
     @RequestMapping(value = LOGIN_ENDPOINT, method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest userRequest) throws UserNotFoundException{
-        Object userResponse = userService.login(userRequest);
+        Object userResponse = userService.login(userRequest,false);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = LOGIN_GOOGLE_ENDPOINT, method = RequestMethod.GET)
+    public void authenticateWithGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws UserNotFoundException, IOException {
+        userService.authenticateWithGoogle(principal, response);
     }
 
     @RequestMapping(value = USER_ENDPOINT, method=RequestMethod.GET)

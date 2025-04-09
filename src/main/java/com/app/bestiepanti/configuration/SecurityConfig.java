@@ -6,10 +6,16 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.app.bestiepanti.exception.CustomAccessDeniedHandler;
+import com.app.bestiepanti.filter.CustomAuthenticationSuccessHandler;
 import com.app.bestiepanti.filter.JwtAuthencationFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -94,10 +100,15 @@ public class SecurityConfig {
 
                     registry.anyRequest().authenticated();
                 })
+                .oauth2Login(oauth2Login -> oauth2Login
+                                .userInfoEndpoint(userInfo -> userInfo
+                                        .userService(oAuth2UserService())
+                                )
+                        .successHandler(authenticationSuccessHandler()))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthencationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
@@ -110,5 +121,15 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID"));
         ;
         return httpSecurity.build();
+    }
+
+    @Bean
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(){
+        return new DefaultOAuth2UserService();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomAuthenticationSuccessHandler();
     }
 }
