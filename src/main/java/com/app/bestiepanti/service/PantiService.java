@@ -84,7 +84,7 @@ public class PantiService {
         Panti panti = new Panti();
         processImage(request, panti);
         panti.setDescription(request.getDescription());
-        panti.setPhone(request.getPhone());
+        panti.setPhone("+62"+request.getPhone());
         panti.setDonationTypes(request.getDonationTypes());
         panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         panti.setAddress(request.getAddress());
@@ -104,7 +104,7 @@ public class PantiService {
         if(panti != null){
             processImage(request, panti);
             panti.setDescription(request.getDescription());
-            panti.setPhone(request.getPhone());
+            panti.setPhone("+62"+request.getPhone());
             panti.setDonationTypes(request.getDonationTypes());
             panti.setAddress(request.getAddress());
             panti.setMaps(request.getMaps());
