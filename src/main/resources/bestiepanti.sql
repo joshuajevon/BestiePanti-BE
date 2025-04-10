@@ -124,6 +124,7 @@ CREATE TABLE forgot_passwords (
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
+        ON DELETE CASCADE
 )
 
 CREATE TABLE email_verifications (
@@ -136,6 +137,7 @@ CREATE TABLE email_verifications (
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
         REFERENCES users(id)
+        ON DELETE CASCADE
 )
 
 CREATE TABLE two_step_verifications (
