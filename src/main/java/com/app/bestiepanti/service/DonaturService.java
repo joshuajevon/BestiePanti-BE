@@ -53,7 +53,7 @@ public class DonaturService {
 
         Donatur donatur = donaturRepository.findByUserId(id);
         if(donatur != null){
-            processProfile(request, donatur);
+            processProfile(request, donatur, request.getGender());
             LocalDate dob = LocalDate.parse(request.getDob(), formatter);
             donatur.setDob(dob);
             donatur.setGender(request.getGender());
@@ -139,7 +139,7 @@ public class DonaturService {
         return donaturResponse;
     }
 
-    private void processProfile(ProfileDonaturRequest request, Donatur donatur) {
+    private void processProfile(ProfileDonaturRequest request, Donatur donatur, String gender) {
         try {
             if (request.getProfile() != null && !request.getProfile().isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + donatur.getUser().getId() + "_" + request.getProfile().getOriginalFilename();
@@ -157,6 +157,9 @@ public class DonaturService {
                     throw new RuntimeException("Failed to save profile", e);
                 }
                 donatur.setProfile(fileName);
+            } else {
+                if(gender.equals("L")) donatur.setProfile("defaultProfileMale.png");
+                else if(gender.equals("P")) donatur.setProfile("defaultProfileFemale.png");
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to save profile", e);
