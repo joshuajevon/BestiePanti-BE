@@ -97,7 +97,7 @@ public class PantiController {
     @ResponseBody
     public ResponseEntity<GeneralResponse> deleteImagePanti(@PathVariable BigInteger id, @RequestBody DeleteImagePantiRequest request) throws IOException {
         pantiService.deleteImagePanti(id, request);
-        GeneralResponse generalResponse = new GeneralResponse("Image panti " + request.getImageList() +" with user id: " + id);
+        GeneralResponse generalResponse = new GeneralResponse("Image panti " + request.getImageList() +" with user id: " + id + " have been successfully deleted!");
         log.info("Response Body: " + generalResponse);
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
