@@ -157,10 +157,10 @@ public class DonaturService {
                     throw new RuntimeException("Failed to save profile", e);
                 }
                 donatur.setProfile(fileName);
-            } else {
+            } else if(donatur.getProfile().equals("defaultProfileGeneral.png")){
                 if(gender.equals("L")) donatur.setProfile("defaultProfileMale.png");
                 else if(gender.equals("P")) donatur.setProfile("defaultProfileFemale.png");
-            }
+            } 
         } catch (Exception e) {
             throw new RuntimeException("Failed to save profile", e);
         }
