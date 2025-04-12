@@ -70,7 +70,7 @@ public class DonaturService {
         try {
             Donatur donatur = donaturRepository.findByUserId(id);
             if(donatur != null){
-                if (donatur.getProfile() != null && !(donatur.getProfile().equals("defaultProfileMale.png") || donatur.getProfile().equals("defaultProfileFemale.png"))) {
+                if (donatur.getProfile() != null && !(donatur.getProfile().equals("defaultProfileMale.png") || donatur.getProfile().equals("defaultProfileFemale.png") || donatur.getProfile().equals("defaultProfileGeneral.png"))) {
                     String fileQris = donatur.getProfile();
                     Path filePath = Paths.get(applicationConfig.getProfileImageUploadDir(), fileQris);
                     if (Files.exists(filePath)) {
