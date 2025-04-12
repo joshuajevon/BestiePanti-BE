@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
+import com.app.bestiepanti.dto.request.panti.DeleteImagePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdateIsUrgentPantiRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.panti.PantiResponses;
@@ -26,8 +27,6 @@ import com.app.bestiepanti.service.PantiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-
 
 @RestController
 @Slf4j
@@ -41,6 +40,7 @@ public class PantiController {
     public static final String VIEW_ALL_PANTI_ENDPOINT = "/view";
     public static final String VIEW_PANTI_BY_ID_ENDPOINT = "/view/{id}";
     public static final String VIEW_URGENT_PANTI_ENDPOINT = "/view/urgent";
+    public static final String DELETE_IMAGE_PANTI_ENDPOINT = "/delete-image/{id}";
  
     private final PantiService pantiService;
 
@@ -93,6 +93,13 @@ public class PantiController {
         return new ResponseEntity<>(pantiReponses, HttpStatus.OK);
     }
     
-    
+    @RequestMapping(value = DELETE_IMAGE_PANTI_ENDPOINT, method=RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<GeneralResponse> deleteImagePanti(@PathVariable BigInteger id, @RequestBody DeleteImagePantiRequest request) throws IOException {
+        pantiService.deleteImagePanti(id, request);
+        GeneralResponse generalResponse = new GeneralResponse("Image panti " + request.getImageList() +" with user id: " + id);
+        log.info("Response Body: " + generalResponse);
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+    }
     
 }

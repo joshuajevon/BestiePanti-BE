@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.panti.CreatePantiRequest;
+import com.app.bestiepanti.dto.request.panti.DeleteImagePantiRequest;
 import com.app.bestiepanti.dto.request.panti.ImagePantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdateIsUrgentPantiRequest;
 import com.app.bestiepanti.dto.request.panti.UpdatePantiRequest;
@@ -297,6 +298,26 @@ public class PantiService {
         if(panti != null)
             panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
         return createPantiResponse(user, panti, null, null);
+    }
+
+    public void deleteImagePanti(BigInteger id, DeleteImagePantiRequest request) throws IOException {
+        Panti panti = pantiRepository.findByUserId(id);
+        if (panti != null) {
+            List<String> allFileNames = new ArrayList<>(panti.getImage());
+            List<String> requestFilesDeleted = request.getImageList();
+    
+            for (String fileDeleted : requestFilesDeleted) {
+                if (allFileNames.contains(fileDeleted)) {
+                    Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileDeleted);
+                    if (Files.exists(filePath)) {
+                        Files.delete(filePath);
+                    }
+                    allFileNames.remove(fileDeleted);
+                }
+            }
+            panti.setImage(allFileNames);
+            pantiRepository.save(panti);
+        }
     }
 
 }

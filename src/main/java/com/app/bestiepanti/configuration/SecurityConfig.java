@@ -95,7 +95,8 @@ public class SecurityConfig {
                             "/storage/donation/**",
                             "/panti/profile/update",
                             "/api/v1/change-password",
-                            "/api/v1/change-email"
+                            "/api/v1/change-email",
+                            "/api/v1/panti/delete-image/**"
                             ).hasRole("PANTI");
 
                     registry.anyRequest().authenticated();
