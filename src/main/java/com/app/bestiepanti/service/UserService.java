@@ -375,7 +375,7 @@ public class UserService {
         donatur.setGender(null);
         donatur.setPhone(null);
         donatur.setDob(null);
-        donatur.setProfile(null);
+        donatur.setProfile("defaultProfileGeneral.png");
         donaturRepository.save(donatur);
         return donatur;
     }
