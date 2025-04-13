@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.MessageRequest;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.response.message.MessageResponse;
@@ -32,6 +33,7 @@ public class MessageService {
     private final UserRepository userRepository;
     private final DonaturRepository donaturRepository;
     private final EmailService emailService;
+    private final ApplicationConfig applicationConfig;
 
     public MessageResponse createMessage(MessageRequest request, BigInteger pantiId) throws Exception {
         UserApp userDonatur = userService.getAuthenticate();
@@ -49,6 +51,7 @@ public class MessageService {
         }
 
         sendEmailNotificationToDonatur(userDonatur, message);
+        sendEmailNotificationToPanti(userDonatur, message, userPanti);
         return createMessageResponse(message, donatur);
     }
 
@@ -60,7 +63,21 @@ public class MessageService {
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", userDonatur.getName());      
         variables.put("message", message.getMessage());
-        emailService.sendSuccessMessageDetails(mailBody, variables);
+        emailService.sendSuccessMessageDetails(mailBody, variables, true);
+    }
+
+    private void sendEmailNotificationToPanti(UserApp userDonatur, Message message, UserApp userPanti) throws Exception {
+        MailRequest mailBody = MailRequest.builder()
+                                .to(userPanti.getEmail())
+                                .subject("[No Reply] Message Details Bestie Panti")
+                                .build();
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("nameDonatur", userDonatur.getName());
+        variables.put("namePanti", userPanti.getName());
+        variables.put("message", message.getMessage());
+        String verificationLink = applicationConfig.getUrlFrontEnd() + "/dashboard-panti";
+        variables.put("verificationButton", verificationLink);
+        emailService.sendSuccessMessageDetails(mailBody, variables, false);
     }
 
     public List<MessageResponse> viewAllMessages() {

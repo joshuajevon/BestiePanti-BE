@@ -63,20 +63,13 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Pemberitahuan Donasi Baru</h1>
+            <h1>Pemberitahuan Pesan Baru</h1>
         </div>
         <div class="email-body">
             <h1>Halo, ${namePanti}!</h1>
-            <p>Anda telah menerima donasi baru. Berikut adalah detail donasinya:</p>
-            <ul>
-                <li>Tanggal Donasi: ${date}</li>
-                <li>Tipe Donasi: ${type}</li>
-                <li>Metode Donasi: ${isOnsite}</li>
-                <li>Nama Orang: ${pic}</li>
-                <li>Nomor Telepon: ${phone}</li>
-                <li>Catatan: ${notes}</li>
-            </ul>
-            <p>Silahkan memverifikasi donasi dengan menekan tombol berikut untuk mengakses menu donasi pada situs web</p>
+            <p>Anda telah menerima pesan baru. Berikut adalah detail pesan:</p>
+            <p><i>${message}</i></p>
+            <p>Silahkan memverifikasi pesan dengan menekan tombol berikut untuk mengakses menu pesan pada situs web</p>
             <a href="${verificationButton}" class="verification-button">Donasi Saya</a>
             <p>Hormat kami,<br>Tim Bestie Panti</p>
         </div>
