@@ -7,14 +7,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
+import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.donation.fund.CreateFundDonationRequest;
 import com.app.bestiepanti.dto.request.donation.fund.ImageFundDonationRequest;
 import com.app.bestiepanti.dto.request.donation.fund.UpdateFundDonationRequest;
@@ -41,8 +46,9 @@ public class FundDonationService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final FundDonationRepository fundDonationRepository;
+    private final EmailService emailService;
 
-    public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws UserNotFoundException{
+    public FundDonationResponse createFundDonation(CreateFundDonationRequest request, BigInteger pantiId) throws Exception{
         UserApp userDonatur = userService.getAuthenticate();
         UserApp userPanti = userRepository.findById(pantiId).orElseThrow(() -> new UserNotFoundException("User with id " + pantiId + " Not Found"));
         Panti panti = pantiRepository.findByUserId(pantiId);
@@ -65,7 +71,25 @@ public class FundDonationService {
         processImage(request, fund);
         fundDonationRepository.save(fund);
         
+        sendEmailNotificationToDonatur(userDonatur, fund);
+
         return createFundDonationResponse(donation, fund, panti);
+    }
+
+    private void sendEmailNotificationToDonatur(UserApp userDonatur, Fund fund) throws Exception {
+        MailRequest mailBody = MailRequest.builder()
+                                .to(userDonatur.getEmail())
+                                .subject("[No Reply] Donation Details Bestie Panti")
+                                .build();
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", userDonatur.getName());
+        variables.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+        
+        long nominalAmount = Long.parseLong(fund.getNominalAmount().toString());
+        String formattedNominal = String.format(new Locale("id", "ID"), "Rp %,d", nominalAmount);
+        variables.put("total", formattedNominal);
+
+        emailService.sendSuccessFundDonationDetails(mailBody, variables);
     }
 
     public List<FundDonationResponse> viewAllFundDonation() {

@@ -41,9 +41,9 @@ public class FundDonationController {
     private final FundDonationService fundDonationService;
 
     @RequestMapping(value = CREATE_FUND_DONATION_ENDPOINT, method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<FundDonationResponse> createFundDonation(@Valid @ModelAttribute CreateFundDonationRequest request, @PathVariable BigInteger pantiId) throws UserNotFoundException {
+    public ResponseEntity<FundDonationResponse> createFundDonation(@Valid @ModelAttribute CreateFundDonationRequest request, @PathVariable BigInteger pantiId) throws Exception {
        FundDonationResponse fundDonationResponse = fundDonationService.createFundDonation(request, pantiId);
-       log.info("Fund donation from user id " + fundDonationResponse.getDonaturId() + " for panti id "  + pantiId + " is created!");
+       log.info("Fund donation from user id " + fundDonationResponse.getDonaturId() + " for panti id "  + pantiId + " is created and email has been sent!");
        return new ResponseEntity<>(fundDonationResponse, HttpStatus.CREATED);
     }
 
