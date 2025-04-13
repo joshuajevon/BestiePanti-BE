@@ -69,7 +69,7 @@ public class EmailService {
         javaMailSender.send(mimeMessage);
     }
 
-    public void sendSuccessNonFundDonationDetails(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+    public void sendSuccessNonFundDonationDetails(MailRequest mailBody, Map<String, Object> variables, Boolean isDonatur) throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
@@ -77,7 +77,9 @@ public class EmailService {
         helper.setFrom(applicationConfig.getMailUsername());
         helper.setSubject(mailBody.getSubject());
 
-        Template template = freemarkerConfig.getTemplate("email-nonfund-donation-details.ftl");
+        Template template;
+        if(isDonatur) template = freemarkerConfig.getTemplate("email-nonfund-donation-details.ftl");
+        else template = freemarkerConfig.getTemplate("email-panti-nonfund-donation-details.ftl");
         String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
 
         helper.setText(htmlContent, true);

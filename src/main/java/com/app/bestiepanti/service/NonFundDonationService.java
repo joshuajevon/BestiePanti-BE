@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.app.bestiepanti.configuration.ApplicationConfig;
 import com.app.bestiepanti.dto.request.auth.MailRequest;
 import com.app.bestiepanti.dto.request.donation.nonfund.CreateNonFundDonationRequest;
 import com.app.bestiepanti.dto.request.donation.nonfund.UpdateNonFundDonationRequest;
@@ -39,6 +40,7 @@ public class NonFundDonationService {
     private final DonationRepository donationRepository;
     private final NonFundDonationRepository nonFundDonationRepository;
     private final EmailService emailService;
+    private final ApplicationConfig applicationConfig;
     
     public NonFundDonationResponse createNonFundDonation(CreateNonFundDonationRequest request, BigInteger pantiId) throws Exception{
         UserApp userDonatur = userService.getAuthenticate();
@@ -63,7 +65,7 @@ public class NonFundDonationService {
         nonFundDonationRepository.save(nonFund);
         
         sendEmailNotificationToDonatur(userDonatur, nonFund, donation);
-
+        sendEmailNotificationToPanti(userDonatur, nonFund, donation, userPanti);
         return createNonFundDonationResponse(donation, nonFund, panti);
     }
 
@@ -83,7 +85,31 @@ public class NonFundDonationService {
         variables.put("pic", nonFund.getPic());
         variables.put("phone", nonFund.getActivePhone());
         variables.put("notes", nonFund.getNotes());
-        emailService.sendSuccessNonFundDonationDetails(mailBody, variables);
+        emailService.sendSuccessNonFundDonationDetails(mailBody, variables, true);
+    }
+
+    private void sendEmailNotificationToPanti(UserApp userDonatur, NonFund nonFund, Donation donation, UserApp userPanti) throws Exception {
+        MailRequest mailBodyPanti = MailRequest.builder()
+                                .to(userPanti.getEmail())
+                                .subject("[No Reply] Donation Details Bestie Panti")
+                                .build();         
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("nameDonatur", userDonatur.getName());
+        variables.put("namePanti", userPanti.getName());
+        variables.put("date", donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+        variables.put("type", String.join(", ", donation.getDonationTypes()));
+        String isOnsite = null;
+        if(donation.getIsOnsite() == 0) isOnsite = "Online";
+        else if(donation.getIsOnsite() == 1) isOnsite = "Onsite";
+        variables.put("isOnsite", isOnsite);
+        variables.put("pic", nonFund.getPic());
+        variables.put("phone", nonFund.getActivePhone());
+        variables.put("notes", nonFund.getNotes());
+        String verificationLink = applicationConfig.getUrlFrontEnd() + "/dashboard-panti";
+        variables.put("verificationButton", verificationLink);
+
+        emailService.sendSuccessNonFundDonationDetails(mailBodyPanti, variables, false);
     }
 
     public List<NonFundDonationResponse> viewAllNonFundDonation() {
