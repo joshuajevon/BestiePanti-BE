@@ -52,7 +52,7 @@ public class EmailService {
         javaMailSender.send(mimeMessage);
     }
 
-    public void sendSuccessFundDonationDetails(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+    public void sendSuccessFundDonationDetails(MailRequest mailBody, Map<String, Object> variables, Boolean isDonatur) throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
@@ -60,7 +60,9 @@ public class EmailService {
         helper.setFrom(applicationConfig.getMailUsername());
         helper.setSubject(mailBody.getSubject());
 
-        Template template = freemarkerConfig.getTemplate("email-fund-donation-details.ftl");
+        Template template;
+        if(isDonatur) template = freemarkerConfig.getTemplate("email-fund-donation-details.ftl");
+        else template = freemarkerConfig.getTemplate("email-panti-fund-donation-details.ftl");
         String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
 
         helper.setText(htmlContent, true);

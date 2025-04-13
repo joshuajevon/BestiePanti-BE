@@ -72,24 +72,45 @@ public class FundDonationService {
         fundDonationRepository.save(fund);
         
         sendEmailNotificationToDonatur(userDonatur, fund);
-
+        sendEmailNotificationToPanti(userDonatur, fund, userPanti);
         return createFundDonationResponse(donation, fund, panti);
     }
 
     private void sendEmailNotificationToDonatur(UserApp userDonatur, Fund fund) throws Exception {
-        MailRequest mailBody = MailRequest.builder()
+        MailRequest mailBodyDonatur = MailRequest.builder()
                                 .to(userDonatur.getEmail())
                                 .subject("[No Reply] Donation Details Bestie Panti")
-                                .build();
+                                .build();      
+
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", userDonatur.getName());
         variables.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+    
+        long nominalAmount = Long.parseLong(fund.getNominalAmount().toString());
+        String formattedNominal = String.format(new Locale("id", "ID"), "Rp %,d", nominalAmount);
+        variables.put("total", formattedNominal);
+
+        emailService.sendSuccessFundDonationDetails(mailBodyDonatur, variables,true);
+    }
+
+    private void sendEmailNotificationToPanti(UserApp userDonatur, Fund fund, UserApp userPanti) throws Exception {
+        MailRequest mailBodyPanti = MailRequest.builder()
+                                .to(userPanti.getEmail())
+                                .subject("[No Reply] Donation Details Bestie Panti")
+                                .build();         
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("nameDonatur", userDonatur.getName());
+        variables.put("namePanti", userPanti.getName());
+        variables.put("date", LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+        String verificationLink = applicationConfig.getUrlFrontEnd() + "/dashboard-panti";
+        variables.put("verificationButton", verificationLink);
         
         long nominalAmount = Long.parseLong(fund.getNominalAmount().toString());
         String formattedNominal = String.format(new Locale("id", "ID"), "Rp %,d", nominalAmount);
         variables.put("total", formattedNominal);
 
-        emailService.sendSuccessFundDonationDetails(mailBody, variables);
+        emailService.sendSuccessFundDonationDetails(mailBodyPanti, variables,false);
     }
 
     public List<FundDonationResponse> viewAllFundDonation() {
