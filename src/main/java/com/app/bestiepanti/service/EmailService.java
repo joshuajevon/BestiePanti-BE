@@ -81,4 +81,19 @@ public class EmailService {
         helper.setText(htmlContent, true);
         javaMailSender.send(mimeMessage);
     }
+
+    public void sendSuccessMessageDetails(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        helper.setTo(mailBody.getTo());
+        helper.setFrom(applicationConfig.getMailUsername());
+        helper.setSubject(mailBody.getSubject());
+
+        Template template = freemarkerConfig.getTemplate("email-message-details.ftl");
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
+
+        helper.setText(htmlContent, true);
+        javaMailSender.send(mimeMessage);
+    }
 }   
