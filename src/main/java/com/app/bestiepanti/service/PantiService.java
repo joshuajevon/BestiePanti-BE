@@ -295,8 +295,10 @@ public class PantiService {
     public PantiResponse updateIsUrgentPanti(BigInteger id, UpdateIsUrgentPantiRequest request) throws UserNotFoundException {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " Not Found"));
         Panti panti = pantiRepository.findByUserId(id);
-        if(panti != null)
+        if(panti != null){
             panti.setIsUrgent(Integer.parseInt(request.getIsUrgent()));
+            pantiRepository.save(panti);
+        }
         return createPantiResponse(user, panti, null, null);
     }
 
