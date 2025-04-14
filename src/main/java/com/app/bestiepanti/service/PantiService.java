@@ -206,21 +206,13 @@ public class PantiService {
     private void processImage(ImagePantiRequest request, Panti panti) {
         try {
             if (request.getImage() != null && !request.getImage().isEmpty()) {
-                List<String> imagePaths = new ArrayList<>();
+                List<String> imagePaths = panti.getImage() != null ? new ArrayList<>(panti.getImage()) : new ArrayList<>();
+    
                 for (MultipartFile image : request.getImage()) {
                     String fileName = System.currentTimeMillis() + "_" + request.getName() + "_" + image.getOriginalFilename();
                     Path filePath = Paths.get(applicationConfig.getImageUploadDir(), fileName);
-                    
+    
                     try {
-                        if(panti.getImage() != null){
-                            List<String> prevFileNames = panti.getImage();
-                            for (String prevFileName : prevFileNames) {
-                                Path prevFilePath = Paths.get(applicationConfig.getImageUploadDir(), prevFileName);
-                                if (Files.exists(prevFilePath)) {
-                                    Files.delete(prevFilePath);
-                                }
-                            }
-                        }
                         Files.write(filePath, image.getBytes());
                         imagePaths.add(fileName);
                     } catch (IOException e) {
