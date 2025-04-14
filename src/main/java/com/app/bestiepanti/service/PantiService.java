@@ -52,6 +52,7 @@ public class PantiService {
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
     private final PaymentRespository paymentRespository;
+    private final UserService userService;
 
     public PantiResponse createPanti(CreatePantiRequest request){
         UserApp user = new UserApp();
@@ -294,8 +295,12 @@ public class PantiService {
         return createPantiResponse(user, panti, null, null);
     }
 
-    public void deleteImagePanti(BigInteger id, DeleteImagePantiRequest request) throws IOException {
+    public void deleteImagePanti(BigInteger id, DeleteImagePantiRequest request) throws IOException, UserNotFoundException {
         Panti panti = pantiRepository.findByUserId(id);
+        UserApp userDonatur = userService.getAuthenticate();
+        if(userDonatur.getId() != panti.getUser().getId()){
+            throw new UserNotFoundException("User is not permitted to delete this image panti");
+        }
         if (panti != null) {
             List<String> allFileNames = new ArrayList<>(panti.getImage());
             List<String> requestFilesDeleted = request.getImageList();
@@ -314,8 +319,12 @@ public class PantiService {
         }
     }
 
-    public void deleteQrisPanti(BigInteger id) throws IOException {
+    public void deleteQrisPanti(BigInteger id) throws IOException, UserNotFoundException {
         Panti panti = pantiRepository.findByUserId(id);
+        UserApp userDonatur = userService.getAuthenticate();
+        if(userDonatur.getId() != panti.getUser().getId()){
+            throw new UserNotFoundException("User is not permitted to delete this qris panti");
+        }
         if(panti != null){
             Payment payment = paymentRespository.findByPantiId(panti.getId());
             Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), payment.getQris());

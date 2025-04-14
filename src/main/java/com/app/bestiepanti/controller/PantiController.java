@@ -96,7 +96,7 @@ public class PantiController {
     
     @RequestMapping(value = DELETE_IMAGE_PANTI_ENDPOINT, method=RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<GeneralResponse> deleteImagePanti(@PathVariable BigInteger id, @RequestBody DeleteImagePantiRequest request) throws IOException {
+    public ResponseEntity<GeneralResponse> deleteImagePanti(@PathVariable BigInteger id, @RequestBody DeleteImagePantiRequest request) throws IOException, UserNotFoundException {
         pantiService.deleteImagePanti(id, request);
         GeneralResponse generalResponse = new GeneralResponse("Image panti " + request.getImageList() +" with user id: " + id + " have been successfully deleted!");
         log.info("Response Body: " + generalResponse);
@@ -105,7 +105,7 @@ public class PantiController {
 
     @RequestMapping(value = DELETE_QRIS_PANTI_ENDPOINT, method=RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<GeneralResponse> deleteQrisPanti(@PathVariable BigInteger id) throws IOException {
+    public ResponseEntity<GeneralResponse> deleteQrisPanti(@PathVariable BigInteger id) throws IOException, UserNotFoundException {
         pantiService.deleteQrisPanti(id);
         GeneralResponse generalResponse = new GeneralResponse("Qris panti with user id: " + id + " have been successfully deleted!");
         log.info("Response Body: " + generalResponse);
