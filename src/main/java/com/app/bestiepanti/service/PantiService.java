@@ -314,4 +314,17 @@ public class PantiService {
         }
     }
 
+    public void deleteQrisPanti(BigInteger id) throws IOException {
+        Panti panti = pantiRepository.findByUserId(id);
+        if(panti != null){
+            Payment payment = paymentRespository.findByPantiId(panti.getId());
+            Path filePath = Paths.get(applicationConfig.getQrisUploadDir(), payment.getQris());
+            if (Files.exists(filePath)){
+                Files.delete(filePath);
+            }
+            payment.setQris(null);
+            paymentRespository.save(payment);
+        }
+    }
+
 }

@@ -41,7 +41,8 @@ public class PantiController {
     public static final String VIEW_PANTI_BY_ID_ENDPOINT = "/view/{id}";
     public static final String VIEW_URGENT_PANTI_ENDPOINT = "/view/urgent";
     public static final String DELETE_IMAGE_PANTI_ENDPOINT = "/delete-image/{id}";
- 
+    public static final String DELETE_QRIS_PANTI_ENDPOINT = "/delete-qris/{id}";
+    
     private final PantiService pantiService;
 
     @RequestMapping(value = CREATE_PANTI_ENDPOINT,method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -98,6 +99,15 @@ public class PantiController {
     public ResponseEntity<GeneralResponse> deleteImagePanti(@PathVariable BigInteger id, @RequestBody DeleteImagePantiRequest request) throws IOException {
         pantiService.deleteImagePanti(id, request);
         GeneralResponse generalResponse = new GeneralResponse("Image panti " + request.getImageList() +" with user id: " + id + " have been successfully deleted!");
+        log.info("Response Body: " + generalResponse);
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = DELETE_QRIS_PANTI_ENDPOINT, method=RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<GeneralResponse> deleteQrisPanti(@PathVariable BigInteger id) throws IOException {
+        pantiService.deleteQrisPanti(id);
+        GeneralResponse generalResponse = new GeneralResponse("Qris panti with user id: " + id + " have been successfully deleted!");
         log.info("Response Body: " + generalResponse);
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
