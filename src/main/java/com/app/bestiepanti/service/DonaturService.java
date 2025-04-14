@@ -110,6 +110,7 @@ public class DonaturService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
+                .isGoogle(userApp.getIsGoogle().toString())
                 .phone(donatur != null ? donatur.getPhone(): null)
                 .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
                 .gender(donatur != null ? donatur.getGender() : null)

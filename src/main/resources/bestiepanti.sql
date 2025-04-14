@@ -9,6 +9,7 @@ CREATE TABLE users (
     email VARCHAR(255),
     password VARCHAR(255),
     role_id BIGINT,
+    is_google INTEGER,
     CONSTRAINT fk_role
         FOREIGN KEY(role_id) 
         REFERENCES roles(id)

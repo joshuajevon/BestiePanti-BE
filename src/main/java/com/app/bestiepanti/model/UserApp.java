@@ -43,6 +43,8 @@ public class UserApp implements UserDetails{
     @JoinColumn(name = "role_id", referencedColumnName = "id") 
     private Role role;
 
+    private Integer isGoogle;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));

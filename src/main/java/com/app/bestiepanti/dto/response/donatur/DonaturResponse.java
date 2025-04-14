@@ -36,4 +36,6 @@ public class DonaturResponse{
     private String address;
 
     private String profile;
+
+    private String isGoogle;
 }

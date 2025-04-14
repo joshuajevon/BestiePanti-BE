@@ -105,6 +105,7 @@ public class UserService {
         UserApp newUser = new UserApp();
         newUser.setName(name);
         newUser.setEmail(email);
+        newUser.setIsGoogle(1);
         log.info("Logged in to Google Account Email: " + email);
     
         Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
@@ -157,6 +158,8 @@ public class UserService {
 
                 Role role = roleRepository.findByName(UserApp.ROLE_DONATUR);
                 user.setRole(role);
+
+                user.setIsGoogle(0);
                 userRepository.save(user);
                 
                 saveToDonatur(request, user);   
@@ -396,6 +399,7 @@ public class UserService {
                 .name(userApp.getName())
                 .email(userApp.getEmail())
                 .role(userApp.getRole().getName())
+                .isGoogle(userApp.getIsGoogle().toString())
                 .phone(donatur != null ? donatur.getPhone(): null)
                 .dob(donatur != null ? Optional.ofNullable(donatur.getDob()).map(LocalDate::toString).orElse(null) : null)
                 .gender(donatur != null ? donatur.getGender() : null)
