@@ -43,9 +43,9 @@ public class NonFundDonationController {
 
     @RequestMapping(value = CREATE_NON_FUND_DONATION_ENDPOINT, method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<NonFundDonationResponse> createNonFundDonation(@Valid @RequestBody CreateNonFundDonationRequest request, @PathVariable BigInteger pantiId) throws UserNotFoundException {
+    public ResponseEntity<NonFundDonationResponse> createNonFundDonation(@Valid @RequestBody CreateNonFundDonationRequest request, @PathVariable BigInteger pantiId) throws Exception {
        NonFundDonationResponse nonFundDonationResponse = nonFundDonationService.createNonFundDonation(request, pantiId);
-       log.info("Non Fund donation from user id " + nonFundDonationResponse.getDonaturId() + " for panti id "  + pantiId + " is created!");
+       log.info("Non Fund donation from user id " + nonFundDonationResponse.getDonaturId() + " for panti id "  + pantiId + " is created and email has been sent!");
        return new ResponseEntity<>(nonFundDonationResponse, HttpStatus.CREATED);
     }
 

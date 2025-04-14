@@ -47,17 +47,20 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>OTP Akun Bestie Panti</h1>
+            <h1>Terima Kasih atas Donasi Anda!</h1>
         </div>
         <div class="email-body">
             <h1>Halo, ${name}!</h1>
-            <p><b>JANGAN BERIKAN KODE OTP ke siapapun!</b></p>
-            <p>Kode OTP Anda adalah: <strong>${otp}</strong></p>
-            <p>Harap gunakan kode OTP ini dalam waktu 90s sebelum kedaluwarsa.</p>
+            <p>Kami ingin mengucapkan terima kasih atas donasi Anda. Kebaikan Anda mendukung misi kami untuk membantu mereka yang membutuhkan.</p>
+            <p>Detail donasi:</p>
+            <ul>
+                <li>Jumlah: ${total}</li>
+                <li>Tanggal: ${date}</li>
+            </ul>
+            <p>Donasi Anda berarti banyak bagi kami. Terima kasih telah peduli dan berbagi!</p>
             <p>Hormat kami,<br>Tim Bestie Panti</p>
         </div>
         <div class="email-footer">
-            <p>Jika Anda tidak meminta permintaan pengiriman kode OTP, abaikan email ini.</p>
             <p>Copyright © 2025 BestiePanti. All rights reserved.</p>
         </div>
     </div>

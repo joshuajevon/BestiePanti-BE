@@ -35,6 +35,22 @@
         .email-body p {
             line-height: 1.6;
         }
+        .verification-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #4F46E5;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .verification-button:hover {
+            background-color: #3730A3;
+        }
         .email-footer {
             background-color: #f1f1f1;
             color: #666666;
@@ -47,17 +63,21 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>OTP Akun Bestie Panti</h1>
+            <h1>Pemberitahuan Donasi Baru</h1>
         </div>
         <div class="email-body">
-            <h1>Halo, ${name}!</h1>
-            <p><b>JANGAN BERIKAN KODE OTP ke siapapun!</b></p>
-            <p>Kode OTP Anda adalah: <strong>${otp}</strong></p>
-            <p>Harap gunakan kode OTP ini dalam waktu 90s sebelum kedaluwarsa.</p>
+            <h1>Halo, ${namePanti}!</h1>
+            <p>Anda telah menerima donasi baru. Berikut adalah detail donasinya:</p>
+            <ul>
+                <li>Nama Donatur: ${nameDonatur}</li>
+                <li>Jumlah Donasi: ${total}</li>
+                <li>Tanggal Donasi: ${date}</li>
+            </ul>
+            <p>Silahkan memverifikasi donasi dengan menekan tombol berikut untuk mengakses menu donasi pada situs web</p>
+            <a href="${verificationButton}" class="verification-button">Donasi Saya</a>
             <p>Hormat kami,<br>Tim Bestie Panti</p>
         </div>
         <div class="email-footer">
-            <p>Jika Anda tidak meminta permintaan pengiriman kode OTP, abaikan email ini.</p>
             <p>Copyright © 2025 BestiePanti. All rights reserved.</p>
         </div>
     </div>

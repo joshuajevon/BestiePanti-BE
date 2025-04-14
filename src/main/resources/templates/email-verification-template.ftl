@@ -73,6 +73,7 @@
 
             <a href="${verificationLink}" class="verification-button">Verifikasi Email</a>
             <p>Harap gunakan tautan ini dalam waktu 90s sebelum kedaluwarsa.</p>
+            <p>Hormat kami,<br>Tim Bestie Panti</p>
         </div>
         <div class="email-footer">
             <p>Jika Anda tidak meminta pengaturan ulang email, abaikan email ini.</p>

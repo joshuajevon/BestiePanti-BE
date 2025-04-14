@@ -42,10 +42,10 @@ public class MessageController {
 
     @RequestMapping(value = CREATE_MESSAGE_ENDPOINT, method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody MessageRequest request, @PathVariable BigInteger pantiId) throws UserNotFoundException {
+    public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody MessageRequest request, @PathVariable BigInteger pantiId) throws Exception {
         log.info("Request Body: " + request);
         MessageResponse messageResponse = messageService.createMessage(request, pantiId);
-        log.info("Donatur " + messageResponse.getDonaturId() + " create message for panti " + pantiId);
+        log.info("Donatur " + messageResponse.getDonaturId() + " create message for panti " + pantiId + "and email has been sent!");
         return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
 
