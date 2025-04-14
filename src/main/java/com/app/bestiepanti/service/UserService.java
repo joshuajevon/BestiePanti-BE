@@ -418,6 +418,7 @@ public class UserService {
                 .isUrgent(panti.getIsUrgent())
                 .address(panti.getAddress())
                 .region(panti.getRegion())
+                .maps(panti.getMaps())
                 .bankAccountName(payment.getBankAccountName())
                 .bankAccountNumber(payment.getBankAccountNumber())
                 .bankName(payment.getBankName())
