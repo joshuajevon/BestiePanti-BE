@@ -69,10 +69,11 @@
             <h1>Halo, ${namePanti}!</h1>
             <p>Anda telah menerima donasi baru. Berikut adalah detail donasinya:</p>
             <ul>
+                <li>Nama Akun Donatur: ${nameDonatur}</li>
+                <li>Nama Penanggung Jawab: ${pic}</li>
                 <li>Tanggal Donasi: ${date}</li>
                 <li>Tipe Donasi: ${type}</li>
                 <li>Metode Donasi: ${isOnsite}</li>
-                <li>Nama Orang: ${pic}</li>
                 <li>Nomor Telepon: ${phone}</li>
                 <li>Catatan: ${notes}</li>
             </ul>

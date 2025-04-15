@@ -67,7 +67,7 @@
         </div>
         <div class="email-body">
             <h1>Halo, ${namePanti}!</h1>
-            <p>Anda telah menerima pesan baru. Berikut adalah detail pesan:</p>
+            <p>Anda telah menerima pesan baru dari <b>${nameDonatur}</b>. Berikut adalah detail pesan:</p>
             <p><i>${message}</i></p>
             <p>Silahkan memverifikasi pesan dengan menekan tombol berikut untuk mengakses menu pesan pada situs web</p>
             <a href="${verificationButton}" class="verification-button">Donasi Saya</a>
