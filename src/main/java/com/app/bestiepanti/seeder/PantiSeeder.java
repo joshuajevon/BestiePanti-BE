@@ -43,6 +43,7 @@ public class PantiSeeder implements CommandLineRunner {
                 user.setEmail("panti" + i + "@gmail.com");
                 user.setPassword(passwordEncoder.encode("123123"));
                 user.setRole(role);
+                user.setIsGoogle(0);
                 userRepository.save(user);
 
                 Panti panti = new Panti();
@@ -56,11 +57,11 @@ public class PantiSeeder implements CommandLineRunner {
                 List<Integer> isUrgentTypes = Arrays.asList(1,0);
                 Integer pickedIsUrgent = pickIsUrgent(isUrgentTypes);
                 panti.setIsUrgent(pickedIsUrgent);
-                panti.setPhone("08123123123" + i);
+                panti.setPhone("+6281231233" + i);
                 List<String> regions = Arrays.asList("Jakarta","Bogor","Depok","Tanggerang","Bekasi");
                 String pickedRegion = pickRandomRegion(regions);
                 panti.setRegion(pickedRegion);
-                panti.setMaps("test.maps");
+                panti.setMaps("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3416730986205!2d106.80038581127364!3d-6.218595260882809!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f14d30079f01%3A0x2e74f2341fff266d!2sGelora%20Bung%20Karno%20Main%20Stadium!5e0!3m2!1sen!2sid!4v1744267239675!5m2!1sen!2sid");
                 panti.setUser(user);
                 pantiRepository.save(panti);
 
