@@ -37,21 +37,6 @@ public class EmailService {
         javaMailSender.send(mimeMessage);
     }
 
-    public void sendEmailVerification(MailRequest mailBody, Map<String, Object> variables) throws Exception {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-
-        helper.setTo(mailBody.getTo());
-        helper.setFrom(applicationConfig.getMailUsername());
-        helper.setSubject(mailBody.getSubject());
-
-        Template template = freemarkerConfig.getTemplate("email-verification-template.ftl");
-        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
-
-        helper.setText(htmlContent, true);
-        javaMailSender.send(mimeMessage);
-    }
-
     public void sendSuccessFundDonationDetails(MailRequest mailBody, Map<String, Object> variables, Boolean isDonatur) throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
