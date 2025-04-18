@@ -157,9 +157,9 @@ public class UserController {
 
     @RequestMapping(value = CHANGE_PASSWORD_ENDPOINT, method=RequestMethod.PATCH)
     public ResponseEntity<Object> changePassword(@Valid @RequestBody ChangePasswordRequest request) throws UserNotFoundException {
-        userService.changePassword(request);
+        String email = userService.changePassword(request);
         GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui!");
-        log.info("Password has been changed!");
+        log.info("Password has been changed for email " + email + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 

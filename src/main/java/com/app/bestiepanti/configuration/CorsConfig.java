@@ -15,15 +15,11 @@ public class CorsConfig {
     @Value("${url.front-end.bestiepanti}")
     private String urlFrontEnd;
 
-    public String getUrlFrontEnd() {
-        return urlFrontEnd;
-    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(urlFrontEnd));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 

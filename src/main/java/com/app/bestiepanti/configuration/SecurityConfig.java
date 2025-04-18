@@ -56,6 +56,7 @@ public class SecurityConfig {
                             "/storage/qris/**",
                             "/storage/profile/**",
                             "/storage/donation/**",
+                            "/api/v1/change-password",
                             "/api/v1/forgot-password/**",
                             "/api/v1/check-email/**",
                             "/api/v1/verify-otp"
@@ -80,7 +81,6 @@ public class SecurityConfig {
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
                             "/donatur/profile/update",
-                            "/api/v1/change-password",
                             "/api/v1/change-email"
                             ).hasRole("DONATUR");
 
@@ -94,7 +94,6 @@ public class SecurityConfig {
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
                             "/panti/profile/update",
-                            "/api/v1/change-password",
                             "/api/v1/change-email",
                             "/api/v1/panti/delete-image/**",
                             "/api/v1/panti/delete-qris/**"

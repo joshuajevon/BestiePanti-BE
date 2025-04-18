@@ -63,6 +63,7 @@ public class PantiService {
         user.setRole(role);
  
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setIsGoogle(0);
         userRepository.save(user);
  
         Panti panti = saveToPanti(request, user);

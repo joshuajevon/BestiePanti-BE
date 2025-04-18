@@ -264,7 +264,7 @@ public class UserService {
         forgotPasswordRepository.deleteById(fp.getId());
     }
 
-    public void changePassword(ChangePasswordRequest request) throws UserNotFoundException {
+    public String changePassword(ChangePasswordRequest request) throws UserNotFoundException {
         UserApp user = getAuthenticate();
 
         if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword()))
@@ -275,6 +275,7 @@ public class UserService {
         
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+        return user.getEmail();
     }
 
     public void changeEmail(ChangeEmailRequest request) throws Exception {
