@@ -41,7 +41,7 @@ public class PantiSeeder implements CommandLineRunner {
                 UserApp user = new UserApp();
                 user.setName("Panti" + i);
                 user.setEmail("panti" + i + "@gmail.com");
-                user.setPassword(passwordEncoder.encode("123123"));
+                user.setPassword(passwordEncoder.encode("asdasd123"));
                 user.setRole(role);
                 user.setIsGoogle(0);
                 userRepository.save(user);

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.bestiepanti.dto.request.auth.LoginRequest;
-import com.app.bestiepanti.dto.request.auth.changecredential.ChangeEmailRequest;
 import com.app.bestiepanti.dto.request.auth.changecredential.ChangePasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.ResetPasswordRequest;
 import com.app.bestiepanti.dto.request.auth.forgotpassword.VerifyEmailRequest;
@@ -28,7 +27,6 @@ import jakarta.validation.Valid;
 
 import java.io.IOException;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @Slf4j
@@ -59,8 +56,6 @@ public class UserController {
     public static final String VERIFY_OTP_FORGOT_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/verify-otp";
     public static final String RESET_PASSWORD_ENDPOINT = FORGOT_PASSWORD_ENDPOINT + "/reset-password";
     public static final String CHANGE_PASSWORD_ENDPOINT = "/change-password";
-    public static final String CHANGE_EMAIL_ENDPOINT = "/change-email";
-    public static final String CHECK_EMAIL_ENDPOINT = "/check-email";
     public static final String VERIFY_OTP_REGISTRATION_ENDPOINT = "/verify-otp";
     public static final String LOGIN_GOOGLE_ENDPOINT = LOGIN_ENDPOINT + "/google";
 
@@ -161,21 +156,6 @@ public class UserController {
         GeneralResponse generalResponse = new GeneralResponse("Password sudah berhasil diperbaharui!");
         log.info("Password has been changed for email " + email + "!");
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = CHANGE_EMAIL_ENDPOINT, method=RequestMethod.PATCH)
-    public ResponseEntity<Object> changeEmail(@Valid @RequestBody ChangeEmailRequest request) throws Exception {
-        userService.changeEmail(request);
-        GeneralResponse generalResponse = new GeneralResponse("Email sudah berhasil dikirim ke " + request.getEmail() +"!");
-        log.info("Email has been sent to " + request.getEmail() + "!");
-        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = CHECK_EMAIL_ENDPOINT, method=RequestMethod.GET)
-    public ResponseEntity<Object> checkEmail(@RequestParam("token") String token) throws UserNotFoundException {
-        HttpHeaders headers = userService.checkEmail(token);
-        log.info("Email has been updated!");
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
 }

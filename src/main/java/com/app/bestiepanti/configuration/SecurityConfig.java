@@ -58,7 +58,6 @@ public class SecurityConfig {
                             "/storage/donation/**",
                             "/api/v1/change-password",
                             "/api/v1/forgot-password/**",
-                            "/api/v1/check-email/**",
                             "/api/v1/verify-otp"
                             ).permitAll(); // no auth
                             
@@ -80,8 +79,7 @@ public class SecurityConfig {
                             "/api/v1/donation/fund/create/**",
                             "/api/v1/donation/nonfund/create/**",
                             "/storage/donation/**",
-                            "/donatur/profile/update",
-                            "/api/v1/change-email"
+                            "/donatur/profile/update"
                             ).hasRole("DONATUR");
 
                     registry.requestMatchers("/api/v1/panti/",
@@ -94,7 +92,6 @@ public class SecurityConfig {
                             "/api/v1/message/delete/**",
                             "/storage/donation/**",
                             "/panti/profile/update",
-                            "/api/v1/change-email",
                             "/api/v1/panti/delete-image/**",
                             "/api/v1/panti/delete-qris/**"
                             ).hasRole("PANTI");
