@@ -52,7 +52,7 @@ CREATE TABLE donations (
     panti_id BIGINT,
     donation_date DATE,
     is_onsite INTEGER,
-    donation_type VARCHAR(255)[],
+    donation_types VARCHAR(255)[],
     status VARCHAR(255),
     inserted_timestamp TIMESTAMP,
     verified_timestamp TIMESTAMP,
