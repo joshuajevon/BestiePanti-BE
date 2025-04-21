@@ -157,6 +157,7 @@ public class MessageService {
                 .donaturName(message.getDonaturId().getName())
                 .donaturProfile(donatur.getProfile())
                 .pantiId(message.getPantiId().getId())
+                .pantiName(message.getPantiId().getName())
                 .message(message.getMessage())
                 .timestamp(message.getTimestamp())
                 .isShown(message.getIsShown())

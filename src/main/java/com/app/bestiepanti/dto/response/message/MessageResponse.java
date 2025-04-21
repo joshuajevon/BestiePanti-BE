@@ -27,6 +27,8 @@ public class MessageResponse {
 
     private BigInteger pantiId;
 
+    private String pantiName;
+
     private String message;
 
     private LocalDateTime timestamp;
