@@ -87,4 +87,35 @@ public class EmailService {
         helper.setText(htmlContent, true);
         javaMailSender.send(mimeMessage);
     }
+
+    public void sendVerifyFundDonationDetails(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        helper.setTo(mailBody.getTo());
+        helper.setFrom(applicationConfig.getMailUsername());
+        helper.setSubject(mailBody.getSubject());
+
+        Template template = freemarkerConfig.getTemplate("email-verify-fund-donation-details.ftl");
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
+
+        helper.setText(htmlContent, true);
+        javaMailSender.send(mimeMessage);
+    }
+
+    public void sendVerifyNonFundDonationDetails(MailRequest mailBody, Map<String, Object> variables) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        helper.setTo(mailBody.getTo());
+        helper.setFrom(applicationConfig.getMailUsername());
+        helper.setSubject(mailBody.getSubject());
+
+        Template template = freemarkerConfig.getTemplate("email-verify-nonfund-donation-details.ftl");
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, variables);
+
+        helper.setText(htmlContent, true);
+        javaMailSender.send(mimeMessage);
+    }
+    
 }   
