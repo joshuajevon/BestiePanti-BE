@@ -160,11 +160,12 @@ public class NonFundDonationService {
         return nonFundDonationResponses;
     }
 
-    public NonFundDonationResponse verifyNonFundDonation(BigInteger id, UpdateNonFundDonationRequest request) throws UserNotFoundException{
+    public NonFundDonationResponse verifyNonFundDonation(BigInteger id, UpdateNonFundDonationRequest request) throws Exception{
         try {
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Non Fund Donation with id " + id + " Not Found"));
             Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
+            UserApp userDonatur = userRepository.findById(donation.getDonaturId().getId()).orElseThrow(() -> new UserNotFoundException("User with id " + donation.getDonaturId().getId() + " Not Found"));
             if(userPanti.getId() != donation.getPantiId().getId()){
                 throw new UserNotFoundException("User is not permitted to verify this non fund donation");
             }
@@ -181,15 +182,38 @@ public class NonFundDonationService {
             if(nonFund != null){
                 nonFund.setPic(request.getPic());
                 nonFund.setNotes(request.getNotes());
-                nonFund.setActivePhone("+62" + request.getActivePhone());
+                nonFund.setActivePhone(request.getActivePhone());
                 nonFundDonationRepository.save(nonFund);
             }
+            sendEmailNotificationVerifyNonFundDonationToDonatur(userDonatur, nonFund, donation);
             return createNonFundDonationResponse(donation, nonFund, panti);
         } catch (NumberFormatException e) {
             throw e;
         } catch (NoSuchElementException e) {
             throw e;
         }
+    }
+
+    private void sendEmailNotificationVerifyNonFundDonationToDonatur(UserApp userDonatur, NonFund nonFund, Donation donation) throws Exception {
+        MailRequest mailBodyDonatur = MailRequest.builder()
+                                .to(userDonatur.getEmail())
+                                .subject("[No Reply] Status Donation Bestie Panti")
+                                .build();      
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", userDonatur.getName());
+        variables.put("date", donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+        variables.put("type", String.join(", ", donation.getDonationTypes()));
+        String isOnsite = null;
+        if(donation.getIsOnsite() == 0) isOnsite = "Online";
+        else if(donation.getIsOnsite() == 1) isOnsite = "Onsite";
+        variables.put("isOnsite", isOnsite);
+        variables.put("pic", nonFund.getPic());
+        variables.put("phone", nonFund.getActivePhone());
+        variables.put("notes", nonFund.getNotes());
+        variables.put("status", donation.getStatus());
+
+        emailService.sendVerifyNonFundDonationDetails(mailBodyDonatur, variables);
     }
 
     public NonFundDonationResponse viewNonFundDonationByDonationId(BigInteger id) throws UserNotFoundException{

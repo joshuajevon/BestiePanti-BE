@@ -167,11 +167,12 @@ public class FundDonationService {
         return fundDonationResponses;
     }
 
-    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request) throws UserNotFoundException{
+    public FundDonationResponse verifyFundDonation(BigInteger id, UpdateFundDonationRequest request) throws Exception{
         try {  
             Donation donation = donationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fund Donation with id " + id + " Not Found"));
             Panti panti = pantiRepository.findByUserId(donation.getPantiId().getId());
             UserApp userPanti = userService.getAuthenticate();
+            UserApp userDonatur = userRepository.findById(donation.getDonaturId().getId()).orElseThrow(() -> new UserNotFoundException("User with id " + donation.getDonaturId().getId() + " Not Found"));
             if(userPanti.getId() != donation.getPantiId().getId()){
                 throw new UserNotFoundException("User is not permitted to verify this fund donation");
             }
@@ -187,12 +188,31 @@ public class FundDonationService {
                 fund.setNominalAmount(request.getNominalAmount());
                 fundDonationRepository.save(fund);
             }
+            sendEmailNotificationVerifyFundDonationToDonatur(userDonatur, fund, donation);
             return createFundDonationResponse(donation, fund, panti);
         } catch (NumberFormatException e) {
             throw e;
         } catch (NoSuchElementException e) {
             throw e;
         }
+    }
+
+    private void sendEmailNotificationVerifyFundDonationToDonatur(UserApp userDonatur, Fund fund, Donation donation) throws Exception {
+        MailRequest mailBodyDonatur = MailRequest.builder()
+                                .to(userDonatur.getEmail())
+                                .subject("[No Reply] Status Donation Bestie Panti")
+                                .build();      
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", userDonatur.getName());
+        variables.put("status", donation.getStatus());
+        variables.put("date", fund.getDonationId().getDonationDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("id", "ID"))));
+    
+        long nominalAmount = Long.parseLong(fund.getNominalAmount().toString());
+        String formattedNominal = String.format(new Locale("id", "ID"), "Rp %,d", nominalAmount);
+        variables.put("total", formattedNominal);
+
+        emailService.sendVerifyFundDonationDetails(mailBodyDonatur, variables);
     }
 
     public FundDonationResponse viewFundDonationByDonationId(BigInteger id) throws UserNotFoundException {

@@ -82,11 +82,11 @@ public class NonFundDonationController {
     
     @RequestMapping(value = VERIFY_NON_FUND_DONATION_ENDPOINT, method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @RequestBody UpdateNonFundDonationRequest request) throws UserNotFoundException {
+    public ResponseEntity<Object> verifyFundDonation(@PathVariable BigInteger id, @Valid @RequestBody UpdateNonFundDonationRequest request) throws Exception {
         try {
             log.info("Request Body: " + request.toString());
             NonFundDonationResponse nonFundDonationResponse = nonFundDonationService.verifyNonFundDonation(id, request);
-            log.info("Non Fund donation with id " + id + " has been verified!");
+            log.info("Non Fund donation with id " + id + " has been verified and email has been sent!");
             return new ResponseEntity<>(nonFundDonationResponse, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             GeneralResponse generalResponse = new GeneralResponse(e.getMessage());
