@@ -164,7 +164,7 @@ public class UserService {
                 throw new ValidationException("Kode OTP sudah digunakan!");
             }
         } else {
-            throw new ValidationException("Kode OTP tidak valid!");
+            throw new ValidationException("Kode OTP tidak valid untuk " + request.getEmail());
         }
 
         Donatur donatur = donaturRepository.findByUserId(user.getId());
@@ -234,7 +234,7 @@ public class UserService {
             if(fp.getIsUsed() == 0){
                 if(fp.getExpirationTime().before(Date.from(Instant.now()))) {
                     forgotPasswordRepository.deleteById(fp.getId());
-                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail() + ". Silahkan mendaftar ulang!");
+                    throw new ValidationException("Kode OTP sudah kadaluarsa untuk " + request.getEmail() + ". Silahkan verifikasi ulang!");
                 } 
                 fp.setIsUsed(1);
                 forgotPasswordRepository.save(fp);
