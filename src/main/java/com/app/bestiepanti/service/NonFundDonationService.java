@@ -182,7 +182,7 @@ public class NonFundDonationService {
             if(nonFund != null){
                 nonFund.setPic(request.getPic());
                 nonFund.setNotes(request.getNotes());
-                nonFund.setActivePhone(request.getActivePhone());
+                nonFund.setActivePhone("+62"+request.getActivePhone());
                 nonFundDonationRepository.save(nonFund);
             }
             sendEmailNotificationVerifyNonFundDonationToDonatur(userDonatur, nonFund, donation);
