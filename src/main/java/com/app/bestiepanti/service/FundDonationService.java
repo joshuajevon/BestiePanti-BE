@@ -188,7 +188,7 @@ public class FundDonationService {
                 fund.setNominalAmount(request.getNominalAmount());
                 fundDonationRepository.save(fund);
             }
-            sendEmailNotificationVerifyFundDonationToDonatur(userDonatur, fund, donation);
+            if(!request.getStatus().equals(Donation.STATUS_PENDING)) sendEmailNotificationVerifyFundDonationToDonatur(userDonatur, fund, donation);
             return createFundDonationResponse(donation, fund, panti);
         } catch (NumberFormatException e) {
             throw e;

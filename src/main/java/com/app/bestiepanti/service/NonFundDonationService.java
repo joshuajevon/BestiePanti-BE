@@ -185,7 +185,7 @@ public class NonFundDonationService {
                 nonFund.setActivePhone("+62"+request.getActivePhone());
                 nonFundDonationRepository.save(nonFund);
             }
-            sendEmailNotificationVerifyNonFundDonationToDonatur(userDonatur, nonFund, donation);
+            if(!request.getStatus().equals(Donation.STATUS_PENDING)) sendEmailNotificationVerifyNonFundDonationToDonatur(userDonatur, nonFund, donation);
             return createNonFundDonationResponse(donation, nonFund, panti);
         } catch (NumberFormatException e) {
             throw e;
