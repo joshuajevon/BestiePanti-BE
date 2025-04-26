@@ -55,13 +55,12 @@
             <div class="status">
                 <#if status == 'COMPLETED'>
                     <h2 style="color: green">Donasi Anda telah diterima dan terverifikasi!</h2>
-                <#else>
-                    <h2 style="color: red">Donasi Anda ditolak</h2>
-                </#if>
-                <#if status == "COMPLETED">
                     <p>Terima kasih atas dukungan Anda! Donasi Anda membantu kami dalam misi kemanusiaan ini.</p>
                 <#else>
-                    <p>Kami mohon maaf, donasi Anda tidak dapat kami terima pada saat ini.</p>
+                    <#if status == 'REJECTED'>
+                        <h2 style="color: red">Donasi Anda ditolak</h2>
+                        <p>Kami mohon maaf, donasi Anda tidak dapat kami terima pada saat ini.</p>
+                    </#if>
                 </#if>
             </div>
 
