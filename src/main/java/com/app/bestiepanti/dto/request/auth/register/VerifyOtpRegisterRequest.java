@@ -33,7 +33,7 @@ public class VerifyOtpRegisterRequest {
 
     @NotEmpty(message = "Kata Sandi tidak boleh kosong")
     @Size(min = 8, message = "Kata Sandi harus memiliki minimal 8 karakter")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$", message = "Kata Sandi harus mengandung huruf dan angka")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-={}\\[\\]:\";'<>?,./|\\\\`~]+$", message = "Kata Sandi harus mengandung huruf dan angka")
     private String password;
 
     private String confirmationPassword;
