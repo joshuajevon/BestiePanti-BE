@@ -17,6 +17,7 @@ import com.app.bestiepanti.dto.request.donation.fund.UpdateFundDonationRequest;
 import com.app.bestiepanti.dto.response.GeneralResponse;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponses;
+import com.app.bestiepanti.dto.response.donation.fund.TotalFundAmountResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.service.FundDonationService;
 
@@ -37,6 +38,7 @@ public class FundDonationController {
     public static final String VIEW_FUND_DONATION_BY_USER_ID_ENDPOINT = "/view/{userId}";
     public static final String VERIFY_FUND_DONATION_ENDPOINT = "/verify/{id}";
     public static final String VIEW_FUND_DONATION_BY_DONATION_ID_ENDPOINT = "/get/{donationId}";
+    public static final String VIEW_TOTAL_AMOUNT_FUND_DONATION_BY_PANTI_ID = "/amount/{pantiId}";
 
     private final FundDonationService fundDonationService;
 
@@ -96,6 +98,13 @@ public class FundDonationController {
         FundDonationResponse fundDonationResponse = fundDonationService.viewFundDonationByDonationId(donationId);
         log.info("Response Body: " + fundDonationResponse);
         return new ResponseEntity<>(fundDonationResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = VIEW_TOTAL_AMOUNT_FUND_DONATION_BY_PANTI_ID, method=RequestMethod.GET)
+    public ResponseEntity<TotalFundAmountResponse> viewTotalAmountFundDonationByPantiId(@PathVariable BigInteger pantiId) throws UserNotFoundException {
+        TotalFundAmountResponse totalFundAmountResponse = fundDonationService.viewTotalFundAmountByPantiId(pantiId);
+        log.info("Response Body: " + totalFundAmountResponse);
+        return new ResponseEntity<>(totalFundAmountResponse, HttpStatus.OK);
     }
     
 }
