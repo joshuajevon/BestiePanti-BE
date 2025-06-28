@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.app.bestiepanti.configuration.ApplicationConfig;
@@ -24,6 +25,7 @@ import com.app.bestiepanti.dto.request.donation.fund.CreateFundDonationRequest;
 import com.app.bestiepanti.dto.request.donation.fund.ImageFundDonationRequest;
 import com.app.bestiepanti.dto.request.donation.fund.UpdateFundDonationRequest;
 import com.app.bestiepanti.dto.response.donation.fund.FundDonationResponse;
+import com.app.bestiepanti.dto.response.donation.fund.TotalFundAmountResponse;
 import com.app.bestiepanti.exception.UserNotFoundException;
 import com.app.bestiepanti.model.Donation;
 import com.app.bestiepanti.model.Fund;
@@ -228,6 +230,22 @@ public class FundDonationService {
         } catch (NumberFormatException | NoSuchElementException e) {
             throw e;
         }
+    }
+
+    public TotalFundAmountResponse viewTotalFundAmountByPantiId(BigInteger id) throws UsernameNotFoundException {
+        List<Donation> donations = donationRepository.findAllByPantiIdAndFundTypesAndStatus(id);
+        Integer totalAmount = 0;
+        if (donations != null) {
+            for (Donation donation : donations) {
+                Fund fund = fundDonationRepository.findByDonationId(donation.getId());
+                totalAmount += Integer.parseInt(fund.getNominalAmount());
+            }
+        } else {
+            return null;
+        }
+        TotalFundAmountResponse totalFundAmountResponse = new TotalFundAmountResponse();
+        totalFundAmountResponse.setTotalAmount(totalAmount);
+        return totalFundAmountResponse;
     }
 
     public FundDonationResponse createFundDonationResponse(Donation donation, Fund fund, Panti panti) {
