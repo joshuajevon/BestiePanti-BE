@@ -50,6 +50,7 @@ public class SecurityConfig {
                             "/api/v1/message/view/**",
                             "/api/v1/donation/fund/view",
                             "/api/v1/donation/fund/view/**",
+                            "/api/v1/donation/fund/amount/**",
                             "/api/v1/donation/nonfund/view",
                             "/api/v1/donation/nonfund/view/**",
                             "/storage/image/**",

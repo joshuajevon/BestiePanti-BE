@@ -18,6 +18,9 @@ public interface DonationRepository extends JpaRepository<Donation, BigInteger>{
     @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND 'Dana' = ANY (donation_types) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 0 ELSE 1 END, inserted_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByPantiIdAndFundTypes(@Param("id") BigInteger id);
 
+    @Query(value = "SELECT * FROM Donations WHERE panti_id = ?1 AND 'Dana' = ANY (donation_types) AND status = 'COMPLETED' ORDER BY CASE WHEN verified_timestamp IS NULL THEN 0 ELSE 1 END, inserted_timestamp DESC", nativeQuery = true)
+    List<Donation> findAllByPantiIdAndFundTypesAndStatus(@Param("id") BigInteger id);
+
     @Query(value = "SELECT * FROM Donations WHERE donatur_id = ?1 AND NOT ('Dana' = ANY (donation_types)) ORDER BY CASE WHEN verified_timestamp IS NULL THEN 0 ELSE 1 END, inserted_timestamp DESC", nativeQuery = true)
     List<Donation> findAllByDonaturIdAndNonFundTypes(@Param("id") BigInteger id);
     
